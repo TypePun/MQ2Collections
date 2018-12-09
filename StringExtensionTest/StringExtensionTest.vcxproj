@@ -97,11 +97,6 @@
     </ClCompile>
     <ClCompile Include="StringExtensionUnitTest.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MQ2Collections\MQ2Collections.vcxproj">
-      <Project>{d2cf825e-1f39-4f0c-af30-15de7bb51347}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
