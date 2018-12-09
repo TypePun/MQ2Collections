@@ -4,9 +4,6 @@
 
 #pragma once
 
-#if !defined(__CONVERSION__)
-#define __CONVERSIONS__
-
 #include <cstdlib>
 #include <cstdint>
 #include <cerrno>
@@ -79,5 +76,3 @@ namespace Conversions
         return rc;
     }
 }
-#endif
-

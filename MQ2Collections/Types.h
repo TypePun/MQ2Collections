@@ -153,7 +153,7 @@ namespace Types
 		}
 
 		//
-		// Register the type with MQ2, using an instand as our unique type
+		// Register the type with MQ2, using an instance as our unique type
 		// descriptor.
 		//
 

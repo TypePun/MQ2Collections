@@ -18,10 +18,10 @@ using namespace Collections::Containers;
 
 const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
 {
-	{ (DWORD) xReset, "Reset" },
-	{ (DWORD) xAdvance, "Advance" },
-	{ (DWORD) xIsEnd, "IsEnd" },
-	{ (DWORD) xValue, "Value" },
+	{ (DWORD) SetIteratorMembers::Reset, "Reset" },
+	{ (DWORD) SetIteratorMembers::Advance, "Advance" },
+	{ (DWORD) SetIteratorMembers::IsEnd, "IsEnd" },
+	{ (DWORD) SetIteratorMembers::Value, "Value" },
 	{ 0, 0 }
 };
 
@@ -32,13 +32,13 @@ const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
 
 const MQ2TYPEMEMBER Set::SetMembers[] =
 {
-	{ (DWORD) xCount, "Count" },
-	{ (DWORD) xClear, "Clear" },
-	{ (DWORD) xContains, "Contains" },
-	{ (DWORD) xAdd, "Add" },
-	{ (DWORD) xRemove, "Remove" },
-	{ (DWORD) xFirst, "First" },
-	{ (DWORD) xFind, "Find" },
+	{ (DWORD) SetMembers::Count, "Count" },
+	{ (DWORD) SetMembers::Clear, "Clear" },
+	{ (DWORD) SetMembers::Contains, "Contains" },
+	{ (DWORD) SetMembers::Add, "Add" },
+	{ (DWORD) SetMembers::Remove, "Remove" },
+	{ (DWORD) SetMembers::First, "First" },
+	{ (DWORD) SetMembers::Find, "Find" },
 	{ 0, 0 }
 };
 
@@ -80,7 +80,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 	}
 
 	//
-	// Member ID is an SetIteratorMemberEnums enumeration.
+	// Member ID is an SetIteratorMembers enumeration.
 	//
 
 	pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
@@ -90,9 +90,9 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 		return false;
 	}
 
-	switch ((SetIteratorMemberEnums) pMember->ID)
+	switch ((enum class SetIteratorMembers) pMember->ID)
 	{
-		case xReset:
+        case SetIteratorMembers::Reset:
 			//
 			// Reset the iterator to the start of the set.   Return the result as
 			// TRUE.
@@ -103,7 +103,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 			Dest.Int = 1;
 			break;
 
-		case xAdvance:
+		case SetIteratorMembers::Advance:
 			//
 			// Advance the iterator.  Return TRUE if the iterator could be advanced
 			// and FALSE otherwise.
@@ -112,7 +112,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 			Dest.Int = (int) pThis->Advance();
 			break;
 
-		case xIsEnd:
+		case SetIteratorMembers::IsEnd:
 			//
 			// Return TRUE if we are at the last element in the set and FALSE
 			// otherwise.
@@ -121,7 +121,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 			Dest.Int = (int) pThis->IsEnd();
 			break;
 
-		case xValue:
+		case SetIteratorMembers::Value:
 			//
 			// Return the current element under the iterator or FALSE if there
 			// isn't one.
@@ -164,19 +164,18 @@ bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 	{
 		return false;
 	}
-
+    
+    errno_t rc;
 	if (!pThis->Value(&item))
 	{
-        if (strcpy_s (Destination, BUFFER_SIZE, "FALSE") != 0)
-            return false;
+        rc = strcpy_s(Destination, BUFFER_SIZE, "FALSE");
 	}
 	else
 	{
-		if (strcpy_s(Destination, BUFFER_SIZE, item->c_str()) != 0)
-            return false;
+        rc = strcpy_s(Destination, BUFFER_SIZE, item->c_str());
 	}
 
-	return true;
+    return rc == 0;
 }
 
 //
@@ -235,7 +234,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 	}
 
 	//
-	// Member ID is an SetMemberEnums enumeration.
+	// Member ID is an SetMembers enumeration.
 	//
 
 	pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
@@ -245,9 +244,9 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 		return false;
 	}
 
-	switch ((SetMemberEnums) pMember->ID)
+	switch ((enum class SetMembers) pMember->ID)
 	{
-		case xCount:
+        case SetMembers::Count:
 			//
 			// Count of items in the set.
 			//
@@ -256,7 +255,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 			Dest.Type = pIntType;
 			return true;
 
-		case xClear:
+		case SetMembers::Clear:
 			//
 			// Clear the set.  Return the result as TRUE.
 			//
@@ -266,7 +265,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 			Dest.Int = 1;
 			break;
 
-		case xContains:
+		case SetMembers::Contains:
 			//
 			// Does the set contain a key?
 			//
@@ -281,7 +280,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 			}
 			break;
 
-		case xAdd:
+		case SetMembers::Add:
 			//
 			// Add an item to the set.  Return TRUE if the item was added.
 			//
@@ -306,7 +305,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 			}
 			break;
 
-		case xRemove:
+		case SetMembers::Remove:
 			//
 			// Remove an item from the set.  Return TRUE if it was removed and
 			// FALSE otherwise.
@@ -322,7 +321,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 			}
 			break;
 
-		case xFirst:
+		case SetMembers::First:
 			//
 			// Return an iterator on the first element.
 			//
@@ -337,7 +336,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 			Dest.Type = iteratorTypeVar.Type;
 			break;
 
-		case xFind:
+		case SetMembers::Find:
 			//
 			// Return an iterator on a key.
 			//
@@ -385,7 +384,7 @@ bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 		return false;
 	}
 
-    return Conversions::ToString (pThis->Count (), Destination, BUFFER_SIZE) == 0;
+    return Conversions::ToString(pThis->Count(), Destination, BUFFER_SIZE) == 0;
 }
 
 

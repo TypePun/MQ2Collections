@@ -4,9 +4,6 @@
 
 #pragma once
 
-#if !defined(__SET__)
-#define __SET__
-
 #include <string>
 #include <set>
 
@@ -34,12 +31,12 @@ namespace Collections
 			// MQ2Type Members
 			//
 
-			enum SetIteratorMemberEnums
+			enum class SetIteratorMembers
 			{
-				xReset = 1,
-				xAdvance,
-				xIsEnd,
-				xValue
+				Reset = 1,
+				Advance,
+				IsEnd,
+				Value
 			};
 
 			//
@@ -170,7 +167,6 @@ namespace Collections
 			//
 
 			static const MQ2TYPEMEMBER SetIteratorMembers[];
-
 		};
 
 		//
@@ -192,15 +188,15 @@ namespace Collections
 			// MQ2Type Members
 			//
 
-			enum SetMemberEnums
+			enum class SetMembers
 			{
-				xCount = 1,
-				xClear,
-				xContains,
-				xAdd,
-				xRemove,
-				xFirst,
-				xFind
+				Count = 1,
+				Clear,
+				Contains,
+				Add,
+				Remove,
+				First,
+				Find
 			};
 
 			//
@@ -323,4 +319,3 @@ namespace Collections
 		};
 	}  // namespace Containers
 }  // namespace Collections
-#endif

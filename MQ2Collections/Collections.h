@@ -5,8 +5,6 @@
 //
 
 #pragma once
-#if !defined(__COLLECTIONS__)
-#define __COLLECTIONS__
 
 #include <memory>
 
@@ -99,7 +97,7 @@ namespace Collections
 	// Define an iterator on a collection that only returns values.  For
 	// example, an iterator on a set.
 	//
-	// An value iterator has methods of the IteratorBase class plus:
+	// A value iterator has methods of the IteratorBase class plus:
 	//
 	// Value		- Return the value under the current iterator
 	//
@@ -139,7 +137,7 @@ namespace Collections
 	// Define an iterator on a collection that returns keys and values.  For
 	// example, an iterator on a map.
 	//
-	// An value iterator has methods of the ValueIterator class plus:
+	// A value iterator has methods of the ValueIterator class plus:
 	//
 	// Key		- Return the key under the current iterator
 	//
@@ -171,8 +169,7 @@ namespace Collections
 		// True is returned if key is valid and false if it is not.  Key is
 		// not valid if the iterator points after the end of the collection,
 		// or if the collection in question doesn't have keys, such as an
-		// array or list.   For collections such as sets where the key
-		// is the value, either Value or Key may be used to access an item.
+		// array or list.
 		//
 
 		virtual bool Key(const KeyType ** const key) const = 0;
@@ -263,5 +260,3 @@ namespace Collections
 		coll m_coll;
 	};
 }  // namespace Collections
-
-#endif
