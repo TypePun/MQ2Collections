@@ -1,0 +1,42 @@
+# Ignore these files on commits.
+
+#
+# Object files, libraries, exes, dlls and program databases
+#
+
+*.obj
+*.lib
+*.pdb
+*.dll
+*.exe
+Debug/*
+Release/*
+*/Debug/*
+*/Release/*
+
+#
+# Configuration files
+#
+
+*.vcxproj.user
+*.vcxproj.filters
+
+#
+# Build artifacts
+#
+
+*.sbr
+*.log
+*.tlog
+*.lastbuildstate
+.vs/*
+
+#
+# Emacs temporary files
+#
+
+*~
+
+
+
+
