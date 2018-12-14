@@ -14,20 +14,29 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Collections::Containers;
 
 namespace SetUnitTests
-{		
-    TEST_CLASS (SetUnitTest1)
+{
+    //
+    // Test Set Operations (Creation, Count, Clear, Contains, Add and Remove)
+    //
+
+    TEST_CLASS(SetUnitTest1)
     {
     public:
+        BEGIN_TEST_CLASS_ATTRIBUTE()
+            TEST_CLASS_ATTRIBUTE(L"CollectionClass", L"Set")
+        END_TEST_CLASS_ATTRIBUTE()
+
 
         //
         // Test the Set constructor.
         //
         // Result: a new zero element set should be constructed.
-        TEST_METHOD (SetConstructor)
+        //
+        TEST_METHOD(Constructor)
         {
             Set s;
 
-            Assert::IsTrue (s.Count () == 0);
+            Assert::IsTrue(s.Count() == 0);
         }
 
         //
@@ -36,13 +45,13 @@ namespace SetUnitTests
         // Result: the set should contain one element.
         //
 
-        TEST_METHOD (SetOfOneElement)
+        TEST_METHOD(MakeSetOfOneElement)
         {
             Set s;
 
-            s.Add ("A");
+            s.Add("A");
 
-            Assert::IsTrue (s.Count () == 1);
+            Assert::IsTrue(s.Count() == 1);
         }
 
         //
@@ -51,15 +60,13 @@ namespace SetUnitTests
         // Result: the set should contain three elements.
         //
 
-        TEST_METHOD (SetOfThreeElements)
+        TEST_METHOD(MakeSetOfThreeElements)
         {
             Set s;
 
-            s.Add ("A");
-            s.Add ("B");
-            s.Add ("C");
+            InsertElements(&s);
 
-            Assert::IsTrue (s.Count () == 3);
+            Assert::IsTrue(s.Count() == 3);
         }
 
         //
@@ -68,13 +75,13 @@ namespace SetUnitTests
         // Result: the set should contain the element.
         //
 
-        TEST_METHOD (SetContainsOneElement)
+        TEST_METHOD(TestSetContainsOneElement)
         {
             Set s;
 
-            s.Add ("A");
+            s.Add("A");
 
-            Assert::IsTrue (s.Contains ("A"));
+            Assert::IsTrue(s.Contains("A"));
         }
 
         //
@@ -84,17 +91,15 @@ namespace SetUnitTests
         // Result: the set should contain all three elements.
         //
 
-        TEST_METHOD (SetContainsThreeElements)
+        TEST_METHOD(TestSetContainsThreeElements)
         {
             Set s;
 
-            s.Add ("A");
-            s.Add ("B");
-            s.Add ("C");
+            InsertElements(&s);
 
-            Assert::IsTrue (s.Contains ("A"));
-            Assert::IsTrue (s.Contains ("B"));
-            Assert::IsTrue (s.Contains ("C"));
+            Assert::IsTrue(s.Contains("A"));
+            Assert::IsTrue(s.Contains("B"));
+            Assert::IsTrue(s.Contains("C"));
         }
 
         //
@@ -103,13 +108,13 @@ namespace SetUnitTests
         // Result: the set should not contain the element.
         //
 
-        TEST_METHOD (SetDoesNotContainsOneElement)
+        TEST_METHOD(TestSetDoesNotContainsAnElement)
         {
             Set s;
 
-            s.Add ("A");
+            s.Add("A");
 
-            Assert::IsFalse (s.Contains ("B"));
+            Assert::IsFalse(s.Contains("B"));
         }
 
         //
@@ -118,13 +123,13 @@ namespace SetUnitTests
         // Result: the set should contain zero elements.
         //
 
-        TEST_METHOD (SetCreatedAndClearedContainsNoElements)
+        TEST_METHOD(TestClearedEmptySetContainsNoElements)
         {
             Set s;
 
-            s.Clear ();
+            s.Clear();
 
-            Assert::IsTrue (s.Count () == 0);
+            Assert::IsTrue(s.Count() == 0);
         }
 
         //
@@ -133,17 +138,14 @@ namespace SetUnitTests
         // Result: the set should contain zero elements.
         //
 
-        TEST_METHOD (SetCreatedThenPopulatedAndClearedContainsNoElements)
+        TEST_METHOD(TestClearedSetContainsNoElements)
         {
             Set s;
 
-            s.Add ("A");
-            s.Add ("B");
-            s.Add ("C");
+            InsertElements(&s);
+            s.Clear();
 
-            s.Clear ();
-
-            Assert::IsTrue (s.Count () == 0);
+            Assert::IsTrue(s.Count() == 0);
         }
 
         //
@@ -152,14 +154,14 @@ namespace SetUnitTests
         // Result: the set should permit the removal and contain no elements.
         //
 
-        TEST_METHOD (SetRemovingOnlyElement)
+        TEST_METHOD(TestRemovalOfOneElementLeavesAnEmptySet)
         {
             Set s;
 
-            s.Add ("A");
-            
-            Assert::IsTrue (s.Remove ("A"));
-            Assert::IsTrue (s.Count () == 0);
+            s.Add("A");
+
+            Assert::IsTrue(s.Remove("A"));
+            Assert::IsTrue(s.Count() == 0);
         }
 
         //
@@ -168,18 +170,16 @@ namespace SetUnitTests
         // Result: The removals should succeed and the set should be empty.
         //
 
-        TEST_METHOD (SetRemoveAllElements)
+        TEST_METHOD(TestRemovalOfAllElementsLeavesAnEmptySet)
         {
             Set s;
 
-            s.Add ("A");
-            s.Add ("B");
-            s.Add ("C");
+            InsertElements(&s);
 
-            Assert::IsTrue (s.Remove ("A"));
-            Assert::IsTrue (s.Remove ("B"));
-            Assert::IsTrue (s.Remove ("C"));
-            Assert::IsTrue (s.Count () == 0);
+            Assert::IsTrue(s.Remove("A"));
+            Assert::IsTrue(s.Remove("B"));
+            Assert::IsTrue(s.Remove("C"));
+            Assert::IsTrue(s.Count() == 0);
         }
 
         //
@@ -189,14 +189,14 @@ namespace SetUnitTests
         // the set.
         //
 
-        TEST_METHOD (SetRemoveOfNonExistantElement)
+        TEST_METHOD(TestRemovalOfNonExistantElementFails)
         {
             Set s;
 
-            s.Add ("A");
+            s.Add("A");
 
-            Assert::IsFalse (s.Remove ("B"));
-            Assert::IsTrue (s.Count () == 1);
+            Assert::IsFalse(s.Remove("B"));
+            Assert::IsTrue(s.Count() == 1);
         }
 
         //
@@ -205,14 +205,28 @@ namespace SetUnitTests
         // Result: The cardinality of the set should be 1.
         //
 
-        TEST_METHOD (SetAddDuplicate)
+        TEST_METHOD(TestAddDuplicate)
         {
             Set s;
 
-            s.Add ("A");
-            s.Add ("A");
+            s.Add("A");
+            s.Add("A");
 
-            Assert::IsTrue (s.Count () == 1);
+            Assert::IsTrue(s.Count() == 1);
+        }
+
+    private:
+        //
+        // Insert three elements into a set.
+        //
+
+        void InsertElements(Set * s)
+        {
+            Assert::IsNotNull(s);
+
+            s->Add("A");
+            s->Add("B");
+            s->Add("C");
         }
     };
 }
