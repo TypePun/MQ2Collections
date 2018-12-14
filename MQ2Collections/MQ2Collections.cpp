@@ -34,27 +34,27 @@ PLUGIN_API VOID InitializePlugin(VOID)
 {
     DebugSpewAlways("Initializing MQ2Collections");
 
-	SetIterator::RegisterType();
-	Set::RegisterType();
-	Stack::RegisterType();
-	Queue::RegisterType();
-	MapIterator::RegisterType();
-	Map::RegisterType();
-	ListIterator::RegisterType();
-	List::RegisterType();
+    SetIterator::RegisterType();
+    Set::RegisterType();
+    Stack::RegisterType();
+    Queue::RegisterType();
+    MapIterator::RegisterType();
+    Map::RegisterType();
+    ListIterator::RegisterType();
+    List::RegisterType();
 }
 
 // Called once, when the plugin is to shutdown
 PLUGIN_API VOID ShutdownPlugin(VOID)
 {
-	DebugSpewAlways("Shutting down MQ2Collections");
+    DebugSpewAlways("Shutting down MQ2Collections");
 
-	List::UnregisterType();
-	ListIterator::UnregisterType();
-	Map::UnregisterType();
-	MapIterator::UnregisterType();
-	Queue::UnregisterType();
-	Stack::UnregisterType();
-	Set::UnregisterType();
-	SetIterator::UnregisterType();
+    List::UnregisterType();
+    ListIterator::UnregisterType();
+    Map::UnregisterType();
+    MapIterator::UnregisterType();
+    Queue::UnregisterType();
+    Stack::UnregisterType();
+    Set::UnregisterType();
+    SetIterator::UnregisterType();
 }

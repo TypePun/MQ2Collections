@@ -14,294 +14,294 @@
 
 namespace Types
 {
-	//
-	// Map from type names onto their ObjectTypes.
-	//
+    //
+    // Map from type names onto their ObjectTypes.
+    //
 
-	class TypeMap
-	{
-	public:
-		//
-		// Add a new type name and type instance to the type map.  If the
-		// type name already exists, return false.  Otherwise, return true.
-		//
+    class TypeMap
+    {
+    public:
+        //
+        // Add a new type name and type instance to the type map.  If the
+        // type name already exists, return false.  Otherwise, return true.
+        //
 
-		static bool AddType(const char * typeName, MQ2Type * typeInstance);
+        static bool AddType(const char * typeName, MQ2Type * typeInstance);
 
-		//
-		// Return true if a name is in the map and false otherwise.
-		//
+        //
+        // Return true if a name is in the map and false otherwise.
+        //
 
-		static bool HasName(const char * typeName);
+        static bool HasName(const char * typeName);
 
-		//
-		// Return the type instance for a type name or null if it was never
-		// registered.
-		//
+        //
+        // Return the type instance for a type name or null if it was never
+        // registered.
+        //
 
-		static MQ2Type * GetTypeInstanceForTypeName(const char * typeName);
+        static MQ2Type * GetTypeInstanceForTypeName(const char * typeName);
 
-		//
-		// Remove the typename and delete the type instance.  Return true if
-		// the type name was found and removed and false otherwise.
-		//
+        //
+        // Remove the typename and delete the type instance.  Return true if
+        // the type name was found and removed and false otherwise.
+        //
 
-		static bool RemoveType(const char * typeName);
+        static bool RemoveType(const char * typeName);
 
-	private:
+    private:
 
-		//
-		// One and only map of type names to type instances.
-		//
+        //
+        // One and only map of type names to type instances.
+        //
 
-		static std::map<std::string, MQ2Type *> typeMap;
-	};
+        static std::map<std::string, MQ2Type *> typeMap;
+    };
 
-	//
-	// BaseType is an interface derived from MQ2Type which provides default
-	// functionality based on the MQ2Type interface.
-	//
+    //
+    // BaseType is an interface derived from MQ2Type which provides default
+    // functionality based on the MQ2Type interface.
+    //
 
-	template <typename ObjectClass>
-	class BaseType : public MQ2Type
-	{
-	public:
+    template <typename ObjectClass>
+    class BaseType : public MQ2Type
+    {
+    public:
 
         // Buffer pointed to by naked PCHAR is at least this long.
 
         const size_t BUFFER_SIZE = MAX_STRING;
 
-		//
-		// Initialize our methods and properties in MQ2.
-		//
+        //
+        // Initialize our methods and properties in MQ2.
+        //
 
-		BaseType(const MQ2TYPEMEMBER aMembers[])
-			: MQ2Type(const_cast<char *>(ObjectClass::GetTypeName()))
-		{
-			InitializeMembers(const_cast<PMQ2TYPEMEMBER>(aMembers));
-		}
+        BaseType(const MQ2TYPEMEMBER aMembers[])
+            : MQ2Type(const_cast<char *>(ObjectClass::GetTypeName()))
+        {
+            InitializeMembers(const_cast<PMQ2TYPEMEMBER>(aMembers));
+        }
 
-		//
-		// Ensure derived class destructors are called when we are deleted.
-		//
+        //
+        // Ensure derived class destructors are called when we are deleted.
+        //
 
-		virtual ~BaseType()
-		{
-		}
+        virtual ~BaseType()
+        {
+        }
 
-		//
-		// This method is executed when the /vardata statement is executed on
-		// the type.  Delete the destination instance and set the source
-		// instance to it.
-		//
+        //
+        // This method is executed when the /vardata statement is executed on
+        // the type.  Delete the destination instance and set the source
+        // instance to it.
+        //
 
-		virtual bool FromData(MQ2VARPTR & VarPtr, MQ2TYPEVAR & Source)
-		{
-			ObjectClass * pDest;
+        virtual bool FromData(MQ2VARPTR & VarPtr, MQ2TYPEVAR & Source)
+        {
+            ObjectClass * pDest;
 
-			if (Source.Type != TypeMap::GetTypeInstanceForTypeName(ObjectClass::GetTypeName()))
-			{
-				return false;
-			}
+            if (Source.Type != TypeMap::GetTypeInstanceForTypeName(ObjectClass::GetTypeName()))
+            {
+                return false;
+            }
 
-			pDest = reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
+            pDest = reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
 
-			//
-			// Delete the destination object if it is not the same as the
-			// source object and set the destination to the source.
-			//
+            //
+            // Delete the destination object if it is not the same as the
+            // source object and set the destination to the source.
+            //
 
-			if (pDest != Source.Ptr)
-			{
-				delete pDest;
-			}
+            if (pDest != Source.Ptr)
+            {
+                delete pDest;
+            }
 
-			VarPtr.Ptr = Source.Ptr;
+            VarPtr.Ptr = Source.Ptr;
 
-			return true;
-		}
+            return true;
+        }
 
-		//
-		// Default implementation of from string does nothing.
-		//
+        //
+        // Default implementation of from string does nothing.
+        //
 
-		virtual bool FromString(MQ2VARPTR & VarPtr, PCHAR Source)
-		{
-			return true;
-		}
+        virtual bool FromString(MQ2VARPTR & VarPtr, PCHAR Source)
+        {
+            return true;
+        }
 
-		//
-		// Delete an instance of ObjectClass.
-		//
+        //
+        // Delete an instance of ObjectClass.
+        //
 
-		virtual void FreeVariable(MQ2VARPTR & VarPtr)
-		{
-			DebugSpew("BaseType::FreeVariable:  %x", VarPtr.Ptr);
+        virtual void FreeVariable(MQ2VARPTR & VarPtr)
+        {
+            DebugSpew("BaseType::FreeVariable:  %x", VarPtr.Ptr);
 
-			delete reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
-			VarPtr.Ptr = 0;
-		}
+            delete reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
+            VarPtr.Ptr = 0;
+        }
 
-		//
-		// The default implementation of GetMember returns false -- there
-		// aren't any members on the type.
-		//
+        //
+        // The default implementation of GetMember returns false -- there
+        // aren't any members on the type.
+        //
 
-		virtual bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
-		{
-			return false;
-		}
+        virtual bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+        {
+            return false;
+        }
 
-		//
-		// Register the type with MQ2, using an instance as our unique type
-		// descriptor.
-		//
+        //
+        // Register the type with MQ2, using an instance as our unique type
+        // descriptor.
+        //
 
-		static void RegisterType(ObjectClass * instance)
-		{
-			DebugSpew("BaseType::RegisterType: %s", ObjectClass::GetTypeName());
+        static void RegisterType(ObjectClass * instance)
+        {
+            DebugSpew("BaseType::RegisterType: %s", ObjectClass::GetTypeName());
 
-			//
-			// If we were already registered, do nothing.
-			//
+            //
+            // If we were already registered, do nothing.
+            //
 
-			if (!TypeMap::HasName(ObjectClass::GetTypeName()))
-			{
-				//
-				// Associate the type with an instance -- this lets
-				// us compare the type information.
-				//
+            if (!TypeMap::HasName(ObjectClass::GetTypeName()))
+            {
+                //
+                // Associate the type with an instance -- this lets
+                // us compare the type information.
+                //
 
-				TypeMap::AddType(ObjectClass::GetTypeName(), instance);
-				AddMQ2Data(const_cast<char *>(ObjectClass::GetTypeName()), TypeDescriptor);
-			}
-		}
+                TypeMap::AddType(ObjectClass::GetTypeName(), instance);
+                AddMQ2Data(const_cast<char *>(ObjectClass::GetTypeName()), TypeDescriptor);
+            }
+        }
 
-		//
-		// Unregister the type with MQ2.
-		//
+        //
+        // Unregister the type with MQ2.
+        //
 
-		static void UnregisterType()
-		{
-			DebugSpew("BaseType::UnregisterType: %s", ObjectClass::GetTypeName());
+        static void UnregisterType()
+        {
+            DebugSpew("BaseType::UnregisterType: %s", ObjectClass::GetTypeName());
 
-			//
-			// If we were never registered, do nothing.
-			//
+            //
+            // If we were never registered, do nothing.
+            //
 
-			if (TypeMap::HasName(ObjectClass::GetTypeName()))
-			{
-				//
-				// Remove the type name from MQ2 and unregister the class name
-				// and type name.
-				//
+            if (TypeMap::HasName(ObjectClass::GetTypeName()))
+            {
+                //
+                // Remove the type name from MQ2 and unregister the class name
+                // and type name.
+                //
 
-				RemoveMQ2Data(const_cast<char *>(ObjectClass::GetTypeName()));
-				TypeMap::RemoveType(ObjectClass::GetTypeName());
-			}
-		}
+                RemoveMQ2Data(const_cast<char *>(ObjectClass::GetTypeName()));
+                TypeMap::RemoveType(ObjectClass::GetTypeName());
+            }
+        }
 
-		//
-		// Return the MQ2 Type.
-		//
+        //
+        // Return the MQ2 Type.
+        //
 
-		static BOOL TypeDescriptor(PCHAR szName, MQ2TYPEVAR &Dest)
-		{
-			Dest.DWord = 1;
-			Dest.Type = TypeMap::GetTypeInstanceForTypeName(
-											ObjectClass::GetTypeName()
-										);
+        static BOOL TypeDescriptor(PCHAR szName, MQ2TYPEVAR &Dest)
+        {
+            Dest.DWord = 1;
+            Dest.Type = TypeMap::GetTypeInstanceForTypeName(
+                ObjectClass::GetTypeName()
+            );
 
-			return TRUE;
-		}
-	};
+            return TRUE;
+        }
+    };
 
-	//
-	// ReferenceType is a type with methods and properties.  It can not be
-	// created by a /declare statement and is returned by a method on
-	// an ObjectType.  A ReferenceType takes an argument to its constructor
-	// which is a reference to an ObjectClass.
-	//
+    //
+    // ReferenceType is a type with methods and properties.  It can not be
+    // created by a /declare statement and is returned by a method on
+    // an ObjectType.  A ReferenceType takes an argument to its constructor
+    // which is a reference to an ObjectClass.
+    //
 
-	template <typename ObjectClass, typename Reference>
-	class ReferenceType : public BaseType<ObjectClass>
-	{
-	public:
+    template <typename ObjectClass, typename Reference>
+    class ReferenceType : public BaseType<ObjectClass>
+    {
+    public:
 
-		//
-		// Initialize our methods and properties in MQ2.
-		//
+        //
+        // Initialize our methods and properties in MQ2.
+        //
 
-		ReferenceType(const MQ2TYPEMEMBER aMembers[])
-			: BaseType<ObjectClass>(aMembers)
-		{
-		}
+        ReferenceType(const MQ2TYPEMEMBER aMembers[])
+            : BaseType<ObjectClass>(aMembers)
+        {
+        }
 
-		//
-		// Ensure derived class destructors are called when we are deleted.
-		//
+        //
+        // Ensure derived class destructors are called when we are deleted.
+        //
 
-		virtual ~ReferenceType()
-		{
-		}
+        virtual ~ReferenceType()
+        {
+        }
 
-		//
-		// Register the type - reference types have an instance bound to a
-		// reference of Reference.
-		//
+        //
+        // Register the type - reference types have an instance bound to a
+        // reference of Reference.
+        //
 
-		static void RegisterType()
-		{
-			Reference *refClass = new Reference();
-			BaseType<ObjectClass>::RegisterType(new ObjectClass(*refClass));
-		}
-	};
+        static void RegisterType()
+        {
+            Reference *refClass = new Reference();
+            BaseType<ObjectClass>::RegisterType(new ObjectClass(*refClass));
+        }
+    };
 
-	//
-	// ObjectType is a type that has methods and properties and can be
-	// created by a /declare statement.
-	//
+    //
+    // ObjectType is a type that has methods and properties and can be
+    // created by a /declare statement.
+    //
 
-	template <typename ObjectClass>
-	class ObjectType : public BaseType<ObjectClass>
-	{
-	public:
+    template <typename ObjectClass>
+    class ObjectType : public BaseType<ObjectClass>
+    {
+    public:
 
-		//
-		// Initialize our methods and properties in MQ2.
-		//
+        //
+        // Initialize our methods and properties in MQ2.
+        //
 
-		ObjectType(const MQ2TYPEMEMBER aMembers[])
-			: BaseType<ObjectClass>(aMembers)
-		{
-		}
+        ObjectType(const MQ2TYPEMEMBER aMembers[])
+            : BaseType<ObjectClass>(aMembers)
+        {
+        }
 
-		//
-		// Ensure derived class destructors are called when we are deleted.
-		//
+        //
+        // Ensure derived class destructors are called when we are deleted.
+        //
 
-		virtual ~ObjectType()
-		{
-		}
+        virtual ~ObjectType()
+        {
+        }
 
-		//
-		// Allocate a new instance of this ObjectType.
-		//
+        //
+        // Allocate a new instance of this ObjectType.
+        //
 
-		virtual void InitVariable(MQ2VARPTR & VarPtr)
-		{
-			DebugSpew("ObjectType::InitVariable");
+        virtual void InitVariable(MQ2VARPTR & VarPtr)
+        {
+            DebugSpew("ObjectType::InitVariable");
 
-			VarPtr.Ptr = new ObjectClass();
-		}
+            VarPtr.Ptr = new ObjectClass();
+        }
 
-		//
-		// Register the type with no arguments.
-		//
+        //
+        // Register the type with no arguments.
+        //
 
-		static void RegisterType()
-		{
-			BaseType<ObjectClass>::RegisterType(new ObjectClass());
-		}
-	};
+        static void RegisterType()
+        {
+            BaseType<ObjectClass>::RegisterType(new ObjectClass());
+        }
+    };
 }

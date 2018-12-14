@@ -18,11 +18,11 @@ using namespace Collections::Containers;
 
 const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
 {
-	{ (DWORD) SetIteratorMembers::Reset, "Reset" },
-	{ (DWORD) SetIteratorMembers::Advance, "Advance" },
-	{ (DWORD) SetIteratorMembers::IsEnd, "IsEnd" },
-	{ (DWORD) SetIteratorMembers::Value, "Value" },
-	{ 0, 0 }
+    { (DWORD) SetIteratorMembers::Reset, "Reset" },
+    { (DWORD) SetIteratorMembers::Advance, "Advance" },
+    { (DWORD) SetIteratorMembers::IsEnd, "IsEnd" },
+    { (DWORD) SetIteratorMembers::Value, "Value" },
+    { 0, 0 }
 };
 
 //
@@ -32,14 +32,14 @@ const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
 
 const MQ2TYPEMEMBER Set::SetMembers[] =
 {
-	{ (DWORD) SetMembers::Count, "Count" },
-	{ (DWORD) SetMembers::Clear, "Clear" },
-	{ (DWORD) SetMembers::Contains, "Contains" },
-	{ (DWORD) SetMembers::Add, "Add" },
-	{ (DWORD) SetMembers::Remove, "Remove" },
-	{ (DWORD) SetMembers::First, "First" },
-	{ (DWORD) SetMembers::Find, "Find" },
-	{ 0, 0 }
+    { (DWORD) SetMembers::Count, "Count" },
+    { (DWORD) SetMembers::Clear, "Clear" },
+    { (DWORD) SetMembers::Contains, "Contains" },
+    { (DWORD) SetMembers::Add, "Add" },
+    { (DWORD) SetMembers::Remove, "Remove" },
+    { (DWORD) SetMembers::First, "First" },
+    { (DWORD) SetMembers::Find, "Find" },
+    { 0, 0 }
 };
 
 //
@@ -53,100 +53,100 @@ const MQ2TYPEMEMBER Set::SetMembers[] =
 
 bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
 {
-	SetIterator *pThis;
-	const std::string *pItem;
+    SetIterator *pThis;
+    const std::string *pItem;
 
-	DebugSpew("SetIterator::GetMember %s", Member);
+    DebugSpew("SetIterator::GetMember %s", Member);
 
-	//
-	// Default return value is FALSE.
-	//
+    //
+    // Default return value is FALSE.
+    //
 
-	Dest.Int = 0;
-	Dest.Type = pBoolType;
+    Dest.Int = 0;
+    Dest.Type = pBoolType;
 
-	//
-	// Map the member name to the id.
-	//
+    //
+    // Map the member name to the id.
+    //
 
-	PMQ2TYPEMEMBER pMember = SetIterator::FindMember(Member);
-	if (!pMember)
-	{
-		//
-		// No such member.
-		//
+    PMQ2TYPEMEMBER pMember = SetIterator::FindMember(Member);
+    if (!pMember)
+    {
+        //
+        // No such member.
+        //
 
-		return false;
-	}
+        return false;
+    }
 
-	//
-	// Member ID is an SetIteratorMembers enumeration.
-	//
+    //
+    // Member ID is an SetIteratorMembers enumeration.
+    //
 
-	pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
-	if (!pThis)
-	{
-		DebugSpewAlways("SetIterator instance is NULL!");
-		return false;
-	}
+    pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
+    if (!pThis)
+    {
+        DebugSpewAlways("SetIterator instance is NULL!");
+        return false;
+    }
 
-	switch ((enum class SetIteratorMembers) pMember->ID)
-	{
+    switch ((enum class SetIteratorMembers) pMember->ID)
+    {
         case SetIteratorMembers::Reset:
-			//
-			// Reset the iterator to the start of the set.   Return the result as
-			// TRUE.
-			//
+            //
+            // Reset the iterator to the start of the set.   Return the result as
+            // TRUE.
+            //
 
-			pThis->Reset();
+            pThis->Reset();
 
-			Dest.Int = 1;
-			break;
+            Dest.Int = 1;
+            break;
 
-		case SetIteratorMembers::Advance:
-			//
-			// Advance the iterator.  Return TRUE if the iterator could be advanced
-			// and FALSE otherwise.
-			//
+        case SetIteratorMembers::Advance:
+            //
+            // Advance the iterator.  Return TRUE if the iterator could be advanced
+            // and FALSE otherwise.
+            //
 
-			Dest.Int = (int) pThis->Advance();
-			break;
+            Dest.Int = (int) pThis->Advance();
+            break;
 
-		case SetIteratorMembers::IsEnd:
-			//
-			// Return TRUE if we are at the last element in the set and FALSE
-			// otherwise.
-			//
+        case SetIteratorMembers::IsEnd:
+            //
+            // Return TRUE if we are at the last element in the set and FALSE
+            // otherwise.
+            //
 
-			Dest.Int = (int) pThis->IsEnd();
-			break;
+            Dest.Int = (int) pThis->IsEnd();
+            break;
 
-		case SetIteratorMembers::Value:
-			//
-			// Return the current element under the iterator or FALSE if there
-			// isn't one.
-			//
+        case SetIteratorMembers::Value:
+            //
+            // Return the current element under the iterator or FALSE if there
+            // isn't one.
+            //
 
-			if (pThis->Value(&pItem))
-			{
-				Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-													pItem->c_str(),
-													pItem->size() + 1
-												);
-				Dest.Type = pStringType;
-			}
-			break;
+            if (pThis->Value(&pItem))
+            {
+                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
+                    pItem->c_str(),
+                    pItem->size() + 1
+                );
+                Dest.Type = pStringType;
+            }
+            break;
 
-		default:
+        default:
 
-			//
-			// Unknown member!
-			//
+            //
+            // Unknown member!
+            //
 
-			return false;
-	}
+            return false;
+    }
 
-	return true;
+    return true;
 }
 
 //
@@ -156,24 +156,24 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 
 bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 {
-	SetIterator *pThis;
-	const std::string *item;
+    SetIterator *pThis;
+    const std::string *item;
 
-	pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
-	if (Destination == 0)
-	{
-		return false;
-	}
-    
+    pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
+    if (Destination == 0)
+    {
+        return false;
+    }
+
     errno_t rc;
-	if (!pThis->Value(&item))
-	{
+    if (!pThis->Value(&item))
+    {
         rc = strcpy_s(Destination, BUFFER_SIZE, "FALSE");
-	}
-	else
-	{
+    }
+    else
+    {
         rc = strcpy_s(Destination, BUFFER_SIZE, item->c_str());
-	}
+    }
 
     return rc == 0;
 }
@@ -185,7 +185,7 @@ bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 
 bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 {
-	return false;
+    return false;
 }
 
 //
@@ -193,10 +193,10 @@ bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 //
 
 ValueIterator<std::set<std::string>> * Set::Find(
-								const std::string & refKey
-							) const
+    const std::string & refKey
+) const
 {
-	return new SetIterator(m_coll, refKey);
+    return new SetIterator(m_coll, refKey);
 }
 
 //
@@ -206,168 +206,168 @@ ValueIterator<std::set<std::string>> * Set::Find(
 
 bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
 {
-	Set *pThis;
-	MQ2TYPEVAR iteratorTypeVar;
-	std::string value;
+    Set *pThis;
+    MQ2TYPEVAR iteratorTypeVar;
+    std::string value;
 
-	DebugSpew("Set::GetMember %s", Member);
+    DebugSpew("Set::GetMember %s", Member);
 
-	//
-	// Default return value is FALSE.
-	//
+    //
+    // Default return value is FALSE.
+    //
 
-	Dest.Int = 0;
-	Dest.Type = pBoolType;
+    Dest.Int = 0;
+    Dest.Type = pBoolType;
 
-	//
-	// Map the member name to the id.
-	//
+    //
+    // Map the member name to the id.
+    //
 
-	PMQ2TYPEMEMBER pMember = Set::FindMember(Member);
-	if (!pMember)
-	{
-		//
-		// No such member.
-		//
+    PMQ2TYPEMEMBER pMember = Set::FindMember(Member);
+    if (!pMember)
+    {
+        //
+        // No such member.
+        //
 
-		return false;
-	}
+        return false;
+    }
 
-	//
-	// Member ID is an SetMembers enumeration.
-	//
+    //
+    // Member ID is an SetMembers enumeration.
+    //
 
-	pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
-	if (!pThis)
-	{
-		DebugSpewAlways("Set instance is NULL!");
-		return false;
-	}
+    pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
+    if (!pThis)
+    {
+        DebugSpewAlways("Set instance is NULL!");
+        return false;
+    }
 
-	switch ((enum class SetMembers) pMember->ID)
-	{
+    switch ((enum class SetMembers) pMember->ID)
+    {
         case SetMembers::Count:
-			//
-			// Count of items in the set.
-			//
+            //
+            // Count of items in the set.
+            //
 
-			Dest.Int = (int) pThis->Count();
-			Dest.Type = pIntType;
-			return true;
+            Dest.Int = (int) pThis->Count();
+            Dest.Type = pIntType;
+            return true;
 
-		case SetMembers::Clear:
-			//
-			// Clear the set.  Return the result as TRUE.
-			//
+        case SetMembers::Clear:
+            //
+            // Clear the set.  Return the result as TRUE.
+            //
 
-			pThis->Clear();
+            pThis->Clear();
 
-			Dest.Int = 1;
-			break;
+            Dest.Int = 1;
+            break;
 
-		case SetMembers::Contains:
-			//
-			// Does the set contain a key?
-			//
+        case SetMembers::Contains:
+            //
+            // Does the set contain a key?
+            //
 
-			//
-			// Check for a valid Index value.
-			//
+            //
+            // Check for a valid Index value.
+            //
 
-			if (*Index)
-			{
-				Dest.Int = (int) pThis->Contains(std::string(Index));
-			}
-			break;
+            if (*Index)
+            {
+                Dest.Int = (int) pThis->Contains(std::string(Index));
+            }
+            break;
 
-		case SetMembers::Add:
-			//
-			// Add an item to the set.  Return TRUE if the item was added.
-			//
+        case SetMembers::Add:
+            //
+            // Add an item to the set.  Return TRUE if the item was added.
+            //
 
-			//
-			// We can only add an item if Index is a string.
-			//
+            //
+            // We can only add an item if Index is a string.
+            //
 
-			if (*Index)
-			{
-				value = Index;
+            if (*Index)
+            {
+                value = Index;
 
-				//
-				// And the string can't be blank either.
-				//
-				
-				if (value.find_first_not_of(" \t\n\r\f") != std::string::npos)
-				{
-					pThis->Add(value);
-					Dest.Int = 1;
-				}
-			}
-			break;
+                //
+                // And the string can't be blank either.
+                //
 
-		case SetMembers::Remove:
-			//
-			// Remove an item from the set.  Return TRUE if it was removed and
-			// FALSE otherwise.
-			//
+                if (value.find_first_not_of(" \t\n\r\f") != std::string::npos)
+                {
+                    pThis->Add(value);
+                    Dest.Int = 1;
+                }
+            }
+            break;
 
-			//
-			// Only attempt a remove if there is a string.
-			//
+        case SetMembers::Remove:
+            //
+            // Remove an item from the set.  Return TRUE if it was removed and
+            // FALSE otherwise.
+            //
 
-			if (*Index)
-			{
-				Dest.Int = (int) pThis->Remove(std::string(Index));
-			}
-			break;
+            //
+            // Only attempt a remove if there is a string.
+            //
 
-		case SetMembers::First:
-			//
-			// Return an iterator on the first element.
-			//
+            if (*Index)
+            {
+                Dest.Int = (int) pThis->Remove(std::string(Index));
+            }
+            break;
 
-			Dest.Ptr = (PVOID) pThis->First().release();
+        case SetMembers::First:
+            //
+            // Return an iterator on the first element.
+            //
 
-			//
-			// Get the SetIterator type and return it.
-			//
+            Dest.Ptr = (PVOID) pThis->First().release();
 
-			SetIterator::TypeDescriptor(0, iteratorTypeVar);
-			Dest.Type = iteratorTypeVar.Type;
-			break;
+            //
+            // Get the SetIterator type and return it.
+            //
 
-		case SetMembers::Find:
-			//
-			// Return an iterator on a key.
-			//
+            SetIterator::TypeDescriptor(0, iteratorTypeVar);
+            Dest.Type = iteratorTypeVar.Type;
+            break;
 
-			//
-			// It only makes sense to find a non-null key.
-			//
+        case SetMembers::Find:
+            //
+            // Return an iterator on a key.
+            //
 
-			if (*Index)
-			{
-				Dest.Ptr = (PVOID)pThis->Find(std::string(Index));
+            //
+            // It only makes sense to find a non-null key.
+            //
 
-				//
-				// Get the SetIterator type and return it.
-				//
+            if (*Index)
+            {
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
-				SetIterator::TypeDescriptor(0, iteratorTypeVar);
-				Dest.Type = iteratorTypeVar.Type;
-			}
-			break;
+                //
+                // Get the SetIterator type and return it.
+                //
 
-		default:
+                SetIterator::TypeDescriptor(0, iteratorTypeVar);
+                Dest.Type = iteratorTypeVar.Type;
+            }
+            break;
 
-			//
-			// Unknown member!
-			//
+        default:
 
-			return false;
-	}
+            //
+            // Unknown member!
+            //
 
-	return true;
+            return false;
+    }
+
+    return true;
 }
 
 //
@@ -376,13 +376,13 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
 bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 {
-	Set *pThis;
+    Set *pThis;
 
-	pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
-	if (Destination == 0)
-	{
-		return false;
-	}
+    pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
+    if (Destination == 0)
+    {
+        return false;
+    }
 
     return Conversions::ToString(pThis->Count(), Destination, BUFFER_SIZE) == 0;
 }
@@ -395,18 +395,18 @@ bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 
 bool Set::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 {
-	Set *pDest;
+    Set *pDest;
 
-	pDest = reinterpret_cast<Set *>(VarPtr.Ptr);
+    pDest = reinterpret_cast<Set *>(VarPtr.Ptr);
 
-	//
-	// Don't add null or empty strings!
-	//
+    //
+    // Don't add null or empty strings!
+    //
 
-	if ((pDest != 0) && (Source != 0) && *Source)
-	{
-		pDest->Add(std::string(Source));
-	}
+    if ((pDest != 0) && (Source != 0) && *Source)
+    {
+        pDest->Add(std::string(Source));
+    }
 
-	return true;
+    return true;
 }

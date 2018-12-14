@@ -26,12 +26,12 @@ namespace SetUnitTests
 
         BEGIN_TEST_CLASS_ATTRIBUTE()
             TEST_CLASS_ATTRIBUTE(L"CollectionClass", L"Set")
-        END_TEST_CLASS_ATTRIBUTE()
-            
-        //
-        // Populate the set used by the iterator tests.
+            END_TEST_CLASS_ATTRIBUTE()
 
-        SetUnitTest2()
+            //
+            // Populate the set used by the iterator tests.
+
+            SetUnitTest2()
         {
             _s.Add("A");
             _s.Add("B");
@@ -132,7 +132,7 @@ namespace SetUnitTests
             iterator->Reset();
 
             Assert::IsFalse(iterator->IsEnd());
-            WalkIteratorOverSet(_s, iterator);            
+            WalkIteratorOverSet(_s, iterator);
         }
 
         //
@@ -168,8 +168,8 @@ namespace SetUnitTests
         //
 
         void WalkIteratorOverSet(const Set & s,
-                        std::unique_ptr<Collections::ValueIterator<std::set<std::string>>> & iterator
-                    ) const
+            std::unique_ptr<Collections::ValueIterator<std::set<std::string>>> & iterator
+        ) const
         {
             Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());

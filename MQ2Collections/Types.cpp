@@ -21,19 +21,19 @@ std::map<std::string, MQ2Type *> TypeMap::typeMap;
 
 bool TypeMap::AddType(const char *typeName, MQ2Type *typeInstance)
 {
-	std::string sTypeName(typeName);
+    std::string sTypeName(typeName);
 
-	//
-	// If the entry already exists, don't add it.
-	//
+    //
+    // If the entry already exists, don't add it.
+    //
 
-	if (typeMap.find(sTypeName) == typeMap.end())
-	{
-		typeMap[sTypeName] = typeInstance;
-		return true;
-	}
+    if (typeMap.find(sTypeName) == typeMap.end())
+    {
+        typeMap[sTypeName] = typeInstance;
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 //
@@ -42,7 +42,7 @@ bool TypeMap::AddType(const char *typeName, MQ2Type *typeInstance)
 
 bool TypeMap::HasName(const char *typeName)
 {
-	return typeMap.find(std::string(typeName)) != typeMap.end();
+    return typeMap.find(std::string(typeName)) != typeMap.end();
 }
 
 //
@@ -52,24 +52,24 @@ bool TypeMap::HasName(const char *typeName)
 
 MQ2Type * TypeMap::GetTypeInstanceForTypeName(const char *typeName)
 {
-	std::string sTypeName(typeName);
-	std::map<std::string, MQ2Type *>::iterator itTypes;
+    std::string sTypeName(typeName);
+    std::map<std::string, MQ2Type *>::iterator itTypes;
 
-	//
-	// Look up the instance in the map from type names onto instances.
-	//
+    //
+    // Look up the instance in the map from type names onto instances.
+    //
 
-	itTypes = typeMap.find(sTypeName);
-	if (itTypes == typeMap.end())
-	{
-		//
-		// The type was never registered.
-		//
+    itTypes = typeMap.find(sTypeName);
+    if (itTypes == typeMap.end())
+    {
+        //
+        // The type was never registered.
+        //
 
-		return 0;
-	}
+        return 0;
+    }
 
-	return itTypes->second;
+    return itTypes->second;
 }
 
 //
@@ -79,30 +79,30 @@ MQ2Type * TypeMap::GetTypeInstanceForTypeName(const char *typeName)
 
 bool TypeMap::RemoveType(const char *typeName)
 {
-	std::string sTypeName(typeName);
-	std::map<std::string, MQ2Type *>::iterator it;
+    std::string sTypeName(typeName);
+    std::map<std::string, MQ2Type *>::iterator it;
 
-	//
-	// See if the type name exists in the map.  If it does, remove
-	// it and return true.
-	//
+    //
+    // See if the type name exists in the map.  If it does, remove
+    // it and return true.
+    //
 
-	it = typeMap.find(sTypeName);
+    it = typeMap.find(sTypeName);
 
-	//
-	// If the entry already exists, don't add it.
-	//
+    //
+    // If the entry already exists, don't add it.
+    //
 
-	if (it != typeMap.end())
-	{
-		//
-		// Remove the type from the map.
-		//
+    if (it != typeMap.end())
+    {
+        //
+        // Remove the type from the map.
+        //
 
-		delete it->second;
-		typeMap.erase(it);
-		return true;
-	}
+        delete it->second;
+        typeMap.erase(it);
+        return true;
+    }
 
-	return false;
+    return false;
 }
