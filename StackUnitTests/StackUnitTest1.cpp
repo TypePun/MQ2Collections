@@ -23,16 +23,16 @@ namespace StackUnitTests
     {
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
-            TEST_CLASS_ATTRIBUTE(L"CollectionClass", L"Stack")
-            END_TEST_CLASS_ATTRIBUTE()
+            TEST_CLASS_ATTRIBUTE(L"Collections", L"Stack")
+        END_TEST_CLASS_ATTRIBUTE()
 
-            //
-            // Test the Stack constructor.
-            //
-            // Result: a new empty stack should be constructed.
-            //
+        //
+        // Test the Stack constructor.
+        //
+        // Result: a new empty stack should be constructed.
+        //
 
-            TEST_METHOD(Constructor)
+        TEST_METHOD(Constructor)
         {
             Stack s;
 

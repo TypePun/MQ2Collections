@@ -20,18 +20,19 @@ namespace SetUnitTests
     // Set iterators are acquired by calling Find or First on a Set.
     //
 
-    TEST_CLASS(SetUnitTest2)
+    TEST_CLASS(SetIteratorUnitTest)
     {
     public:
 
         BEGIN_TEST_CLASS_ATTRIBUTE()
-            TEST_CLASS_ATTRIBUTE(L"CollectionClass", L"Set")
-            END_TEST_CLASS_ATTRIBUTE()
+            TEST_CLASS_ATTRIBUTE(L"Collections", L"Set")
+            TEST_CLASS_ATTRIBUTE(L"Iterators", L"Set")
+        END_TEST_CLASS_ATTRIBUTE()
 
             //
             // Populate the set used by the iterator tests.
 
-            SetUnitTest2()
+        SetIteratorUnitTest()
         {
             _s.Add("A");
             _s.Add("B");

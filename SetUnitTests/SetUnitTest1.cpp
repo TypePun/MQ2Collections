@@ -23,7 +23,7 @@ namespace SetUnitTests
     {
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
-            TEST_CLASS_ATTRIBUTE(L"CollectionClass", L"Set")
+            TEST_CLASS_ATTRIBUTE(L"Collections", L"Set")
         END_TEST_CLASS_ATTRIBUTE()
 
         //

@@ -78,7 +78,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(MQ2);..\MQ2Collections;$(IncludePath)</IncludePath>
-    <LibraryPath>..\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -87,7 +87,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(MQ2);..\MQ2Collections;$(IncludePath)</IncludePath>
-    <LibraryPath>..\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

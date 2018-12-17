@@ -16,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SetUnitTests", "SetUnitTest
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StackUnitTests", "StackUnitTests\StackUnitTests.vcxproj", "{D6DB98DE-7894-4397-BE86-2D7B2D00F060}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{449C50AA-70D8-49AD-85C6-DE1C7BEB71A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F5A8BC96-9192-4B24-9F06-292B2526B989} = {449C50AA-70D8-49AD-85C6-DE1C7BEB71A9}
+		{625585BA-4834-4B19-9569-D44A4EEF8B85} = {449C50AA-70D8-49AD-85C6-DE1C7BEB71A9}
+		{4B2DC889-5C9D-4E6F-9E7E-297F9507703E} = {449C50AA-70D8-49AD-85C6-DE1C7BEB71A9}
+		{D6DB98DE-7894-4397-BE86-2D7B2D00F060} = {449C50AA-70D8-49AD-85C6-DE1C7BEB71A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E1EB0D2-4ABF-4EE2-9DB4-9FFF9F423FD6}
