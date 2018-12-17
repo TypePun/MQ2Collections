@@ -33,7 +33,6 @@ namespace Collections
             enum class StackMembers
             {
                 Count = 1,
-                Clear,
                 Push,
                 Pop,
                 IsEmpty,

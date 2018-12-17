@@ -24,15 +24,15 @@ namespace SetUnitTests
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
             TEST_CLASS_ATTRIBUTE(L"CollectionClass", L"Set")
-            END_TEST_CLASS_ATTRIBUTE()
+        END_TEST_CLASS_ATTRIBUTE()
 
+        //
+        // Test the Set constructor.
+        //
+        // Result: a new zero element set should be constructed.
+        //
 
-            //
-            // Test the Set constructor.
-            //
-            // Result: a new zero element set should be constructed.
-            //
-            TEST_METHOD(Constructor)
+        TEST_METHOD(Constructor)
         {
             Set s;
 

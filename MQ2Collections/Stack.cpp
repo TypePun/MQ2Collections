@@ -18,7 +18,6 @@ using namespace Collections::Containers;
 const MQ2TYPEMEMBER Stack::StackMembers[] =
 {
     { (DWORD) StackMembers::Count, "Count" },
-    { (DWORD) StackMembers::Clear, "Clear" },
     { (DWORD) StackMembers::Push, "Push" },
     { (DWORD) StackMembers::Pop, "Pop" },
     { (DWORD) StackMembers::IsEmpty, "IsEmpty" },
