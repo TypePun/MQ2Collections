@@ -20,11 +20,11 @@ using namespace Extensions::Strings;
 
 const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
 {
-    { (DWORD) xReset, "Reset" },
-    { (DWORD) xAdvance, "Advance" },
-    { (DWORD) xIsEnd, "IsEnd" },
-    { (DWORD) xValue, "Value" },
-    { (DWORD) xKey, "Key" },
+    { (DWORD) MapIteratorMembers::Reset, "Reset" },
+    { (DWORD) MapIteratorMembers::Advance, "Advance" },
+    { (DWORD) MapIteratorMembers::IsEnd, "IsEnd" },
+    { (DWORD) MapIteratorMembers::Value, "Value" },
+    { (DWORD) MapIteratorMembers::Key, "Key" },
     { 0, 0 }
 };
 
@@ -35,13 +35,13 @@ const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
 
 const MQ2TYPEMEMBER Map::MapMembers[] =
 {
-    { (DWORD) xCount, "Count" },
-    { (DWORD) xClear, "Clear" },
-    { (DWORD) xContains, "Contains" },
-    { (DWORD) xAdd, "Add" },
-    { (DWORD) xRemove, "Remove" },
-    { (DWORD) xFirst, "First" },
-    { (DWORD) xFind, "Find" },
+    { (DWORD) MapMembers::Count, "Count" },
+    { (DWORD) MapMembers::Clear, "Clear" },
+    { (DWORD) MapMembers::Contains, "Contains" },
+    { (DWORD) MapMembers::Add, "Add" },
+    { (DWORD) MapMembers::Remove, "Remove" },
+    { (DWORD) MapMembers::First, "First" },
+    { (DWORD) MapMembers::Find, "Find" },
     { 0, 0 }
 };
 
@@ -93,9 +93,9 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
         return false;
     }
 
-    switch ((MapIteratorMemberEnums) pMember->ID)
+    switch ((enum class MapIteratorMembers) pMember->ID)
     {
-        case xReset:
+        case MapIteratorMembers::Reset:
             //
             // Reset the iterator to the start of the map.   Return the result as
             // TRUE.
@@ -106,7 +106,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             Dest.Int = 1;
             break;
 
-        case xAdvance:
+        case MapIteratorMembers::Advance:
             //
             // Advance the iterator.  Return TRUE if the iterator could be advanced
             // and FALSE otherwise.
@@ -115,7 +115,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             Dest.Int = (int) pThis->Advance();
             break;
 
-        case xIsEnd:
+        case MapIteratorMembers::IsEnd:
             //
             // Return TRUE if we are at the Last element in the map and FALSE
             // otherwise.
@@ -124,7 +124,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             Dest.Int = (int) pThis->IsEnd();
             break;
 
-        case xValue:
+        case MapIteratorMembers::Value:
             //
             // Return the current value under the iterator or FALSE if there
             // isn't one.
@@ -140,7 +140,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             }
             break;
 
-        case xKey:
+        case MapIteratorMembers::Key:
             //
             // Return the current key under the iterator or FALSE if there
             // isn't one.
@@ -297,9 +297,9 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
         return false;
     }
 
-    switch ((MapMemberEnums) pMember->ID)
+    switch ((enum class MapMembers) pMember->ID)
     {
-        case xCount:
+        case MapMembers::Count:
             //
             // Count of items in the map.
             //
@@ -308,7 +308,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             Dest.Type = pIntType;
             return true;
 
-        case xClear:
+        case MapMembers::Clear:
             //
             // Clear the map.  Return the result as TRUE.
             //
@@ -318,7 +318,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             Dest.Int = 1;
             break;
 
-        case xContains:
+        case MapMembers::Contains:
             //
             // Does the map contain a key?
             //
@@ -333,7 +333,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             }
             break;
 
-        case xAdd:
+        case MapMembers::Add:
             //
             // Add an item to the map.  Return TRUE if the item was added.
             //
@@ -348,7 +348,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             }
             break;
 
-        case xRemove:
+        case MapMembers::Remove:
             //
             // Remove an item from the set.  Return TRUE if it was removed and
             // FALSE otherwise.
@@ -364,7 +364,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             }
             break;
 
-        case xFirst:
+        case MapMembers::First:
             //
             // Return an iterator on the first element.
             //
@@ -379,7 +379,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             Dest.Type = iteratorTypeVar.Type;
             break;
 
-        case xFind:
+        case MapMembers::Find:
             //
             // Return an iterator on a key.
             //

@@ -24,7 +24,7 @@ namespace Collections
         //
 
         class SetIterator : public ValueIterator<std::set<std::string>>,
-            public ReferenceType<SetIterator, std::set<std::string>>
+                            public ReferenceType<SetIterator, std::set<std::string>>
         {
         public:
             //
@@ -45,7 +45,7 @@ namespace Collections
 
             explicit SetIterator(const std::set<std::string> & refCollection)
                 : ValueIterator<std::set<std::string>>(refCollection),
-                ReferenceType(SetIteratorMembers)
+                  ReferenceType(SetIteratorMembers)
             {
                 DebugSpew("SetIterator - %x", this);
             }

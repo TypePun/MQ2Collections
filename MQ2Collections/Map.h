@@ -4,9 +4,6 @@
 
 #pragma once
 
-#if !defined(__MAP__)
-#define __MAP__
-
 #include <string>
 #include <map>
 
@@ -27,20 +24,20 @@ namespace Collections
         //
 
         class MapIterator : public KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>,
-            public ReferenceType<MapIterator, std::map<std::string, std::string>>
+                            public ReferenceType<MapIterator, std::map<std::string, std::string>>
         {
         public:
             //
             // MQ2Type Members
             //
 
-            enum MapIteratorMemberEnums
+            enum class MapIteratorMembers
             {
-                xReset = 1,
-                xAdvance,
-                xIsEnd,
-                xValue,
-                xKey
+                Reset = 1,
+                Advance,
+                IsEnd,
+                Value,
+                Key
             };
 
             //
@@ -49,7 +46,7 @@ namespace Collections
 
             explicit MapIterator(const std::map<std::string, std::string> & refCollection)
                 : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                ReferenceType(MapIteratorMembers)
+                  ReferenceType(MapIteratorMembers)
             {
                 DebugSpew("MapIterator - %x", this);
             }
@@ -64,7 +61,7 @@ namespace Collections
                 const std::string & refKey
             )
                 : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                ReferenceType(MapIteratorMembers)
+                  ReferenceType(MapIteratorMembers)
             {
                 DebugSpew("MapIterator - %x", this);
 
@@ -212,15 +209,15 @@ namespace Collections
             // MQ2Type Members
             //
 
-            enum MapMemberEnums
+            enum class MapMembers
             {
-                xCount = 1,
-                xClear,
-                xContains,
-                xAdd,
-                xRemove,
-                xFirst,
-                xFind
+                Count = 1,
+                Clear,
+                Contains,
+                Add,
+                Remove,
+                First,
+                Find
             };
 
             //
@@ -353,4 +350,3 @@ namespace Collections
         };
     }  // namespace Containers
 }  // namespace Collections
-#endif
