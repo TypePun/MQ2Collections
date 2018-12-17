@@ -17,12 +17,12 @@ using namespace Collections::Containers;
 
 const MQ2TYPEMEMBER Stack::StackMembers[] =
 {
-    { (DWORD) xCount, "Count" },
-    { (DWORD) xClear, "Clear" },
-    { (DWORD) xPush, "Push" },
-    { (DWORD) xPop, "Pop" },
-    { (DWORD) xIsEmpty, "IsEmpty" },
-    { (DWORD) xPeek, "Peek" },
+    { (DWORD) StackMembers::Count, "Count" },
+    { (DWORD) StackMembers::Clear, "Clear" },
+    { (DWORD) StackMembers::Push, "Push" },
+    { (DWORD) StackMembers::Pop, "Pop" },
+    { (DWORD) StackMembers::IsEmpty, "IsEmpty" },
+    { (DWORD) StackMembers::Peek, "Peek" },
     { 0, 0 }
 };
 
@@ -35,7 +35,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 {
     Stack *pThis;
     std::string value;
-    std::string *pValue;
+    std::unique_ptr<std::string> pValue;
 
     DebugSpewAlways("Stack::GetMember %s", Member);
 
@@ -61,7 +61,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     }
 
     //
-    // Member ID is an StackCollectionMembers enumeration.
+    // Member ID is an StackMembers enumeration.
     //
 
     pThis = reinterpret_cast<Stack *>(VarPtr.Ptr);
@@ -71,9 +71,9 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
         return false;
     }
 
-    switch ((StackMemberEnums) pMember->ID)
+    switch ((enum class StackMembers) pMember->ID)
     {
-        case xCount:
+        case StackMembers::Count:
             //
             // Count of items in the stack.
             //
@@ -83,7 +83,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             return true;
 
 
-        case xPush:
+        case StackMembers::Push:
             //
             // We can only add an item if Index is a string.
             //
@@ -104,7 +104,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             }
             break;
 
-        case xPop:
+        case StackMembers::Pop:
             //
             // Return the top of the stack, if it isn't empty.  If the stack is
             // empty, return FALSE.
@@ -117,12 +117,10 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
                     pValue->size() + 1
                 );
                 Dest.Type = pStringType;
-
-                delete pValue;
             }
             break;
 
-        case xIsEmpty:
+        case StackMembers::IsEmpty:
             //
             // Return true if the stack is empty, and false otherwise.
             //
@@ -130,7 +128,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             Dest.Int = (int) pThis->IsEmpty();
             break;
 
-        case xPeek:
+        case StackMembers::Peek:
             //
             // Return the top of the stack, if the stack is not empty.  Don't
             // remove the entry from the stack.  If the stack is empty, return
@@ -144,8 +142,6 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
                     pValue->size() + 1
                 );
                 Dest.Type = pStringType;
-
-                delete pValue;
             }
             break;
 
@@ -195,4 +191,3 @@ bool Stack::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 
     return false;
 }
-

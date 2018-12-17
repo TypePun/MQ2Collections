@@ -4,9 +4,6 @@
 
 #pragma once
 
-#if !defined(__STACK__)
-#define __STACK__
-
 #include <string>
 #include <stack>
 
@@ -33,14 +30,14 @@ namespace Collections
             // MQ2Type Members
             //
 
-            enum StackMemberEnums
+            enum class StackMembers
             {
-                xCount = 1,
-                xClear,
-                xPush,
-                xPop,
-                xIsEmpty,
-                xPeek
+                Count = 1,
+                Clear,
+                Push,
+                Pop,
+                IsEmpty,
+                Peek
             };
 
             //
@@ -95,14 +92,14 @@ namespace Collections
             // empty and false otherwise.
             //
 
-            bool Pop(std::string **item)
+            bool Pop(std::unique_ptr<std::string> *item)
             {
                 if (IsEmpty())
                 {
                     return false;
                 }
 
-                *item = new std::string(m_coll.top());
+                *item = std::make_unique<std::string>(m_coll.top());
                 m_coll.pop();
                 return true;
             }
@@ -121,14 +118,14 @@ namespace Collections
             // returns true if the stack is empty and false otherwie.
             //
 
-            bool Peek(std::string **item) const
+            bool Peek(std::unique_ptr<std::string> *item) const
             {
                 if (IsEmpty())
                 {
                     return false;
                 }
 
-                *item = new std::string(m_coll.top());
+                *item = std::make_unique<std::string>(m_coll.top());
                 return true;
             }
 
@@ -182,4 +179,3 @@ namespace Collections
         };
     }  // namespace Containers
 }  // namespace Collections
-#endif
