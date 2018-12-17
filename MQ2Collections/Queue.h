@@ -4,9 +4,6 @@
 
 #pragma once
 
-#if !defined(__QUEUE__)
-#define __QUEUE__
-
 #include <string>
 #include <queue>
 
@@ -33,14 +30,13 @@ namespace Collections
             // MQ2Type Members
             //
 
-            enum QueueMemberEnums
+            enum class QueueMembers
             {
-                xCount = 1,
-                xClear,
-                xPush,
-                xPop,
-                xIsEmpty,
-                xPeek
+                Count = 1,
+                Push,
+                Pop,
+                IsEmpty,
+                Peek
             };
 
             //
@@ -71,7 +67,6 @@ namespace Collections
                 return "queue";
             }
 
-
             //
             // Return the number of entries on the queue.
             //
@@ -91,19 +86,19 @@ namespace Collections
             }
 
             //
-            // If the stack isn't empty, return the top element.  And remove
-            // it from the stack.  The method returns true if the stack is
+            // If the queue isn't empty, return the first element and remove
+            // it from the queue.  The method returns true if the queue is
             // empty and false otherwise.
             //
 
-            bool Pop(std::string **item)
+            bool Pop(std::unique_ptr<std::string> *item)
             {
                 if (IsEmpty())
                 {
                     return false;
                 }
 
-                *item = new std::string(m_coll.front());
+                *item = std::make_unique<std::string>(m_coll.front());
                 m_coll.pop();
                 return true;
             }
@@ -122,14 +117,14 @@ namespace Collections
             // returns true if the queue is empty and false otherwie.
             //
 
-            bool Peek(std::string **item) const
+            bool Peek(std::unique_ptr<std::string> *item) const
             {
                 if (IsEmpty())
                 {
                     return false;
                 }
 
-                *item = new std::string(m_coll.front());
+                *item = std::make_unique<std::string>(m_coll.front());
                 return true;
             }
 
@@ -184,4 +179,3 @@ namespace Collections
         };
     }  // namespace Containers
 }  // namespace Collections
-#endif

@@ -17,12 +17,11 @@ using namespace Collections::Containers;
 
 const MQ2TYPEMEMBER Queue::QueueMembers[] =
 {
-    { (DWORD) xCount, "Count" },
-    { (DWORD) xClear, "Clear" },
-    { (DWORD) xPush, "Push" },
-    { (DWORD) xPop, "Pop" },
-    { (DWORD) xIsEmpty, "IsEmpty" },
-    { (DWORD) xPeek, "Peek" },
+    { (DWORD) QueueMembers::Count, "Count" },
+    { (DWORD) QueueMembers::Push, "Push" },
+    { (DWORD) QueueMembers::Pop, "Pop" },
+    { (DWORD) QueueMembers::IsEmpty, "IsEmpty" },
+    { (DWORD) QueueMembers::Peek, "Peek" },
     { 0, 0 }
 };
 
@@ -35,7 +34,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 {
     Queue *pThis;
     std::string value;
-    std::string *pValue;
+    std::unique_ptr<std::string> pValue;
 
     DebugSpew("Queue::GetMember %s", Member);
 
@@ -71,9 +70,9 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
         return false;
     }
 
-    switch ((QueueMemberEnums) pMember->ID)
+    switch ((enum class QueueMembers) pMember->ID)
     {
-        case xCount:
+        case QueueMembers::Count:
             //
             // Count of items in the stack.
             //
@@ -82,7 +81,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             Dest.Type = pIntType;
             return true;
 
-        case xPush:
+        case QueueMembers::Push:
             //
             // Push an item onto the end of the queue.
             //
@@ -107,7 +106,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             }
             break;
 
-        case xPop:
+        case QueueMembers::Pop:
             //
             // Return the front of the stack, if it isn't empty.  If the queue is
             // empty, return FALSE.
@@ -120,12 +119,10 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
                     pValue->size() + 1
                 );
                 Dest.Type = pStringType;
-
-                delete pValue;
             }
             break;
 
-        case xIsEmpty:
+        case QueueMembers::IsEmpty:
             //
             // Return true if the queue is empty, and false otherwise.
             //
@@ -133,7 +130,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             Dest.Int = (int) pThis->IsEmpty();
             break;
 
-        case xPeek:
+        case QueueMembers::Peek:
             //
             // Return the top of the queue, if the queue is not empty.  Don't
             // remove the entry from the queue.  If the queue is empty, return
@@ -147,8 +144,6 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
                     pValue->size() + 1
                 );
                 Dest.Type = pStringType;
-
-                delete pValue;
             }
             break;
 
@@ -198,4 +193,3 @@ bool Queue::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 
     return false;
 }
-
