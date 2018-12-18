@@ -8,47 +8,47 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "set.h"
+#include "map.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Collections::Containers;
 
-namespace SetUnitTests
+namespace MapUnitTests
 {
     //
-    // Test Set Iterator operations (Reset, Advance, IsEnd and Value).
-    // Set iterators are acquired by calling Find or First on a Set.
+    // Test Map Iterator operations (Reset, Advance, IsEnd, Value and Key).
+    // Map iterators are acquired by calling Find or First on a Set.
     //
 
-    TEST_CLASS(SetIteratorUnitTest)
+    TEST_CLASS(MapIteratorUnitTest)
     {
     public:
 
         BEGIN_TEST_CLASS_ATTRIBUTE()
-            TEST_CLASS_ATTRIBUTE(L"Collections", L"Set")
-            TEST_CLASS_ATTRIBUTE(L"Iterators", L"Set")
+            TEST_CLASS_ATTRIBUTE(L"Collections", L"Map")
+            TEST_CLASS_ATTRIBUTE(L"Iterators", L"Map")
         END_TEST_CLASS_ATTRIBUTE()
 
         //
-        // Populate the set used by the iterator tests.
+        // Populate the map used by the iterator tests.
         //
 
-        SetIteratorUnitTest()
+        MapIteratorUnitTest()
         {
-            _s.Add("A");
-            _s.Add("B");
-            _s.Add("C");
+            _m.Add("A", "Value1");
+            _m.Add("B", "Value2");
+            _m.Add("C", "Value3");
         }
 
         //
-        // Test that we can acquire an iterator on the set.
+        // Test that we can acquire an iterator on the map.
         //
         // Result: A non-null iterator should be returned.
         //
 
         TEST_METHOD(TestIteratorFromFirst)
         {
-            auto iterator = _s.First();
+            auto iterator = _m.First();
 
             Assert::IsNotNull(iterator.get());
         }
@@ -62,33 +62,33 @@ namespace SetUnitTests
 
         TEST_METHOD(TestIteratorFromFind)
         {
-            auto iterator = _s.Find("A");
+            auto iterator = _m.Find("A");
 
-            Assert::IsTrue(iterator != nullptr);
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
 
-            iterator = _s.Find("B");
+            iterator = _m.Find("B");
 
-            Assert::IsTrue(iterator != nullptr);
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
 
-            iterator = _s.Find("C");
+            iterator = _m.Find("C");
 
-            Assert::IsTrue(iterator != nullptr);
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
         }
 
         //
-        // Test Find on an element not in the set.
+        // Test Find on an element not in the map.
         //
         // Result: An iterator should be returned where IsEnd is true.
         //
 
         TEST_METHOD(TestIteratorForNonexistantElement)
         {
-            auto iterator = _s.Find("D");
+            auto iterator = _m.Find("D");
 
-            Assert::IsTrue(iterator != nullptr);
+            Assert::IsNotNull(iterator);
             Assert::IsTrue(iterator->IsEnd());
         }
 
@@ -100,7 +100,7 @@ namespace SetUnitTests
 
         TEST_METHOD(TestIteratorIsNotAtEnd)
         {
-            auto iterator = _s.First();
+            auto iterator = _m.First();
 
             Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
@@ -115,52 +115,78 @@ namespace SetUnitTests
 
         TEST_METHOD(TestIteratorAdvance)
         {
-            auto iterator = _s.First();
-            WalkIteratorOverSet(_s, iterator);
+            auto iterator = _m.First();
+            WalkIteratorOverMap(_m, iterator);
         }
 
         //
         // Test the Reseting the iterator after reaching the end lets us
         // traverse through the collection again.
         //
-        // Result: Reset should permit multiple traverals through the set.
+        // Result: Reset should permit multiple traverals through the map.
         //
 
         TEST_METHOD(TestIteratorReset)
         {
-            auto iterator = _s.First();
-            WalkIteratorOverSet(_s, iterator);
+            auto iterator = _m.First();
+            WalkIteratorOverMap(_m, iterator);
 
             iterator->Reset();
 
             Assert::IsFalse(iterator->IsEnd());
-            WalkIteratorOverSet(_s, iterator);
+            WalkIteratorOverMap(_m, iterator);
         }
 
         //
         // Test the Value method on an iterator.
         //
-        // Result: The value method should return each element in the set.
+        // Result: The value method should return each element in the map.
         //
 
         TEST_METHOD(TestValueUnderIterator)
         {
-            auto iterator = _s.First();
+            auto iterator = _m.First();
             std::string const * value = nullptr;
 
             Assert::IsTrue(iterator->Value(&value));
             Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("A"));
+            Assert::AreEqual(*value, std::string("Value1"));
 
             Assert::IsTrue(iterator->Advance());
             Assert::IsTrue(iterator->Value(&value));
             Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("B"));
+            Assert::AreEqual(*value, std::string("Value2"));
 
             Assert::IsTrue(iterator->Advance());
             Assert::IsTrue(iterator->Value(&value));
             Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("C"));
+            Assert::AreEqual(*value, std::string("Value3"));
+        }
+
+        //
+        // Test the key method on an iterator.
+        //
+        // Result: The key method should return each element in the map.
+        //
+
+        TEST_METHOD(TestKeyUnderIterator)
+        {
+            auto iterator = _m.First();
+            std::string const * key = nullptr;
+
+            Assert::IsTrue(iterator->Key(&key));
+            Assert::IsNotNull(key);
+            Assert::AreEqual(*key, std::string("A"));
+
+            Assert::IsTrue(iterator->Advance());
+            Assert::IsTrue(iterator->Key(&key));
+            Assert::IsNotNull(key);
+            Assert::AreEqual(*key, std::string("B"));
+
+            Assert::IsTrue(iterator->Advance());
+            Assert::IsTrue(iterator->Key(&key));
+            Assert::IsNotNull(key);
+            Assert::AreEqual(*key, std::string("C"));
         }
 
     private:
@@ -169,14 +195,16 @@ namespace SetUnitTests
         // Acquire an iterator and walk through each element.
         //
 
-        void WalkIteratorOverSet(const Set & s,
-            std::unique_ptr<Collections::ValueIterator<std::set<std::string>>> & iterator
+        void WalkIteratorOverMap(const Map & m,
+            std::unique_ptr<Collections::KeyValueIterator<std::map<std::string, std::string>,
+                                                          std::string,
+                                                          std::string>> & iterator
         ) const
         {
             Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
 
-            for (size_t i = 1; i < s.Count(); ++i)
+            for (size_t i = 1; i < m.Count(); ++i)
             {
                 Assert::IsTrue(iterator->Advance());
             }
@@ -185,6 +213,6 @@ namespace SetUnitTests
             Assert::IsTrue(iterator->IsEnd());
         }
 
-        Set _s;
+        Map _m;
     };
 }

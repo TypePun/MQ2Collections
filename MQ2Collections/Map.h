@@ -24,7 +24,7 @@ namespace Collections
         //
 
         class MapIterator : public KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>,
-                            public ReferenceType<MapIterator, std::map<std::string, std::string>>
+            public ReferenceType<MapIterator, std::map<std::string, std::string>>
         {
         public:
             //
@@ -46,7 +46,7 @@ namespace Collections
 
             explicit MapIterator(const std::map<std::string, std::string> & refCollection)
                 : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                  ReferenceType(MapIteratorMembers)
+                ReferenceType(MapIteratorMembers)
             {
                 DebugSpew("MapIterator - %x", this);
             }
@@ -61,7 +61,7 @@ namespace Collections
                 const std::string & refKey
             )
                 : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                  ReferenceType(MapIteratorMembers)
+                ReferenceType(MapIteratorMembers)
             {
                 DebugSpew("MapIterator - %x", this);
 
@@ -317,8 +317,7 @@ namespace Collections
             //
 
             std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> GetNewIterator(
-                const std::map<std::string, std::string> & refCollection
-            ) const
+                const std::map<std::string, std::string> & refCollection) const
             {
                 return std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>>(
                     new MapIterator(refCollection)
