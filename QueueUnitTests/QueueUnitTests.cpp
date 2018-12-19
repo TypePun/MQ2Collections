@@ -20,15 +20,15 @@ namespace QueueUnitTests
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
             TEST_CLASS_ATTRIBUTE(L"Collections", L"Queue")
-            END_TEST_CLASS_ATTRIBUTE()
+        END_TEST_CLASS_ATTRIBUTE()
 
-            //
-            // Test the Queue constructor.
-            //
-            // Result: a new empty queue should be constructed.
-            //
+        //
+        // Test the Queue constructor.
+        //
+        // Result: a new empty queue should be constructed.
+        //
 
-            TEST_METHOD(Constructor)
+        TEST_METHOD(Constructor)
         {
             Queue q;
 

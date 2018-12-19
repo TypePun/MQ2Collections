@@ -36,7 +36,7 @@ namespace SetUnitTests
         {
             Set s;
 
-            Assert::IsTrue(s.Count() == 0);
+            Assert::AreEqual(s.Count(), (size_t) 0);
         }
 
         //
@@ -51,7 +51,7 @@ namespace SetUnitTests
 
             s.Add("A");
 
-            Assert::IsTrue(s.Count() == 1);
+            Assert::AreEqual(s.Count(), (size_t) 1);
         }
 
         //
@@ -66,7 +66,7 @@ namespace SetUnitTests
 
             InsertElements(&s);
 
-            Assert::IsTrue(s.Count() == 3);
+            Assert::AreEqual(s.Count(), (size_t) 3);
         }
 
         //
@@ -129,7 +129,7 @@ namespace SetUnitTests
 
             s.Clear();
 
-            Assert::IsTrue(s.Count() == 0);
+            Assert::AreEqual(s.Count(), (size_t) 0);
         }
 
         //
@@ -145,7 +145,7 @@ namespace SetUnitTests
             InsertElements(&s);
             s.Clear();
 
-            Assert::IsTrue(s.Count() == 0);
+            Assert::AreEqual(s.Count(), (size_t) 0);
         }
 
         //
@@ -161,7 +161,7 @@ namespace SetUnitTests
             s.Add("A");
 
             Assert::IsTrue(s.Remove("A"));
-            Assert::IsTrue(s.Count() == 0);
+            Assert::AreEqual(s.Count(), (size_t) 0);
         }
 
         //
@@ -179,7 +179,7 @@ namespace SetUnitTests
             Assert::IsTrue(s.Remove("A"));
             Assert::IsTrue(s.Remove("B"));
             Assert::IsTrue(s.Remove("C"));
-            Assert::IsTrue(s.Count() == 0);
+            Assert::AreEqual(s.Count(), (size_t) 0);
         }
 
         //
@@ -196,7 +196,7 @@ namespace SetUnitTests
             s.Add("A");
 
             Assert::IsFalse(s.Remove("B"));
-            Assert::IsTrue(s.Count() == 1);
+            Assert::AreEqual(s.Count(), (size_t) 1);
         }
 
         //
@@ -212,7 +212,7 @@ namespace SetUnitTests
             s.Add("A");
             s.Add("A");
 
-            Assert::IsTrue(s.Count() == 1);
+            Assert::AreEqual(s.Count(), (size_t) 1);
         }
 
     private:

@@ -78,7 +78,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(MQ2);..\MQ2Collections;$(IncludePath)</IncludePath>
+    <IncludePath>$(MQ2);$(SolutionDir)\MQ2Collections;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
   </PropertyGroup>
@@ -87,7 +87,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(MQ2);..\MQ2Collections;$(IncludePath)</IncludePath>
+    <IncludePath>$(MQ2);$(SolutionDir)\MQ2Collections;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
   </PropertyGroup>

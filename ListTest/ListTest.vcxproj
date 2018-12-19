@@ -44,13 +44,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\MQ2Collections\MQ2Collections;$(MQ2);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>..\MQ2Collections\$(Configuration);$(MQ2)\$(Configuration);$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\MQ2Collections;$(MQ2);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\$(Configuration);$(MQ2)\$(Configuration);$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\MQ2Collections\MQ2Collections;$(MQ2);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>..\MQ2Collections\$(Configuration);$(MQ2)\$(Configuration);$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\MQ2Collections;$(MQ2);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\$(Configuration);$(MQ2)\$(Configuration);$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
