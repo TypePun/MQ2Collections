@@ -204,6 +204,19 @@ namespace Collections
             bool Contains(const std::string & item) const;
 
             //
+            // Return a splice of a list from a starting index to the end.  If position is beyond
+            // the end of the list, an empty list is returned.
+            //
+
+            std::unique_ptr<List> Splice(size_t index) const;
+
+            //
+            // Create a splice from a starting to an ending offset.
+            //
+
+            std::unique_ptr<List> Splice(size_t startIndex, size_t length) const;
+
+            //
             // Return the index of an item in the list.  -1 is returned if the
             // item is not found.  The index is 0 based.  If multiple items
             // match item then the index of only the first is returned.
@@ -319,19 +332,6 @@ namespace Collections
             //
 
             size_t CountOf(const std::string & item) const;
-
-            //
-            // Return a splice of a list from a starting index to the end.  If position is beyond
-            // the end of the list, an empty list is returned.
-            //
-
-            std::unique_ptr<List> Splice(size_t index) const;
-
-            //
-            // Create a splice from a starting to an ending offset.
-            //
-
-            std::unique_ptr<List> Splice(size_t startIndex, size_t length) const;
 
             //
             // When a member function is called on the type, this method is called.

@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include <memory>
+#include <algorithm>
 #include "list.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -16,9 +16,18 @@ using namespace Collections::Containers;
 
 namespace ListTest
 {
-    TEST_CLASS(ListTest)
+    //
+    // Test List Operations (Creation, Count, Clear, Contains, Splice, Index, Item,
+    // Insert, Sort, Reverse, Append, Remove, Erase, Replace, First, Find, Head, Tail and
+    // CountOf.
+    //
+
+    TEST_CLASS(ListUnitTest1)
     {
     public:
+        BEGIN_TEST_CLASS_ATTRIBUTE()
+            TEST_CLASS_ATTRIBUTE(L"Collections", L"List")
+        END_TEST_CLASS_ATTRIBUTE()
 
         //
         // Test the List constructor.
@@ -26,7 +35,7 @@ namespace ListTest
         // Result: a new zero element list is created.
         //
 
-        TEST_METHOD(ListConstructor)
+        TEST_METHOD(Constructor)
         {
             //
             // Create a new list.
@@ -34,77 +43,55 @@ namespace ListTest
 
             List l;
 
-            Assert::IsTrue(l.Count() == 0,
-                L"There must be zero elements in the list",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
         }
 
         //
-        // Test the List Append method.
+        // Create a list and clear it.
         //
-        // Result: new elements can be added to a list.
+        // Result: the list should contain zero elements.
         //
 
-        TEST_METHOD(ListAppend)
+        TEST_METHOD(ClearEmptyList)
         {
             //
             // Create a new list.
             //
 
             List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            Assert::IsTrue(l.Count() == 5,
-                L"There must be five elements in the list",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the List Clear method.
-        //
-        // Result: List will have zero elements.
-        //
-
-        TEST_METHOD(ListClear)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Clear the list.
-            //
 
             l.Clear();
 
-            Assert::IsTrue(l.Count() == 0,
-                L"There must be zero elements in the list",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
         }
 
         //
-        // Test the List Contains method.
+        // Create a list, populate it and clear it.
         //
-        // Result: If a member is in the list, true is returned.
+        // Result: the list should contain zero elements.
         //
 
-        TEST_METHOD(ListContains)
+        TEST_METHOD(ClearList)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            AppendFive(l);
+            l.Clear();
+
+            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+        }
+
+        //
+        // Create a list, populate it and verify it contains a known element.
+        //
+        // Result: the list should contain the known element
+        //
+
+        TEST_METHOD(ContainsAnElement)
         {
             //
             // Create a new list.
@@ -119,28 +106,40 @@ namespace ListTest
             AppendFive(l);
 
             //
-            // See if the list contains Three and Six.
+            // See if the list contains 'Three'.
             //
 
-            Assert::IsTrue(l.Contains(std::string("Three")),
-                L"List should contain 'Three'",
-                LINE_INFO()
-            );
-            Assert::IsFalse(l.Contains(std::string("Six")),
-                L"List should not contain 'Six'",
-                LINE_INFO()
-            );
+            Assert::IsTrue(l.Contains(std::string("Three")), L"List should contain 'Three'.");
         }
 
         //
-        // Test the list splice method with one argument.  A positive argument
-        // represent an origin of the splice to the end of the list.  A
-        // negative arguments represents an offset from the end of the list.
+        // Create an empty list and verify it does not contain an element.
         //
-        // Result: a new list is returned from a given position.
+        // Result: the list should not contain the element.
         //
 
-        TEST_METHOD(ListSplice1)
+        TEST_METHOD(EmptyListDoesNotContainAnElement)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // The list must not contain 'One'.
+            //
+
+            Assert::IsFalse(l.Contains(std::string("One")), L"List should not contain 'One'.");
+        }
+
+        //
+        // Create a list, populate it and verify it does not contains a known element.
+        //
+        // Result: the list should not contain the element.
+        //
+
+        TEST_METHOD(DoesNotContainsAnElement)
         {
             //
             // Create a new list.
@@ -155,82 +154,48 @@ namespace ListTest
             AppendFive(l);
 
             //
-            // Return a splice of the list from the start to the end.
+            // See if the list contains 'Six'.
             //
 
-            std::unique_ptr<List> splice = l.Splice(0);
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == l.Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice returning an empty list.  Use an index beyond the
-            // list.
-            //
-
-            splice = l.Splice(l.Count() + 1);
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice must be empty",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice from the end of the list, returning the entire list.
-            //
-
-            splice = l.Splice(-((long) l.Count()));
-            Assert::IsTrue(splice->Count() == l.Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Create forward splices from position zero to the length.
-            //
-
-            for (unsigned long index = 0; index < l.Count(); ++index)
-            {
-                splice = l.Splice((long) index);
-                Assert::IsTrue(splice->Count() == (l.Count() - index),
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Create reverse splices from the back of the list to the start.
-            //
-
-            for (unsigned long index = 1; index <= l.Count(); ++index)
-            {
-                splice = l.Splice(-((long) index));
-                Assert::IsTrue(splice->Count() == index,
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
+            Assert::IsFalse(l.Contains(std::string("Six")), L"List should contain not 'Six'.");
         }
 
         //
-        // Test the list splice method with two arguments.  The first argument
-        // is a starting position and the second is an ending position.  If
-        // an argument is positive, it represents an offset from the start of
-        // the list and if it is negative it represents an offset from the end
-        // of the list.
+        // Create an empty list and return a splice from the zeroth position.
         //
-        // The ending index is an exclusive range, that is, it is not included
-        // in the output list.
-        //
-        // Result: a new list is returned.
+        // Result: the splice should contain zero elements.
         //
 
-        TEST_METHOD(ListSplice2)
+        TEST_METHOD(EmptySpliceWithZeroIndex)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            auto splice = l.Splice(0);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have no elements.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+        }
+
+        //
+        // Create a list and retrieve a splice from the end
+        //
+        // Result: the splice should have no elements.
+        //
+
+        TEST_METHOD(SpliceFromEnd)
         {
             //
             // Create a new list.
@@ -244,146 +209,58 @@ namespace ListTest
 
             AppendFive(l);
 
-            //
-            // Return a splice of the list from the start to the end.
-            //
-
-            std::unique_ptr<List> splice = l.Splice(0, (long) l.Count());
+            auto splice = l.Splice(l.Count());
 
             //
-            // Length of original and splice must be the same.
+            // See if the returned splice exists.
             //
 
-            Assert::IsTrue(splice->Count() == l.Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
 
             //
-            // Test splice returning an empty list.  Use an index beyond the
-            // list.
+            // Splice must be zero length.
             //
 
-            splice = l.Splice(
-                (long) (l.Count() + 1),
-                (long) l.Count()
-            );
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice must be empty",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice from the end of the list, returning the list
-            // exclusive of the last element.
-            //
-
-            splice = l.Splice(
-                -((long) l.Count()),
-                -1
-            );
-            Assert::IsTrue(splice->Count() == l.Count() - 1,
-                L"Splice length must be one shorter than the length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Create forward splices from the start to the next to last
-            // position.
-            //
-
-            for (unsigned long index = 0; index <= l.Count() - 1; ++index)
-            {
-                splice = l.Splice((long) index, -1);
-                Assert::IsTrue(splice->Count() == (l.Count() - index) - 1,
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Create reverse splices from the back of the list to the start.
-            //
-
-            //
-            // Use the std::max templated function, not the macro.
-            //
-
-#if defined(max)
-#pragma push_macro("max")
-#undef max
-#define PUSHED_MAX
-#endif
-
-            long upperBound;
-            long lowerBound;
-
-            upperBound = l.Count() - 1;
-            for (unsigned long index = 0; index <= l.Count(); ++index)
-            {
-                splice = l.Splice(
-                    -((long) index),
-                    -1
-                );
-
-                //
-                // Compute the expected length of the splice.  If the lower
-                // bound is negative, the lower bound is the length - the
-                // index.
-                //
-
-                lowerBound = -(long) index;
-                if (lowerBound < 0)
-                {
-                    lowerBound = (long) l.Count() + lowerBound;
-                }
-
-                Assert::IsTrue(splice->Count() == std::max(
-                    0L,
-                    upperBound - lowerBound
-                ),
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-
-                //
-                // If we undefined the macro, make it visible again.
-                //
-
-#if defined(PUSHED_MAX)
-#pragma pop_macro("max")
-#undef PUSHED_MAX
-#endif
-
-            }
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have zero elements.");
         }
 
         //
-        // Test the list splice method with three arguments.  This is like
-        // ListSplice2 except the third argument is a 'stride' which is how
-        // many elements to skip.
+        // Create an empty list and return a splice from a large position
         //
-        // Result: a new list is returned.
+        // Result: the splice should contain zero elements.
         //
 
-        TEST_METHOD(ListSplice3)
+        TEST_METHOD(EmptySpliceWithLargeIndex)
         {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five",
-                "Six"
-            };
-            std::string firstthirdfifth[] =
-            {
-                "One",
-                "Three",
-                "Five"
-            };
+            //
+            // Create a new list.
+            //
 
+            List l;
+
+            auto splice = l.Splice(10000L);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have no elements.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+        }
+
+        //
+        // Create a list and retrieve a splice from the start.
+        //
+        // Result: the splice should be the same length as the original list.
+        //
+
+        TEST_METHOD(SpliceFromStart)
+        {
             //
             // Create a new list.
             //
@@ -396,96 +273,573 @@ namespace ListTest
 
             AppendFive(l);
 
-            //
-            // Now append a sixth element.
-            //
-
-            l.Append(std::string("Six"));
+            auto splice = l.Splice(0);
 
             //
-            // Return a splice of the list from the start to the end, skipping
-            // no elements.
+            // See if the returned splice exists.
             //
 
-            std::unique_ptr<List> splice = l.Splice(0, (long) l.Count(), 1);
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
 
             //
-            // Length of original and splice must be the same.
+            // Splice must be the same length as the original list.
             //
 
-            Assert::IsTrue(splice->Count() == l.Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Count(),
+                             splice->Count(),
+                             L"Splice and original must be the same length.");
 
+            CompareListAndSplice(l, 0, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the middle.
+        //
+        // Result: the splice should 1/2 the length long.
+        //
+
+        TEST_METHOD(SpliceFromMiddle)
+        {
             //
-            // Return a splice with a stride of 0.  This should return an empty
-            // list.
-            //
-
-            splice = l.Splice(0, (long) l.Count(), 0);
-
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice length must be zero",
-                LINE_INFO()
-            );
-
-            //
-            // Test stride of 2.  This should return a list half the length
-            // of the source list.
+            // Create a new list.
             //
 
-            splice = l.Splice(0, (long) l.Count(), 2);
-
-            Assert::IsTrue(splice->Count() == l.Count() / 2,
-                L"Splice must be half the length of the original",
-                LINE_INFO()
-            );
+            List l;
 
             //
-            // Test for the 1st, 3rd and 5th elements.
+            // Append five elements to the list.
             //
 
-            CompareListToElements(
-                *splice,
-                firstthirdfifth,
-                sizeof(firstthirdfifth) / sizeof(firstthirdfifth[0])
-            );
+            AppendFive(l);
+
+            auto splice = l.Splice((size_t) l.Count() / 2);
 
             //
-            // Test a stride longer than the source list.  The first element
-            // should be returned.
+            // See if the returned splice exists.
             //
 
-            splice = l.Splice(0, (long) l.Count(), l.Count() + 1);
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
 
-            Assert::IsTrue(splice->Count() == 1,
-                L"Splice must contain only one element",
-                LINE_INFO()
-            );
-
-            const std::string *pitem;
-            Assert::IsTrue(splice->Item(0, &pitem),
-                L"Could not return item",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(*pitem == elements[0],
-                L"Items in splice are not equal",
-                LINE_INFO()
-            );
+            size_t splice_length = (size_t) std::ceil(l.Count() / 2.0);
 
             //
-            // Return a slice from the end by -3.  This should return the
-            // last and third elements.
+            // Check the length of the splice.
             //
 
-            splice = l.Splice(0, (long) l.Count(), -3);
+            Assert::AreEqual(splice_length, splice->Count(), L"Splice length is incorrect.");
 
-            Assert::IsTrue(splice->Count() == l.Count() / 3,
-                L"Splice must be a third of the list long",
-                LINE_INFO()
-            );
+            CompareListAndSplice(l, l.Count() - splice_length, splice, 0);
+        }
+
+        //
+        // Create an empty list and splice from the start with a zero length.
+        //
+        // Result: a zero length splice should be returned.
+        //
+
+        TEST_METHOD(EmptySpliceWithZeroLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            auto splice = l.Splice(0, 0);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have no elements.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+        }
+
+        //
+        // Create an empty list and splice from the start with a positive length.
+        //
+        // Result: a zero length splice should be returned.
+        //
+
+        TEST_METHOD(EmptySpliceWithPositiveLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            auto splice = l.Splice(0, 1);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have no elements.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+        }
+
+        //
+        // Create an empty list and splice from a positive offset and a zero length.
+        //
+        // Result: a zero length splice should be returned.
+        //
+
+        TEST_METHOD(EmptySpliceWithPositiveOffsetAndZeroLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            auto splice = l.Splice(10, 0);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have no elements.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+        }
+
+        //
+        // Create an empty list and splice from a positive offset and a positive length.
+        //
+        // Result: a zero length splice should be returned.
+        //
+
+        TEST_METHOD(EmptySpliceWithPositiveOffsetAndPositiveLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            auto splice = l.Splice(10, 10);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have no elements.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+        }
+
+        //
+        // Create a list and retrieve a splice from the start with a length
+        // longer than the list.
+        //
+        // Result: the splice should be the same length as the original list.
+        //
+
+        TEST_METHOD(SpliceFromStartPastTheEnd)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(0, l.Count() * 2);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must be the same length as the original list.
+            //
+
+            Assert::AreEqual(l.Count(),
+                             splice->Count(),
+                             L"Splice and original must be the same length.");
+
+            CompareListAndSplice(l, 0, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the start with a length
+        // equal to the list.
+        //
+        // Result: the splice should be the same length as the original list.
+        //
+
+        TEST_METHOD(SpliceFromStartForLengthOfList)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(0, l.Count());
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must be the same length as the original list.
+            //
+
+            Assert::AreEqual(l.Count(),
+                             splice->Count(),
+                             L"Splice and original must be the same length.");
+
+            CompareListAndSplice(l, 0, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the start with a length
+        // of zero.
+        //
+        // Result: the splice should have a length of zero.
+        //
+
+        TEST_METHOD(SpliceFromStartWithZeroLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(0, 0);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have a length of zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Returned splice must have a length of zero.");
+        }
+
+        //
+        // Create a list and retrieve a splice from the start with a length of one.
+        //
+        // Result: the splice should have a length of one.
+        //
+
+        TEST_METHOD(SpliceFromStartForLengthOfOne)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(0, 1);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have a length of one.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+
+            CompareListAndSplice(l, 0, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the end for a length of one.
+        //
+        // Result: the splice should have a length of one.
+        //
+
+        TEST_METHOD(SpliceFromEndForLengthOfOne)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(l.Count() - 1, 1);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have a length of one.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+
+            CompareListAndSplice(l, l.Count() - 1, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the end for a length of zero.
+        //
+        // Result: the splice should have a length of zero.
+        //
+
+        TEST_METHOD(SpliceFromEndForLengthOfZero)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(l.Count() - 1, 0);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have a length of zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
+        }
+
+        //
+        // Create a list and retrieve a splice from the end for a large length.
+        //
+        // Result: the splice should have a length of one.
+        //
+
+        TEST_METHOD(SpliceFromEndForLargeLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            auto splice = l.Splice(l.Count() - 1, l.Count() * 2);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+
+            //
+            // Splice must have a length of one.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+
+            CompareListAndSplice(l, l.Count() - 1, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the middle with a length of one.
+        //
+        // Result: the splice should of length one.
+        //
+
+        TEST_METHOD(SpliceFromMiddleWithLengthOfOne)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            size_t splice_pos = l.Count() / 2;
+            auto splice = l.Splice(splice_pos, 1);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice length is incorrect.");
+
+            CompareListAndSplice(l, splice_pos, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the middle with a length of zero,
+        //
+        // Result: the splice should of length zero.
+        //
+
+        TEST_METHOD(SpliceFromMiddleWithLengthOfZero)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            size_t splice_pos = l.Count() / 2;
+            auto splice = l.Splice(splice_pos, 0);
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            Assert::AreEqual(splice->Count(), (size_t)0, L"Splice must have a length of zero.");
+        }
+
+        //
+        // Create a list and retrieve a splice from the middle with a length of the
+        // remainder.
+        //
+        // Result: the splice should contain half the elements.
+        //
+
+        TEST_METHOD(SpliceFromMiddleForRemainder)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            size_t splice_pos = l.Count() / 2;
+            auto splice = l.Splice(splice_pos, l.Count() - splice_pos);
+            auto splice_length = l.Count() - splice_pos;
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            Assert::AreEqual(splice->Count(), splice_length, L"Splice length is incorrect");
+
+            CompareListAndSplice(l, splice_pos, splice, 0);
+        }
+
+        //
+        // Create a list and retrieve a splice from the middle with a large length/
+        //
+        // Result: the splice should contain half the elements.
+        //
+
+        TEST_METHOD(SpliceFromMiddleForLargeLength)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            size_t splice_pos = l.Count() / 2;
+            auto splice = l.Splice(splice_pos, 10000);
+            auto splice_length = l.Count() - splice_pos;
+
+            //
+            // See if the returned splice exists.
+            //
+
+            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            Assert::AreEqual(splice->Count(), splice_length, L"Splice length is incorrect.");
+
+            CompareListAndSplice(l, splice_pos, splice, 0);
         }
 
         //
@@ -494,7 +848,7 @@ namespace ListTest
         // Result: -1 should be returned.
         //
 
-        TEST_METHOD(ListIndex1)
+        TEST_METHOD(IndexOnEmptyList)
         {
             //
             // Create a new list.
@@ -507,20 +861,17 @@ namespace ListTest
             // not in the list.
             //
 
-            Assert::IsTrue(l.Index(std::string("Zero")) == -1,
-                L"Index of 'Zero' should be -1",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1.");
         }
 
         //
-        // Test the list index method.  An index is the zero-based position of
+        // Test the list index method. An index is the zero-based position of
         // an item in the list.
         //
         // Result: return the index of an item in a list.
         //
 
-        TEST_METHOD(ListIndex2)
+        TEST_METHOD(IndexForKnownElements)
         {
             std::string elements[] =
             {
@@ -549,22 +900,66 @@ namespace ListTest
 
             for (long index = 0; index < sizeof(elements) / sizeof(elements[0]); ++index)
             {
-                Assert::IsTrue(l.Index(elements[index]) == index,
-                    L"Index was incorrect for element",
-                    LINE_INFO()
-                );
+                Assert::AreEqual(l.Index(elements[index]), index, L"Index was incorrect for element");
             }
+        }
+
+        //
+        // Test the list index method for an element not in the list.
+        //
+        // Result: -1 should be returned.
+        //
+
+        TEST_METHOD(IndexForUnknownElement)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
 
             //
             // Look up 'Zero'  -- it should return -1 indicating the element is
             // not in the list.
             //
 
-            Assert::IsTrue(l.Index(std::string("Zero")) == -1,
-                L"Index of 'Zero' should be -1",
+            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1");
+        }
+
+        //
+        /***
+        //
+        // Test the List Append method.
+        //
+        // Result: new elements can be added to a list.
+        //
+
+        TEST_METHOD(ListAppend)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            Assert::IsTrue(l.Count() == 5,
+                L"There must be five elements in the list",
                 LINE_INFO()
             );
         }
+
 
         //
         // Test the list item method on an empty list.
@@ -5410,6 +5805,8 @@ namespace ListTest
             );
         }
 
+        ***/
+
     private:
 
         //
@@ -5424,19 +5821,45 @@ namespace ListTest
             //
 
             l.Append(std::string("One"));
-            Assert::IsTrue(l.Count() == 1, L"There must be one elements in the list", LINE_INFO());
+            Assert::AreEqual(l.Count(), (size_t) 1, L"There must be one elements in the list");
 
             l.Append(std::string("Two"));
-            Assert::IsTrue(l.Count() == 2, L"There must be two elements in the list", LINE_INFO());
+            Assert::AreEqual(l.Count(), (size_t) 2, L"There must be two elements in the list");
 
             l.Append(std::string("Three"));
-            Assert::IsTrue(l.Count() == 3, L"There must be three elements in the list", LINE_INFO());
+            Assert::AreEqual(l.Count(), (size_t) 3, L"There must be three elements in the list");
 
             l.Append(std::string("Four"));
-            Assert::IsTrue(l.Count() == 4, L"There must be four elements in the list", LINE_INFO());
+            Assert::AreEqual(l.Count(), (size_t) 4, L"There must be four elements in the list");
 
             l.Append(std::string("Five"));
-            Assert::IsTrue(l.Count() == 5, L"There must be five elements in the list", LINE_INFO());
+            Assert::AreEqual(l.Count(), (size_t) 5, L"There must be five elements in the list");
+        }
+
+        //
+        // Compare a list and a splice starting at an origin in the list and splice.
+        // A number of tests are performed on the original and splice indices and element
+        // values.
+        //
+
+        void CompareListAndSplice(const List & l,
+                                  size_t list_origin,
+                                  const std::unique_ptr<List> & splice,
+                                  size_t splice_origin)
+        {
+            const std::string *original_item;
+            const std::string *splice_item;
+            size_t splice_index = splice_origin;
+            for (size_t index = list_origin; index < std::min<size_t>(l.Count(), splice->Count()); ++index)
+            {
+                Assert::IsTrue(l.Item(index, &original_item), L"Could not retrieve list item.");
+                Assert::IsTrue(splice->Item(splice_index, &splice_item), L"Could not retrieve splice item.");
+                Assert::IsNotNull(original_item, L"List item returned is a nullptr.");
+                Assert::IsNotNull(splice_item, L"Split item returned is a nullptr.");
+                Assert::AreEqual(*original_item, *splice_item, L"List and splice strings are not the same.");
+
+                Assert::IsTrue(splice_index++ < splice->Count(), L"splice_index past splice Count.");
+            }
         }
 
         //

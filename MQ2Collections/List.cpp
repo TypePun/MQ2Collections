@@ -588,6 +588,32 @@ size_t List::CountOf(const std::string & item) const
 }
 
 //
+// Create a splice from a starting index to the end of the list. If startIndex is past
+// the end of the list, an empty list is returned.
+//
+
+std::unique_ptr<List> List::Splice(size_t startIndex) const
+{
+    //
+    // Return an empty list if startIndex is past the end of the list or length
+    // is zero.
+    //
+
+    if (startIndex >= Count())
+    {
+        return std::make_unique<List>();
+    }
+
+    //
+    // Return a splice from the range.
+    //
+
+    std::list<std::string> newList(FindIteratorForPosition(startIndex), m_coll.cend());
+
+    return std::make_unique<List>(newList);
+}
+
+//
 // Create a splice from a starting index for length entries. If startIndex is past
 // the end of the list, an empty list is returned. If length is zero, an empty list
 // is retruend. If there are less than length entries in the list, then at most
