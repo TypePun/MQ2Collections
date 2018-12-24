@@ -209,8 +209,7 @@ namespace Types
         {
             Dest.DWord = 1;
             Dest.Type = TypeMap::GetTypeInstanceForTypeName(
-                ObjectClass::GetTypeName()
-            );
+                ObjectClass::GetTypeName());
 
             return TRUE;
         }
@@ -241,7 +240,7 @@ namespace Types
         // Ensure derived class destructors are called when we are deleted.
         //
 
-        virtual ~ReferenceType()
+        ~ReferenceType()
         {
         }
 
@@ -280,7 +279,7 @@ namespace Types
         // Ensure derived class destructors are called when we are deleted.
         //
 
-        virtual ~ObjectType()
+        ~ObjectType()
         {
         }
 

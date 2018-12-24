@@ -352,11 +352,11 @@ namespace Extensions
         // successfully converted and false otherwise.
         //
 
-        template <class T>
-        bool FromString(const T & value, long * result)
+        template <class T, typename U>
+        bool FromString(const T & value, U * result)
         {
             T::size_type sz;
-            long convertedLong;
+            U convertedvalue;
 
             //
             // Fail if there is no output pointer.
@@ -376,7 +376,7 @@ namespace Extensions
 
             try
             {
-                convertedLong = std::stol(trimmed->Contents(), &sz);
+                convertedvalue = (U) std::stoll(trimmed->Contents(), &sz);
                 if (trimmed->Contents()[sz] != 0)
                 {
                     //
@@ -390,7 +390,7 @@ namespace Extensions
                 // Set the output value.
                 //
 
-                *result = convertedLong;
+                *result = convertedvalue;
             }
             catch (std::invalid_argument &)
             {

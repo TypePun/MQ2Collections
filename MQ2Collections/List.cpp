@@ -21,10 +21,10 @@ using namespace Conversions;
 
 const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
 {
-    { (DWORD) ListIteratorMemberEnums::Reset, "Reset" },
-    { (DWORD) ListIteratorMemberEnums::Advance, "Advance" },
-    { (DWORD) ListIteratorMemberEnums::IsEnd, "IsEnd" },
-    { (DWORD) ListIteratorMemberEnums::Value, "Value" },
+    { (DWORD) ListIteratorMembers::Reset, "Reset" },
+    { (DWORD) ListIteratorMembers::Advance, "Advance" },
+    { (DWORD) ListIteratorMembers::IsEnd, "IsEnd" },
+    { (DWORD) ListIteratorMembers::Value, "Value" },
     { 0, 0 }
 };
 
@@ -35,24 +35,24 @@ const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
 
 const MQ2TYPEMEMBER List::ListMembers[] =
 {
-    { (DWORD) ListMemberEnums::Count, "Count" },
-    { (DWORD) ListMemberEnums::Clear, "Clear" },
-    { (DWORD) ListMemberEnums::Contains, "Contains" },
-    { (DWORD) ListMemberEnums::Splice, "Splice" },
-    { (DWORD) ListMemberEnums::Index, "Index" },
-    { (DWORD) ListMemberEnums::Item, "Item" },
-    { (DWORD) ListMemberEnums::Insert, "Insert" },
-    { (DWORD) ListMemberEnums::Sort, "Sort" },
-    { (DWORD) ListMemberEnums::Reverse, "Reverse" },
-    { (DWORD) ListMemberEnums::Append, "Append" },
-    { (DWORD) ListMemberEnums::Remove, "Remove" },
-    { (DWORD) ListMemberEnums::Erase, "Erase" },
-    { (DWORD) ListMemberEnums::Replace, "Replace" },
-    { (DWORD) ListMemberEnums::First, "First" },
-    { (DWORD) ListMemberEnums::Find, "Find" },
-    { (DWORD) ListMemberEnums::Head, "Head" },
-    { (DWORD) ListMemberEnums::Tail, "Tail" },
-    { (DWORD) ListMemberEnums::CountOf, "CountOf" },
+    { (DWORD) ListMembers::Count, "Count" },
+    { (DWORD) ListMembers::Clear, "Clear" },
+    { (DWORD) ListMembers::Contains, "Contains" },
+    { (DWORD) ListMembers::Splice, "Splice" },
+    { (DWORD) ListMembers::Index, "Index" },
+    { (DWORD) ListMembers::Item, "Item" },
+    { (DWORD) ListMembers::Insert, "Insert" },
+    { (DWORD) ListMembers::Sort, "Sort" },
+    { (DWORD) ListMembers::Reverse, "Reverse" },
+    { (DWORD) ListMembers::Append, "Append" },
+    { (DWORD) ListMembers::Remove, "Remove" },
+    { (DWORD) ListMembers::Erase, "Erase" },
+    { (DWORD) ListMembers::Replace, "Replace" },
+    { (DWORD) ListMembers::First, "First" },
+    { (DWORD) ListMembers::Find, "Find" },
+    { (DWORD) ListMembers::Head, "Head" },
+    { (DWORD) ListMembers::Tail, "Tail" },
+    { (DWORD) ListMembers::CountOf, "CountOf" },
     { 0, 0 }
 };
 
@@ -87,7 +87,7 @@ ListIterator::ListIterator(
 
     //
     // Position the iterator to the item or to the end of the
-    // set.
+    // list.
     //
 
     Find(refKey);
@@ -174,9 +174,9 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
         return false;
     }
 
-    switch ((ListIteratorMemberEnums) pMember->ID)
+    switch ((enum class ListIteratorMembers) pMember->ID)
     {
-        case ListIteratorMemberEnums::Reset:
+        case ListIteratorMembers::Reset:
             //
             // Reset the iterator to the start of the list.   Return the result
             // as TRUE.
@@ -187,7 +187,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
             Dest.Int = 1;
             break;
 
-        case ListIteratorMemberEnums::Advance:
+        case ListIteratorMembers::Advance:
             //
             // Advance the iterator.  Return TRUE if the iterator could be
             // advanced and FALSE otherwise.
@@ -196,7 +196,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
             Dest.Int = (int) pThis->Advance();
             break;
 
-        case ListIteratorMemberEnums::IsEnd:
+        case ListIteratorMembers::IsEnd:
             //
             // Return TRUE if we are at the Last element in the list and FALSE
             // otherwise.
@@ -205,7 +205,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
             Dest.Int = (int) pThis->IsEnd();
             break;
 
-        case ListIteratorMemberEnums::Value:
+        case ListIteratorMembers::Value:
             //
             // Return the current element under the iterator or FALSE if there
             // isn't one.
@@ -215,8 +215,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
                     pItem->c_str(),
-                    pItem->size() + 1
-                );
+                    pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -249,18 +248,17 @@ bool ListIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
         return false;
     }
 
+    errno_t rc;
     if (!pThis->Value(&item))
     {
-        std::uninitialized_copy_n("FALSE", strlen("FALSE") + 1, Destination);
+        rc = strcpy_s(Destination, BUFFER_SIZE, "FALSE");
     }
     else
     {
-        std::uninitialized_copy(item->cbegin(), item->cend(), Destination);
-        Destination[item->length() + 1] = 0;
-
+        rc = strcpy_s(Destination, BUFFER_SIZE, item->c_str());
     }
 
-    return true;
+    return rc == 0;
 }
 
 //
@@ -280,11 +278,7 @@ bool ListIterator::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
 
 bool ListIterator::Find(const std::string & refKey)
 {
-    m_iterator = std::find(
-        m_refCollection.cbegin(),
-        m_refCollection.cend(),
-        refKey
-    );
+    m_iterator = std::find(m_refCollection.cbegin(), m_refCollection.cend(), refKey);
 
     //
     // Key was not in the collection.
@@ -294,11 +288,7 @@ bool ListIterator::Find(const std::string & refKey)
 }
 
 //
-// Constructor.
-//
-
-//
-// Constructor.
+// List Constructor.
 //
 
 List::List()
@@ -308,19 +298,15 @@ List::List()
 }
 
 //
-// Construct a new List from a list of strings.
+// Construct an new list from a std::list.
 //
 
-List::List(const std::list<std::string> & list)
+List::List(const std::list<std::string> & source)
     : ObjectType(ListMembers)
 {
     DebugSpew("List - %x", this);
 
-    //
-    // Copy the collection to our instance.
-    //
-
-    m_coll = list;
+    m_coll = source;
 }
 
 //
@@ -333,7 +319,7 @@ List::~List()
 }
 
 //
-// Return the name of this type - set.
+// Return the name of this type - list.
 //
 
 const char *List::GetTypeName()
@@ -347,11 +333,7 @@ const char *List::GetTypeName()
 
 bool List::Contains(const std::string & item) const
 {
-    return std::find(
-        m_coll.cbegin(),
-        m_coll.cend(),
-        item
-    ) != m_coll.end();
+    return std::find(m_coll.cbegin(), m_coll.cend(), item) != m_coll.end();
 }
 
 //
@@ -458,21 +440,11 @@ void List::Append(const std::string & item)
 
 size_t List::Remove(const std::string & item)
 {
-    size_t itemCount;
-
     //
     // Count how many times item occurs in the list.
     //
 
-    itemCount = 0;
-    for (auto it = m_coll.cbegin(); it != m_coll.cend(); ++it)
-    {
-        if (*it == item)
-        {
-            ++itemCount;
-        }
-    }
-
+    auto itemCount = std::count(m_coll.cbegin(), m_coll.cend(), item);
     //
     // Remove the item if there are any in the list.  This test saves an
     // additional pass over the list for the removal.
@@ -516,31 +488,21 @@ bool List::Erase(const size_t index)
 // of items replaced.
 //
 
-size_t List::Replace(
-    const std::string & item,
-    const std::string & newItem
-)
+size_t List::Replace(const std::string & item, const std::string & newItem)
 {
-    size_t replacedElements;
-
     //
-    // If the current item in the list matches item, replace the value
-    // with newItem.  This replacement is done in-place.  No new
-    // item is created.
+    // Count the items so we can return the replacement count.
     //
 
-    replacedElements = 0;
-    for (auto it = m_coll.begin(); it != m_coll.end(); ++it)
+    size_t replacedElements = CountOf(item);
+
+    if (replacedElements != 0)
     {
-        if (*it == item)
-        {
-            //
-            // Replace this item.
-            //
+        //
+        // Replacement is done in-place.
+        //
 
-            *it = newItem;
-            ++replacedElements;
-        }
+        std::replace(m_coll.begin(), m_coll.end(), item, newItem);
     }
 
     return replacedElements;
@@ -551,12 +513,9 @@ size_t List::Replace(
 //
 
 std::unique_ptr<ValueIterator<std::list<std::string>>> List::Find(
-    const std::string & refKey
-) const
+    const std::string & refKey) const
 {
-    return std::unique_ptr<ValueIterator<std::list<std::string>>>(
-        new ListIterator(m_coll, refKey)
-        );
+    return std::make_unique<ListIterator>(m_coll, refKey);
 }
 
 //
@@ -564,7 +523,7 @@ std::unique_ptr<ValueIterator<std::list<std::string>>> List::Find(
 // was a head and false otherwise.
 //
 
-bool List::Head(const std::string ** item)
+bool List::Head(std::unique_ptr<const std::string> * item)
 {
     //
     // Only return the head if there are entries in the list.
@@ -580,7 +539,7 @@ bool List::Head(const std::string ** item)
         // The caller is responsible for deleting the string.
         //
 
-        *item = new std::string(m_coll.front());
+        *item = std::make_unique<const std::string>(m_coll.front());
         m_coll.pop_front();
 
         return true;
@@ -594,7 +553,7 @@ bool List::Head(const std::string ** item)
 // was a tail and false otherwise.
 //
 
-bool List::Tail(const std::string ** item)
+bool List::Tail(std::unique_ptr<const std::string> * item)
 {
     //
     // Only return the tail if there are entries in the list.
@@ -610,7 +569,7 @@ bool List::Tail(const std::string ** item)
         // The caller is responsible for deleting the string.
         //
 
-        *item = new std::string(m_coll.back());
+        *item = std::make_unique<const std::string>(m_coll.back());
         m_coll.pop_back();
 
         return true;
@@ -625,108 +584,38 @@ bool List::Tail(const std::string ** item)
 
 size_t List::CountOf(const std::string & item) const
 {
-    return std::count(
-        m_coll.cbegin(),
-        m_coll.cend(),
-        item
-    );
+    return std::count(m_coll.cbegin(), m_coll.cend(), item);
 }
 
 //
-// Return a splice of a list based upon a starting position.  If
-// position is beyond the end of the list, an empty list is
-// returned.  A negative index is an offset from the end
-// of the list.
+// Create a splice from a starting index for length entries. If startIndex is past
+// the end of the list, an empty list is returned. If length is zero, an empty list
+// is retruend. If there are less than length entries in the list, then at most
+// Count() - startIndex entries will be returned.
 //
 
-std::unique_ptr<List> List::Splice(long index) const
-{
-    std::list<std::string> newList(
-        FindIteratorForPosition(
-        NormalizeIndex(index)
-    ),
-        m_coll.cend()
-    );
-    return std::unique_ptr<List>(new List(newList));
-}
-
-//
-// Create a splice from a starting to an ending offset.
-//
-
-std::unique_ptr<List> List::Splice(long startIndex, long endIndex) const
+std::unique_ptr<List> List::Splice(size_t startIndex, size_t length) const
 {
     //
-    // The normalized start index must be less than or equal to the normalized
-    // end index.  Otherwise, return an empty list.
+    // Return an empty list if startIndex is past the end of the list or length
+    // is zero.
     //
 
-    size_t normalizedStartIndex;
-    size_t normalizedEndIndex;
-
-    normalizedStartIndex = NormalizeIndex(startIndex);
-    normalizedEndIndex = NormalizeIndex(endIndex);
-
-    if (normalizedStartIndex > normalizedEndIndex)
+    if ((startIndex >= Count()) || (length == 0))
     {
-        return std::unique_ptr<List>(new List());
+        return std::make_unique<List>();
     }
+
 
     //
     // Return a splice from the range.
     //
 
     std::list<std::string> newList(
-        FindIteratorForPosition(
-        NormalizeIndex(startIndex)
-    ),
-        FindIteratorForPosition(
-        NormalizeIndex(endIndex)
-    )
-    );
-    return std::unique_ptr<List>(new List(newList));
-}
+        FindIteratorForPosition(startIndex),
+        FindIteratorForPosition(startIndex + length));
 
-//
-// Create a splice between two offsets, selecting a stride'th
-// element.  If stride is zero, return an empty list.
-//
-
-std::unique_ptr<List> List::Splice(
-    long startIndex,
-    long endIndex,
-    long stride
-) const
-{
-    //
-    // For a zero stride, return an empty list.
-    //
-
-    if (stride == 0)
-    {
-        return std::unique_ptr<List>(new List());
-    }
-
-    std::unique_ptr<List> newList = Splice(startIndex, endIndex);
-
-    //
-    // Only include the stride'th items in the output list.  Return the
-    // elements in reverse order if the stride is negative.
-    //
-    // Therefore, we remove the elements that are NOT stride elements.
-    //
-
-    if (stride < 0)
-    {
-        newList->m_coll.reverse();
-        newList->m_coll.remove_if(IsNotStride(std::abs(stride)));
-    }
-    else
-    {
-        newList->m_coll.remove_if(IsNotStride(stride));
-    }
-
-    return newList;
+    return std::make_unique<List>(newList);
 }
 
 //
@@ -738,7 +627,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 {
     List * pThis;
     MQ2TYPEVAR typeVar;
-    const std::string * pItem;
+    std::unique_ptr<const std::string> pItem;
     size_t replacedItems;
 
     DebugSpew("List::GetMember %s", Member);
@@ -775,9 +664,9 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
         return false;
     }
 
-    switch ((ListMemberEnums) pMember->ID)
+    switch ((enum class ListMembers) pMember->ID)
     {
-        case ListMemberEnums::Count:
+        case ListMembers::Count:
             //
             // Count of items in the list.
             //
@@ -786,7 +675,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             Dest.Type = pIntType;
             return true;
 
-        case ListMemberEnums::Clear:
+        case ListMembers::Clear:
             //
             // Clear the list.  Return the result as TRUE.
             //
@@ -796,9 +685,9 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             Dest.Int = 1;
             break;
 
-        case ListMemberEnums::Contains:
+        case ListMembers::Contains:
             //
-            // Does the list contain a key?
+            // Does the list contain a value?
             //
 
             //
@@ -807,11 +696,11 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             if (*Index)
             {
-                Dest.Int = (int) pThis->Contains(std::string(Index));
+                Dest.Int = pThis->Contains(std::string(Index)) ? 1 : 0;
             }
             break;
 
-        case ListMemberEnums::Splice:
+        case ListMembers::Splice:
             //
             // Return a splice from this list.
             //
@@ -827,7 +716,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             break;
 
-        case ListMemberEnums::Index:
+        case ListMembers::Index:
             //
             // Check for a valid Index value.
             //
@@ -842,7 +731,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
-        case ListMemberEnums::Item:
+        case ListMembers::Item:
             //
             // Return the index'th item from the list.
             //
@@ -857,18 +746,18 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 // Item fails if Index does not correspond to an item.
                 //
 
+                std::string const * pItem;
                 if (pThis->Item(std::string(Index), &pItem))
                 {
                     Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
                         pItem->c_str(),
-                        pItem->size() + 1
-                    );
+                        pItem->size() + 1);
                     Dest.Type = pStringType;
                 }
             }
             break;
 
-        case ListMemberEnums::Insert:
+        case ListMembers::Insert:
             //
             // Insert the items into the index'th position in the list.
             //
@@ -884,7 +773,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             break;
 
-        case ListMemberEnums::Sort:
+        case ListMembers::Sort:
             //
             // Sort the list in-place.  Always return true.
             //
@@ -894,7 +783,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             Dest.Int = 1;
             break;
 
-        case ListMemberEnums::Reverse:
+        case ListMembers::Reverse:
             //
             // Reverse the list in-place.  Always return true.
             //
@@ -904,7 +793,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             Dest.Int = 1;
             break;
 
-        case ListMemberEnums::Append:
+        case ListMembers::Append:
             //
             // Append the items to the end of the list.
             //
@@ -925,7 +814,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
-        case ListMemberEnums::Remove:
+        case ListMembers::Remove:
             //
             // Remove an item from the list.  Return TRUE if it was removed and
             // FALSE otherwise.
@@ -941,7 +830,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
-        case ListMemberEnums::Erase:
+        case ListMembers::Erase:
             //
             // Remove an item by index.  Return TRUE if it was removed and
             // FALSE otherwise.
@@ -957,7 +846,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
-        case ListMemberEnums::Replace:
+        case ListMembers::Replace:
             //
             // Replace one list item with another.  Return the number of times
             // the source item was replaced by the target.
@@ -976,7 +865,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
-        case ListMemberEnums::First:
+        case ListMembers::First:
             //
             // Return an iterator on the first element.
             //
@@ -991,7 +880,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             Dest.Type = typeVar.Type;
             break;
 
-        case ListMemberEnums::Find:
+        case ListMembers::Find:
             //
             // Return an iterator on a value in the list.
             //
@@ -1013,7 +902,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
-        case ListMemberEnums::Head:
+        case ListMembers::Head:
             //
             // Return the current element at the head or FALSE if there
             // isn't one.
@@ -1023,19 +912,12 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
                     pItem->c_str(),
-                    pItem->size() + 1
-                );
+                    pItem->size() + 1);
                 Dest.Type = pStringType;
-
-                //
-                // Returned item must be deleted.
-                //
-
-                delete pItem;
             }
             break;
 
-        case ListMemberEnums::Tail:
+        case ListMembers::Tail:
             //
             // Return the current element at the tail or FALSE if there
             // isn't one.
@@ -1045,19 +927,12 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
                     pItem->c_str(),
-                    pItem->size() + 1
-                );
+                    pItem->size() + 1);
                 Dest.Type = pStringType;
-
-                //
-                // Returned item must be deleted.
-                //
-
-                delete pItem;
             }
             break;
 
-        case ListMemberEnums::CountOf:
+        case ListMembers::CountOf:
             //
             // How many times does an item occur in the list?
             //
@@ -1121,9 +996,7 @@ bool List::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     }
 
     errno_t rc;
-    rc = Conversions::ToString(pThis->Count(),
-        (char *) Destination,
-        BUFFER_SIZE - 1);
+    rc = Conversions::ToString(pThis->Count(), (char *) Destination, BUFFER_SIZE - 1);
     return rc == 0;
 }
 
@@ -1155,24 +1028,9 @@ bool List::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
 //
 
 std::unique_ptr<ValueIterator<std::list<std::string>>> List::GetNewIterator(
-    const std::list<std::string> & refCollection
-) const
+    const std::list<std::string> & refCollection) const
 {
-    return std::unique_ptr<ValueIterator<std::list<std::string>>>(new ListIterator(refCollection));
-}
-
-//
-// Create a new list from source list by selecting items between
-// two iterators.
-//
-
-std::unique_ptr<List> List::Splice(
-    const std::list<std::string>::const_iterator & first,
-    const std::list<std::string>::const_iterator & end
-) const
-{
-    std::unique_ptr<std::list<std::string>> newList(new std::list<std::string>(first, end));
-    return std::unique_ptr<List>(new List(*newList));
+    return std::make_unique<ListIterator>(refCollection);
 }
 
 //
@@ -1181,9 +1039,7 @@ std::unique_ptr<List> List::Splice(
 // of the list, return m_coll.end().
 //
 
-std::list<std::string>::const_iterator List::FindIteratorForPosition(
-    size_t position
-) const
+std::list<std::string>::const_iterator List::FindIteratorForPosition(size_t position) const
 {
     //
     // If position is past the end of the list, return an iterator
@@ -1206,227 +1062,15 @@ std::list<std::string>::const_iterator List::FindIteratorForPosition(
 }
 
 //
-// Create a splice of a list from a sequence of splice indices.
-//
-// Splice takes at least two arguments: a starting position
-// for the returned splice, an optional ending position and
-// an optional 'stride'.  If the starting position is omitted,
-// the entire list is assumed.  If the ending position is omitted,
-// the default is the end of the list.  If the stride is
-// omitted, the default stride is 1.  If the starting
-// position is negative, the offset is assumed to be from the
-// end of the list.  If the ending position is negative, then
-// it is also taken to be from the end of the list.
-// Valid usages are:
-//
-//		Splice[]		- the entire list is copied
-//		Splice[2]		- a copy is made from the third element
-//						  to the end of the list
-//		Splice[-2]		- a copy is made from the second to last
-//						  entry to the end of the list.
-//		Splice[0, 3]	- a copy is made of the first four elements
-//						  of the list.
-//		Splice[0, -2]	- a copy is made of all the elements of the
-//						  list EXCEPT the last element.
-//		Splice[-5, -2]	- a copy is made of the last four elements
-//						  of the list.
-//		Splice[0, -1, 2]
-//						- a copy is made of every other element in
-//						  the list.
-//		Splice[-5, -2, 2]
-//						- a copy is made of every other element of
-//						  the last four elements of the list.
-//
-// If the constraint can not be satisfied, an empty list is returned.
-//
-
-std::unique_ptr<List> List::CreateSplice(const std::string & indices) const
-{
-    //
-    // Split the string into extents.  Each extent represents an argument
-    // for splice.
-    //
-
-    auto arguments = std::make_unique<StringExtensions<std::string>>(indices);
-    auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(","))
-        );
-
-    //
-    // Parse the arguments and return the spliced list.
-    //
-
-    switch (coll->size())
-    {
-        case 0:
-            //
-            // No arguments.  Return a copy of the existing list.
-            //
-
-            return std::unique_ptr<List>(new List(m_coll));
-
-        case 1:
-            //
-            // Return a new list from a starting bound to the end.
-            //
-
-            return CreateSpliceFrom(coll->at(0));
-
-        case 2:
-            //
-            // Return a new list from a starting bound to an ending bound.
-            //
-
-            return CreateSpliceFrom(coll->at(0), coll->at(1));
-
-        case 3:
-            //
-            // Return a new list from a starting bound to an ending bound
-            // with a given 'stride'.
-            //
-
-            return CreateSpliceFrom(coll->at(0), coll->at(1), coll->at(2));
-
-        default:
-            //
-            // Too many arguments.  Return a null pointer.
-            //
-
-            return std::unique_ptr<List>();
-    }
-}
-
-//
-// Create a splice of the form list[arg] or list[-arg].  This returns a splice
-// from the index arg to the end of the list or from -arg to the end of the
-// list.
-//
-// If startIndex is past the end of the list, an empty list is returned.
-//
-
-std::unique_ptr<List> List::CreateSpliceFrom(
-    const std::string & startIndex
-) const
-{
-    long lIndex;
-
-    //
-    // Translate the string to an index value.  Return an empty list
-    // if the index is invalid.
-    //
-
-    if (!Extensions::Strings::FromString(startIndex, &lIndex))
-    {
-        //
-        // Can't convert the start index.
-        //
-
-        return std::unique_ptr<List>(new List);
-    }
-
-    //
-    // Generate a splice from the index to the end [lIndex, end).
-    //
-
-    return Splice(lIndex);
-}
-
-//
-// Create a splice of the form list[arg1, arg2], where arg1 and/or arg2 can be
-// negative.  If either are negative, the values are taken as offsets from the
-// end of the list.
-//
-// If startIndex > endIndex, then an empty list is returned.
-//
-
-std::unique_ptr<List> List::CreateSpliceFrom(
-    const std::string & startIndex,
-    const std::string & endIndex
-) const
-{
-    long lIndex1;
-    long lIndex2;
-
-    //
-    // Translate the strings to index values.  Return an empty list if
-    // either is invalid.
-    //
-
-    if (!Extensions::Strings::FromString(startIndex, &lIndex1)
-        || !Extensions::Strings::FromString(endIndex, &lIndex2))
-    {
-        return std::unique_ptr<List>(new List);
-    }
-
-    //
-    // Generate a splice from the index in the range [lIndex1, lIndex2).
-    //
-
-    return Splice(lIndex1, lIndex2);
-}
-
-//
-// Create a splice of the form list[arg1, arg2], where arg1 and/or arg2 can be
-// negative.  If either are negative, the values are taken as offsets from the
-// end of the list.
-//
-// For the resultant list, the stride'th argument is selected.  That is, for
-// a list [0, 1, 2, 3, 4, 5], where arg1 is 1 and arg2 is 4 and stride is
-// 2 the resultant list is [2, 4].
-//
-// If startIndex > endIndex, then an empty list is returned.
-//
-
-std::unique_ptr<List> List::CreateSpliceFrom(
-    const std::string & startIndex,
-    const std::string & endIndex,
-    const std::string & stride
-) const
-{
-    long lIndex1;
-    long lIndex2;
-    long lStride;
-
-    //
-    // Translate the strings to index values.  Return an empty list if either
-    // are invalid.
-    //
-
-    if (!Extensions::Strings::FromString(startIndex, &lIndex1)
-        || !Extensions::Strings::FromString(endIndex, &lIndex2))
-    {
-        return std::unique_ptr<List>(new List);
-    }
-
-    //
-    // Convert the stride.  It must be a positive number.
-    //
-
-    if (!Extensions::Strings::FromString(stride, &lStride) && (lStride > 0))
-    {
-        //
-        // Can't convert the stride.
-        //
-
-        return std::unique_ptr<List>(new List);
-    }
-
-    return Splice(lIndex1, lIndex2, (unsigned long) lStride);
-}
-
-//
 // Retrieve the index'th value from the list.  Return true if index
 // is in the bounds of the list and false otherwise.  Index can
 // be negative, in which case it is an offset from the end of the
 // list.
 //
 
-bool List::Item(
-    const std::string & index,
-    const std::string ** const item
-) const
+bool List::Item(const std::string & index, const std::string ** const item) const
 {
-    long lIndex;
+    size_t lIndex;
 
     //
     // Convert the string to an index value.  Fail if we can not convert it.
@@ -1441,7 +1085,7 @@ bool List::Item(
     // Get the item from the position.
     //
 
-    return Item((size_t) lIndex, item);
+    return Item(lIndex, item);
 }
 
 //
@@ -1452,7 +1096,7 @@ bool List::Item(
 
 bool List::Insert(const std::string & args)
 {
-    long lIndex;
+    size_t lIndex;
 
     //
     // Split the arguments.  There must be at least two of them -- an index
@@ -1466,8 +1110,7 @@ bool List::Insert(const std::string & args)
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
     auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(","))
-        );
+        arguments->Split(std::string(",")));
 
     //
     // There must be at least two arguments.
@@ -1494,7 +1137,7 @@ bool List::Insert(const std::string & args)
 
     coll->erase(coll->cbegin());
 
-    return Insert((size_t) lIndex, *coll);
+    return Insert(lIndex, *coll);
 }
 
 //
@@ -1510,15 +1153,14 @@ void List::AppendItems(const std::string & args)
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
     auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(","))
-        );
+        arguments->Split(std::string(",")));
 
     std::for_each(coll->cbegin(),
-        coll->cend(),
-        [this] (const std::string & item)
-        {
-            Append(item);
-        }
+                  coll->cend(),
+                  [this] (const std::string & item)
+                  {
+                      Append(item);
+                  }
     );
 }
 
@@ -1530,7 +1172,7 @@ void List::AppendItems(const std::string & args)
 
 bool List::Erase(const std::string & index)
 {
-    long lIndex;
+    size_t lIndex;
 
     //
     // Acquire the index value.
@@ -1545,7 +1187,7 @@ bool List::Erase(const std::string & index)
     // And erase the item.
     //
 
-    return Erase((size_t) lIndex);
+    return Erase(lIndex);
 }
 
 //
@@ -1565,8 +1207,7 @@ bool List::Replace(const std::string & args, size_t * count)
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
     auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(","))
-        );
+        arguments->Split(std::string(",")));
 
     if (coll->size() != 2)
     {
@@ -1588,16 +1229,83 @@ bool List::Replace(const std::string & args, size_t * count)
 }
 
 //
+// Create a splice from a set of arguments. The arguments can be of
+// the following forms:
+//
+//      Argument            Result
+//      []                  Entire list is returned.
+//      [start]             List from start to end is returned.
+//      [start, length]     List from start composed of at most length
+//                          entries is returned.
+//
+
+std::unique_ptr<List> List::CreateSplice(const std::string & args) const
+{
+    //
+    // Split the strings and find out how many arguments there are.
+    //
+
+    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
+    auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
+        arguments->Split(std::string(",")));
+
+    //
+    // Default iterators are beginning and ending.
+    //
+
+    auto start_it = m_coll.cbegin();
+    auto end_it = m_coll.cend();
+
+    //
+    // Update the iterators if there are arguments.
+    //
+
+    size_t startIndex = Count();            // Default start is the end.
+    size_t endIndex = Count();              // Default end is the end.
+
+    //
+    // There is at least a starting index.
+    if (coll->size() > 0)
+    {
+        //
+        // Select from index to end if index is valid. Otherwise use the end as the
+        // starting element.
+        //
+
+        if (IndexValueFromString((*coll)[0], &startIndex))
+        {
+            start_it = FindIteratorForPosition(startIndex);
+        }
+    }
+
+    //
+    // Two arguments means there is a start and length. Pick up the length.
+    if (coll->size() == 2)
+    {
+        size_t length;
+
+        //
+        // Select the length and add it to the start if it is valid.
+        //
+
+        if (IndexValueFromString((*coll)[1], &length))
+        {
+            end_it = FindIteratorForPosition(startIndex + length);
+        }
+    }
+
+    std::list<std::string> splice(start_it, end_it);
+    return std::make_unique<List>(splice);
+}
+
+//
 // Convert an index value from a string.  Return true if the
 // string could be converted and false otherwise.
 //
 
-bool List::IndexValueFromString(
-    const std::string & stringIndex,
-    long * longIndex
-) const
+bool List::IndexValueFromString(const std::string & stringIndex, size_t * longIndex) const
 {
-    long lIndex;
+    size_t lIndex;
 
     //
     // Select all elements of the list from startIndex to the end of
@@ -1630,37 +1338,12 @@ bool List::IndexValueFromString(
     else
     {
         //
-        // If the index is positive, select from this index to the end of the
-        // list.  Otherwise, use the index as an offset from the end of the list.
+        // Fail if the index is past the end of the list.
         //
 
-        if (lIndex >= 0)
+        if ((size_t) lIndex >= Count())
         {
-            //
-            // Fail if the index is past the end of the list.
-            //
-
-            if ((size_t) lIndex >= Count())
-            {
-                return false;
-            }
-        }
-        else
-        {
-            //
-            // If the index would precede the list, then it is out of range.
-            //
-
-            if ((lIndex + (long) Count()) < 0)
-            {
-                return false;
-            }
-
-            //
-            // Convert the index to an offset from the beginning of the list.
-            //
-
-            lIndex = (long) Count() + lIndex;
+            return false;
         }
     }
 
@@ -1675,40 +1358,3 @@ bool List::IndexValueFromString(
 
     return true;
 }
-
-//
-// Undefine max function -- we want to use the template function instead.
-//
-
-#if defined(max)
-#undef max
-#endif
-
-//
-// Normalize a signed index to be relative to the start of the
-// list.  For example, an index of -1 is the length - 1.
-//
-
-long List::NormalizeIndex(long originalIndex) const
-{
-    long newIndex;
-
-    //
-    // If the index is positive, use it as is.
-    //
-
-    if (originalIndex >= 0)
-    {
-        return originalIndex;
-    }
-
-    newIndex = ((long) m_coll.size()) + originalIndex;
-
-    //
-    // If the newIndex is less than zero, use zero.
-    //
-
-    return std::max(0L, newIndex);
-}
-
-

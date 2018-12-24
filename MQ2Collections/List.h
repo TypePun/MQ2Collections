@@ -4,9 +4,6 @@
 
 #pragma once
 
-#if !defined(__LIST__)
-#define __LIST__
-
 #include <string>
 #include <list>
 
@@ -34,7 +31,7 @@ namespace Collections
             // MQ2Type Members
             //
 
-            enum class ListIteratorMemberEnums
+            enum class ListIteratorMembers
             {
                 Reset = 1,
                 Advance,
@@ -55,14 +52,13 @@ namespace Collections
 
             explicit ListIterator(
                 const std::list<std::string> & refCollection,
-                const std::string & refKey
-            );
+                const std::string & refKey);
 
             //
             // Destructor.
             //
 
-            virtual ~ListIterator();
+            ~ListIterator();
 
             //
             // Don't permit copy construction and assignment since the MQ2Type does
@@ -89,19 +85,19 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            virtual bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
 
             //
             // Convert the list to a string -- output the current item.
             //
 
-            virtual bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  
             //
 
-            virtual bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
+            bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
 
         protected:
 
@@ -125,7 +121,6 @@ namespace Collections
             //
 
             static const MQ2TYPEMEMBER ListIteratorMembers[];
-
         };
 
         //
@@ -134,12 +129,11 @@ namespace Collections
         //
 
         class List : public Collection <
-            std::list<std::string>,
-            std::string,
-            std::string,
-            ValueIterator<std::list<std::string>>
-        >,
-            public ObjectType<List>
+                                std::list<std::string>,
+                                std::string,
+                                std::string,
+                                ValueIterator<std::list<std::string>>>,
+                    public ObjectType<List>
         {
         public:
 
@@ -147,7 +141,7 @@ namespace Collections
             // MQ2Type Members
             //
 
-            enum class ListMemberEnums
+            enum class ListMembers
             {
                 Count = 1,
                 Clear,
@@ -176,10 +170,17 @@ namespace Collections
             List();
 
             //
+            // Create a new list from an input std::list.
+            //
+
+            List(const std::list<std::string> & source);
+
+
+            //
             // Destructor.
             //
 
-            virtual ~List();
+            ~List();
 
             //
             // Don't permit copy construction and assignment since the MQ2Type
@@ -246,7 +247,7 @@ namespace Collections
                 // list before the iterator.
                 //
 
-                m_coll.insert(it, sequence.begin(), sequence.end());
+                m_coll.insert(it, sequence.cbegin(), sequence.cend());
 
                 return true;
             }
@@ -290,32 +291,28 @@ namespace Collections
             // of items replaced.
             //
 
-            size_t Replace(
-                const std::string & item,
-                const std::string & newItem
-            );
+            size_t Replace(const std::string & item, const std::string & newItem);
 
             //
             // Return an iterator to a requested key or to the end of the list.
             //
 
             std::unique_ptr<ValueIterator<std::list<std::string>>> Find(
-                const std::string & refKey
-            ) const;
+                const std::string & refKey) const;
 
             //
             // Remove and return the head of the list.  Return true if there
             // was a head and false otherwise.
             //
 
-            bool Head(const std::string ** item);
+            bool Head(std::unique_ptr<const std::string> * item);
 
             //
             // Remove and return the tail of the list.  Return true if there
             // was a tail and false otherwise.
             //
 
-            bool Tail(const std::string ** item);
+            bool Tail(std::unique_ptr<const std::string> * item);
 
             //
             // Return a count of how many times item occurs in the list.
@@ -324,50 +321,37 @@ namespace Collections
             size_t CountOf(const std::string & item) const;
 
             //
-            // Return a splice of a list based upon a starting position.  If
-            // position is beyond the end of the list, an empty list is
-            // returned.  A negative index is an offset from the end
-            // of the list.
+            // Return a splice of a list from a starting index to the end.  If position is beyond
+            // the end of the list, an empty list is returned.
             //
 
-            std::unique_ptr<List> Splice(long index) const;
+            std::unique_ptr<List> Splice(size_t index) const;
 
             //
             // Create a splice from a starting to an ending offset.
             //
 
-            std::unique_ptr<List> Splice(long startIndex, long endIndex) const;
-
-            //
-            // Create a splice between two offsets, selecting a stride'th
-            // element.
-            //
-
-            std::unique_ptr<List> Splice(
-                long startIndex,
-                long endIndex,
-                long stride
-            ) const;
+            std::unique_ptr<List> Splice(size_t startIndex, size_t length) const;
 
             //
             // When a member function is called on the type, this method is called.
             // It returns true if the method succeeded and false otherwise.
             //
 
-            virtual bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
 
             //
             // Convert the list to a string -- output the count of items.
             //
 
-            virtual bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  Treat
             // this as a list Append call.
             //
 
-            virtual bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
+            bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
 
             //
             // Used by the testing framework to call GetMember through the
@@ -383,123 +367,20 @@ namespace Collections
             //
 
             std::unique_ptr<ValueIterator<std::list<std::string>>> GetNewIterator(
-                const std::list<std::string> & refCollection
-            ) const;
-
-            //
-            // Construct a new List from a list of strings.
-            //
-
-            List(const std::list<std::string> & list);
-
-            //
-            // Create a new list from source list by selecting items between
-            // two iterators.
-            //
-
-            std::unique_ptr<List> Splice(
-                const std::list<std::string>::const_iterator & first,
-                const std::list<std::string>::const_iterator & end
-            ) const;
-
-            //
-            // Return an iterator for a position index.  Position 0 means
-            // the beginning of the list.  If position is beyond the end
-            // of the list, return m_coll.end().
-            //
-
-            std::list<std::string>::const_iterator FindIteratorForPosition(
-                size_t position
-            ) const;
+                const std::list<std::string> & refCollection) const;
 
         private:
 
             //
-            // Function object for determining if a value is not a stride
-            // value.
-            //
-
-            class IsNotStride
-            {
-            public:
-
-                IsNotStride(const unsigned long lStride)
-                    : m_lStride(lStride),
-                    m_lCurrent(lStride)
-                {
-                }
-
-                bool operator()(const std::string & item)
-                {
-                    if (m_lCurrent == m_lStride)
-                    {
-                        m_lCurrent = 1;
-                        return false;
-                    }
-
-                    ++m_lCurrent;
-                    return true;
-                }
-
-            private:
-
-                //
-                // Stride value to compare against.
-                //
-
-                const unsigned long m_lStride;
-
-                //
-                // Current iteration.
-                //
-
-                long m_lCurrent;
-            };
-
-            //
-            // Create a splice of a list from a sequence of splice indices.
-            //
-
-            std::unique_ptr<List> CreateSplice(const std::string & indices) const;
-
-            //
-            // Create a splice from the existing list and return it to the
-            // caller, or return a null reference if no splice could be
-            // created.
-            //
-
-            std::unique_ptr<List> CreateSpliceFrom(
-                const std::string & startIndex
-            ) const;
-
-            std::unique_ptr<List> CreateSpliceFrom(
-                const std::string & startIndex,
-                const std::string & endIndex
-            ) const;
-
-            std::unique_ptr<List> CreateSpliceFrom(
-                const std::string & startIndex,
-                const std::string & endIndex,
-                const std::string & stride
-            ) const;
-
-            //
             // Retrieve the index'th value from the list.  Return true if index
-            // is in the bounds of the list and false otherwise.  Index can
-            // be negative, in which case it is an offset from the end of the
-            // list.
+            // is in the bounds of the list and false otherwise.
             //
 
-            bool Item(
-                const std::string & index,
-                const std::string ** const item
-            ) const;
+            bool Item(const std::string & index, const std::string ** const item) const;
 
             //
             // Insert a sequence of items starting at index into the current
-            // list.  Index can be negative, in which case it is an offset from
-            // the end of the list.  Return true if the items could be inserted
-            // and false otherwise.
+            // list.  Return true if the items could be inserted and false otherwise.
             //
 
             bool Insert(const std::string & args);
@@ -511,9 +392,8 @@ namespace Collections
             void AppendItems(const std::string & args);
 
             //
-            // Erase an index in the list.  Index can be negative, in which
-            // case it is an offset from the end of the list.  Return true if
-            // the item was erased (deleted) and false otherwise.
+            // Erase an index in the list.  Return true if the item was erased (deleted)
+            // and false otherwise.
             //
 
             bool Erase(const std::string & index);
@@ -528,21 +408,33 @@ namespace Collections
             bool Replace(const std::string & args, size_t * count);
 
             //
+            // Create a splice from a set of arguments. The arguments can be of
+            // the following forms:
+            //
+            //      Argument            Result
+            //      []                  Entire list is returned.
+            //      [start]             List from start to end is returned.
+            //      [start, length]     List from start composed of at most length
+            //                          entries is returned.
+            //
+
+            std::unique_ptr<List> CreateSplice(const std::string & args) const;
+
+            //
+            // Return an iterator for a position index.  Position 0 means
+            // the beginning of the list.  If position is beyond the end
+            // of the list, return m_coll.end().
+            //
+
+            std::list<std::string>::const_iterator FindIteratorForPosition(size_t position) const;
+
+            //
             // Convert an index value from a string.  Return true if the
             // string could be converted and false otherwise.
             //
 
-            bool IndexValueFromString(
-                const std::string & stringIndex,
-                long * longIndex
-            ) const;
-
-            //
-            // Normalize a signed index to be relative to the start of the
-            // list.  For example, an index of -1 is the length - 1.
-            //
-
-            long NormalizeIndex(long originalIndex) const;
+            bool IndexValueFromString(const std::string & stringIndex,
+                                      size_t * longIndex) const;
 
             //
             // Internal character buffer for a returned item.
@@ -558,4 +450,3 @@ namespace Collections
         };
     }  // namespace Containers
 }  // namespace Collections
-#endif
