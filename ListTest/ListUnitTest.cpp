@@ -900,7 +900,7 @@ namespace ListTest
 
             for (long index = 0; index < sizeof(elements) / sizeof(elements[0]); ++index)
             {
-                Assert::AreEqual(l.Index(elements[index]), index, L"Index was incorrect for element");
+                Assert::AreEqual(l.Index(elements[index]), index, L"Index was incorrect for element.");
             }
         }
 
@@ -929,45 +929,16 @@ namespace ListTest
             // not in the list.
             //
 
-            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1");
+            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1.");
         }
 
         //
-        /***
+        // Retrieve the item at position zero in an empty list.
         //
-        // Test the List Append method.
-        //
-        // Result: new elements can be added to a list.
+        // Result: the item method should return false.
         //
 
-        TEST_METHOD(ListAppend)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            Assert::IsTrue(l.Count() == 5,
-                L"There must be five elements in the list",
-                LINE_INFO()
-            );
-        }
-
-
-        //
-        // Test the list item method on an empty list.
-        //
-        // Result: Zero should be returned.
-        //
-
-        TEST_METHOD(ListItem1)
+        TEST_METHOD(ItemEmptyList)
         {
             //
             // Create a new list.
@@ -981,19 +952,16 @@ namespace ListTest
             // Look up an entry beyond the end of the list.  It should fail.
             //
 
-            Assert::IsFalse(l.Item(l.Count() + 1, &pitem),
-                L"Item for empty list should fail",
-                LINE_INFO()
-            );
+            Assert::IsFalse(l.Item(0, &pitem), L"Item for empty list should fail.");
         }
 
         //
-        // Test the list item method.
+        // Retrieve each item in a populated list.
         //
-        // Result: return an item at a position in the list.
+        // Result: the items should be returned in order.
         //
 
-        TEST_METHOD(ListItem2)
+        TEST_METHOD(ItemCompareEachEntry)
         {
             std::string elements[] =
             {
@@ -1021,40 +989,16 @@ namespace ListTest
             //
 
             CompareListToElements(l, elements, sizeof(elements) / sizeof(elements[0]));
-
-            const std::string *pitem;
-
-            //
-            // Look up an entry beyond the end of the list.  It should fail.
-            //
-
-            Assert::IsFalse(l.Item(l.Count() + 1, &pitem),
-                L"Item beyond list should fail",
-                LINE_INFO()
-            );
         }
 
         //
-        // Test the list insert method where a list is inserted
-        // at the start of another list.
+        // Retrieve an item after the end of a list.
         //
-        // Result: New List composed of first list with second list prepended.
+        // Result: the items should be returned in order.
         //
 
-        TEST_METHOD(ListInsert1)
+        TEST_METHOD(ItemAfterListEnd)
         {
-            std::string insertedelements[] =
-            {
-                "A",
-                "B",
-                "C",
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
             //
             // Create a new list.
             //
@@ -1068,69 +1012,21 @@ namespace ListTest
             AppendFive(l);
 
             //
-            // Create a new list with three elements.
+            // Retrieve and item after the list end.
             //
 
-            std::list<std::string> l1;
-
-            //
-            // Append three elements to the second list.
-            //
-
-            l1.push_back(std::string("A"));
-            l1.push_back(std::string("B"));
-            l1.push_back(std::string("C"));
-
-            //
-            // Insert the new list at the start of l.
-            //
-
-            Assert::IsTrue(l.Insert(0, l1),
-                L"Could not insert at start of list",
-                LINE_INFO()
-            );
-
-            //
-            // l should be 8 entries long.
-            //
-
-            Assert::IsTrue(l.Count() == 8,
-                L"Target list should be 8 entries long",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
+            const std::string * pitem;
+            Assert::IsFalse(l.Item(l.Count() + 1, &pitem), L"Item beyond end should return false.");
         }
 
         //
-        // Test the list insert method where a list is inserted
-        // at the end of another list.
+        // Insert an empty list into an empty list.
         //
-        // Result: New List composed of first list with second list appended.
+        // Result: the list should be empty.
         //
 
-        TEST_METHOD(ListInsert2)
+        TEST_METHOD(InsertEmptyListIntoEmptyList)
         {
-            std::string insertedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five",
-                "A",
-                "B",
-                "C"
-            };
-
             //
             // Create a new list.
             //
@@ -1138,214 +1034,33 @@ namespace ListTest
             List l;
 
             //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
+            // Create a new list with no elements.
             //
 
             std::list<std::string> l1;
 
             //
-            // Append three elements to the second list.
+            // Insert the empty list at the start of l.
             //
 
-            l1.push_back(std::string("A"));
-            l1.push_back(std::string("B"));
-            l1.push_back(std::string("C"));
+            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
 
             //
-            // Insert the new list at the end of l.
+            // l should be zero entries long.
             //
 
-            Assert::IsTrue(l.Insert(l.Count(), l1),
-                L"Could not insert at end of list",
-                LINE_INFO()
-            );
-
-            //
-            // l should be 8 entries long.
-            //
-
-            Assert::IsTrue(l.Count() == 8,
-                L"Target list should be 8 entries long",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
+            Assert::AreEqual(l.Count(), (size_t) 0, L"Final list should be empty.");
         }
 
         //
-        // Test the list insert method where a list is inserted
-        // in the middle of another list.
+        // Insert an empty list at the start of a list.
         //
-        // Result: New List composed of first list with second list
-        // inserted in the middle of the first list.
+        // Result: existing list should be the same.
         //
 
-        TEST_METHOD(ListInsert3)
-        {
-            std::string insertedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "A",
-                "B",
-                "C",
-                "Four",
-                "Five",
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1;
-
-            //
-            // Append three elements to the second list.
-            //
-
-            l1.push_back(std::string("A"));
-            l1.push_back(std::string("B"));
-            l1.push_back(std::string("C"));
-
-            //
-            // Insert the new list in the middle of the list.
-            //
-
-            Assert::IsTrue(l.Insert((l.Count() / 2) + 1, l1),
-                L"Could not insert in middle of list",
-                LINE_INFO()
-            );
-
-            //
-            // l should be 8 entries long.
-            //
-
-            Assert::IsTrue(l.Count() == 8,
-                L"Target list should be 8 entries long",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
-        }
-
-        //
-        // Test the list insert method where a list is inserted
-        // at in invalid entry past the end of the list.
-        //
-        // Result: List should not be modified.
-        //
-
-        TEST_METHOD(ListInsert4)
+        TEST_METHOD(InsertEmptyListAtStartOfList)
         {
             std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1;
-
-            //
-            // Append three elements to the second list.
-            //
-
-            l1.push_back(std::string("A"));
-            l1.push_back(std::string("B"));
-            l1.push_back(std::string("C"));
-
-            //
-            // Insert the new list after the end of the list.
-            //
-
-            Assert::IsFalse(l.Insert(l.Count() + 1, l1),
-                L"Insert past end should fail",
-                LINE_INFO()
-            );
-
-            //
-            // l should be 5 entries long (unmodified).
-            //
-
-            Assert::IsTrue(l.Count() == 5,
-                L"Target list should be 5 entries long",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the list insert method where an empty list is inserted into
-        // an existing list.
-        //
-        // Result: Existing list should be unmodified.
-        //
-
-        TEST_METHOD(ListInsert5)
-        {
-            std::string insertedelements[] =
             {
                 "One",
                 "Two",
@@ -1376,19 +1091,13 @@ namespace ListTest
             // Insert an empty list at the start of the list.
             //
 
-            Assert::IsTrue(l.Insert(0, l1),
-                L"Could not insert at start of list",
-                LINE_INFO()
-            );
+            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
 
             //
             // l should be 5 entries long.
             //
 
-            Assert::IsTrue(l.Count() == 5,
-                L"Target list should be 5 entries long",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1396,70 +1105,385 @@ namespace ListTest
 
             CompareListToElements(
                 l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
-
-            //
-            // Insert the empty list at the end of l.
-            //
-
-            Assert::IsTrue(l.Insert(l.Count(), l1),
-                L"Could not insert at end of list",
-                LINE_INFO()
-            );
-
-            //
-            // l should be 5 entries long.
-            //
-
-            Assert::IsTrue(l.Count() == 5,
-                L"Target list should be 5 entries long",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
-
-            //
-            // Insert the empty list in the middle of the list.
-            //
-
-            Assert::IsTrue(l.Insert(2, l1),
-                L"Could not insert at middle of list",
-                LINE_INFO()
-            );
-
-            //
-            // l should be 5 entries long.
-            //
-
-            Assert::IsTrue(l.Count() == 5,
-                L"Target list should be 5 entries long",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
+                elements,
+                sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the list insert method where a list is inserted into an empty
-        // list.
+        // Insert an empty list at the end of a list.
+        //
+        // Result: existing list should be the same.
+        //
+
+        TEST_METHOD(InsertEmptyListAtEndOfList)
+        {
+            std::string elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Create a new list with no elements.
+            //
+
+            std::list<std::string> l1;
+
+            //
+            // Insert an empty list at the end of the list.
+            //
+
+            Assert::IsTrue(l.Insert(l.Count() - 1, l1), L"Could not insert at end of list.");
+
+            //
+            // l should be 5 entries long.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(
+                l,
+                elements,
+                sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert an empty list in the middle of a list.
+        //
+        // Result: existing list should be the same.
+        //
+
+        TEST_METHOD(InsertEmptyListInMiddleOfList)
+        {
+            std::string elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Create a new list with no elements.
+            //
+
+            std::list<std::string> l1;
+
+            //
+            // Insert an empty list in the middle of the list.
+            //
+
+            Assert::IsTrue(l.Insert(l.Count() / 2, l1), L"Could not insert in the middle of list.");
+
+            //
+            // l should be 5 entries long.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(
+                l,
+                elements,
+                sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list at the start of another list.
+        //
+        // Result: new list is prepended to the old list.
+        //
+
+        TEST_METHOD(InsertListAtStartOfAnotherList)
+        {
+            std::string insertedelements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Create a new list with three elements.
+            //
+
+            std::list<std::string> l1 =
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            //
+            // Insert a new list at the start of l.
+            //
+
+            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
+
+            //
+            // l should be 8 entries long.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(
+                l,
+                insertedelements,
+                sizeof(insertedelements) / sizeof(insertedelements[0]));
+        }
+
+        //
+        // Insert a list at the end of another list.
+        //
+        // Result: new list is appended to the old list.
+        //
+
+        TEST_METHOD(InsertListAtEndOfAnotherList)
+        {
+            std::string insertedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five",
+                "A",
+                "B",
+                "C"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Create a new list with three elements.
+            //
+
+            std::list<std::string> l1 =
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            //
+            // Insert the new list at the end of l.
+            //
+
+            Assert::IsTrue(l.Insert(l.Count(), l1), L"Could not insert at end of list.");
+
+            //
+            // l should be 8 entries long.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(
+                l,
+                insertedelements,
+                sizeof(insertedelements) / sizeof(insertedelements[0]));
+        }
+
+        //
+        // Insert a list in the middle of another list.
+        //
+        // Result: the new list is composed of first list with second list
+        // inserted in the middle of the first list.
+        //
+
+        TEST_METHOD(InsertListInMiddleOfAnotherList)
+        {
+            std::string insertedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "A",
+                "B",
+                "C",
+                "Four",
+                "Five",
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Create a new list with three elements.
+            //
+
+            std::list<std::string> l1 =
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            //
+            // Insert the new list in the middle of the list.
+            //
+
+            Assert::IsTrue(l.Insert((l.Count() / 2) + 1, l1), L"Could not insert in middle of list.");
+
+            //
+            // l should be 8 entries long.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(
+                l,
+                insertedelements,
+                sizeof(insertedelements) / sizeof(insertedelements[0]));
+        }
+
+        //
+        // Insert a list at in invalid entry past the end of the list.
+        //
+        // Result: list should not be modified.
+        //
+
+        TEST_METHOD(InsertPastEnd)
+        {
+            std::string elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Create a new list with three elements.
+            //
+
+            std::list<std::string> l1 =
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            //
+            // Insert the new list after the end of the list.
+            //
+
+            Assert::IsFalse(l.Insert(l.Count() + 1, l1), L"Insert past end should fail.");
+
+            //
+            // l should be 5 entries long (unmodified).
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(
+                l,
+                elements,
+                sizeof(elements) / sizeof(elements[0]));
+        }
+
+
+        //
+        // Insert a list into an empty list.
         //
         // Result: List should contain the inserted elements.
         //
@@ -1494,19 +1518,13 @@ namespace ListTest
             // Insert the empty list at the start of l.
             //
 
-            Assert::IsTrue(l.Insert(0, l1),
-                L"Could not insert at start of list",
-                LINE_INFO()
-            );
+            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list");
 
             //
             // l should be 3 entries long.
             //
 
-            Assert::IsTrue(l.Count() == 3,
-                L"Target list should be 3 entries long",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Count(), (size_t) 3, L"Target list should be 3 entries long");
 
             //
             // Verify the elements in the list.
@@ -1515,18 +1533,19 @@ namespace ListTest
             CompareListToElements(
                 l,
                 insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0])
-            );
+                sizeof(insertedelements) / sizeof(insertedelements[0]));
         }
 
+
         //
-        // Test the list insert method where an empty list is inserted into an
-        // empty list.
+        /***
         //
-        // Result: Original list should be empty.
+        // Test the List Append method.
+        //
+        // Result: new elements can be added to a list.
         //
 
-        TEST_METHOD(ListInsert7)
+        TEST_METHOD(ListAppend)
         {
             //
             // Create a new list.
@@ -1535,29 +1554,17 @@ namespace ListTest
             List l;
 
             //
-            // Create a new list with no elements.
+            // Append five elements to the list.
             //
 
-            std::list<std::string> l1;
+            AppendFive(l);
 
-            //
-            // Insert the empty list at the start of l.
-            //
-
-            Assert::IsTrue(l.Insert(0, l1),
-                L"Could not insert at start of list",
-                LINE_INFO()
-            );
-
-            //
-            // l should be zero entries long.
-            //
-
-            Assert::IsTrue(l.Count() == 0,
-                L"Target list should be 0 entries long",
+            Assert::IsTrue(l.Count() == 5,
+                L"There must be five elements in the list",
                 LINE_INFO()
             );
         }
+
 
         //
         // Test the list sort method.
@@ -5869,8 +5876,7 @@ namespace ListTest
         void CompareListToElements(
             const List & l,
             const std::string elements[],
-            size_t numElements
-        ) const
+            size_t numElements) const
         {
             //
             // Retrieve the item at a position in the list.
@@ -5879,15 +5885,9 @@ namespace ListTest
             const std::string *pitem;
             for (size_t index = 0; index < numElements; ++index)
             {
-                Assert::IsTrue(l.Item(index, &pitem),
-                    L"Index was incorrect for element",
-                    LINE_INFO()
-                );
+                Assert::IsTrue(l.Item(index, &pitem), L"Index was incorrect for element.");
 
-                Assert::IsTrue(*pitem == elements[index],
-                    L"Returned string does not match expected string",
-                    LINE_INFO()
-                );
+                Assert::AreEqual(*pitem, elements[index], L"Returned string does not match expected string");
             }
         }
 

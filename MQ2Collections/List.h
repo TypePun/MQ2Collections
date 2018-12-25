@@ -190,7 +190,6 @@ namespace Collections
             List(const List &) = delete;
             const List &operator=(const List &) = delete;
 
-
             //
             // Return the name of this type - list.
             //
