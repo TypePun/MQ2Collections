@@ -1469,7 +1469,7 @@ namespace ListTest
             // l should be 5 entries long (unmodified).
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long");
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1485,10 +1485,10 @@ namespace ListTest
         //
         // Insert a list into an empty list.
         //
-        // Result: List should contain the inserted elements.
+        // Result: list should contain the inserted elements.
         //
 
-        TEST_METHOD(ListInsert6)
+        TEST_METHOD(InsertIntoEmptyList)
         {
             std::string insertedelements[] =
             {
@@ -1518,13 +1518,13 @@ namespace ListTest
             // Insert the empty list at the start of l.
             //
 
-            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list");
+            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
 
             //
             // l should be 3 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 3, L"Target list should be 3 entries long");
+            Assert::AreEqual(l.Count(), (size_t) 3, L"Target list should be 3 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1536,16 +1536,13 @@ namespace ListTest
                 sizeof(insertedelements) / sizeof(insertedelements[0]));
         }
 
-
         //
-        /***
+        // Sort an empty list.
         //
-        // Test the List Append method.
-        //
-        // Result: new elements can be added to a list.
+        // Result: empty list should be returned.
         //
 
-        TEST_METHOD(ListAppend)
+        TEST_METHOD(SortEmptyList)
         {
             //
             // Create a new list.
@@ -1554,25 +1551,25 @@ namespace ListTest
             List l;
 
             //
-            // Append five elements to the list.
+            // Sort the list.
             //
 
-            AppendFive(l);
+            l.Sort();
 
-            Assert::IsTrue(l.Count() == 5,
-                L"There must be five elements in the list",
-                LINE_INFO()
-            );
+            //
+            // List should contain zero elements.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 0, L"List must have zero entries.");
         }
 
+        //
+        // Sort the list.
+        //
+        // Result: list should be sorted.
+        //
 
-        //
-        // Test the list sort method.
-        //
-        // Result: List should be sorted.
-        //
-
-        TEST_METHOD(ListSort)
+        TEST_METHOD(SortList)
         {
             std::string sortedelements[] =
             {
@@ -1602,25 +1599,57 @@ namespace ListTest
             l.Sort();
 
             //
+            // List must be five in length.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Sorted list must be same length.");
+
+            //
             // Verify the elements are sorted.
             //
 
             CompareListToElements(
                 l,
                 sortedelements,
-                sizeof(sortedelements) / sizeof(sortedelements[0])
-            );
+                sizeof(sortedelements) / sizeof(sortedelements[0]));
         }
 
         //
-        // Test the list reverse method.
+        // Reverse an empty list.
         //
-        // Result: List should be reversed.
+        // Result: an empty list should be returned.
         //
 
-        TEST_METHOD(ListReverse)
+        TEST_METHOD(ReverseAnEmptyList)
         {
-            std::string reversedelements[] =
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Reverse the list.
+            //
+
+            l.Reverse();
+
+            //
+            // List must contain zero elements.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 0, L"Reversed list must be empty.");
+        }
+
+        //
+        // Reverse the list.
+        //
+        // Result: list should be reversed.
+        //
+
+        TEST_METHOD(ReverseList)
+        {
+            std::string reservsedelements[] =
             {
                 "Five",
                 "Four",
@@ -1648,15 +1677,117 @@ namespace ListTest
             l.Reverse();
 
             //
+            // List must be five in length.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 5, L"Reversed list must be same length.");
+
+            //
             // Verify the elements are reversed.
             //
 
             CompareListToElements(
                 l,
-                reversedelements,
-                sizeof(reversedelements) / sizeof(reversedelements[0])
-            );
+                reservsedelements,
+                sizeof(reservsedelements) / sizeof(reservsedelements[0]));
         }
+
+        //
+        // Append an item to an empty list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendToEmptyList)
+        {
+            std::string appendedelements[] =
+            {
+                "One"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append an item to the list
+            //
+
+            l.Append("One");
+
+            //
+            // Verify the list has one item.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 1, L"List length must be one.");
+
+            //
+            // Verify the elements are correct.
+            //
+
+            CompareListToElements(
+                l,
+                appendedelements,
+                sizeof(appendedelements) / sizeof(appendedelements[0]));
+        }
+
+        //
+        // Append an item to a populated list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendToList)
+        {
+            std::string appendedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five",
+                "One",
+                "Two"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Append an item to the list
+            //
+
+            l.Append("One");
+            l.Append("Two");
+
+            //
+            // Verify the list has seven item.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 7, L"List length must be seven.");
+
+            //
+            // Verify the elements are correct.
+            //
+
+            CompareListToElements(
+                l,
+                appendedelements,
+                sizeof(appendedelements) / sizeof(appendedelements[0]));
+        }
+
+        /***
 
         //
         // Test the list remove method, removing the first element.
