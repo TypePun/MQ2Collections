@@ -1995,7 +1995,7 @@ namespace ListTest
         }
 
         //
-        // Tuplicate a list and remove an element.
+        // Duplicate a list and remove an element.
         //
         // Result: removed item should not be in the list and the remove
         // count should be two.
@@ -2061,16 +2061,34 @@ namespace ListTest
                 sizeof(removedelements) / sizeof(removedelements[0]));
         }
 
-
-        /***
-
         //
-        // Test the list erase method, removing the first element.
+        // Erase an item from an empty list.
         //
-        // Result: Erased item should not be in the list.
+        // Result: erase should return false.
         //
 
-        TEST_METHOD(ListErase1)
+        TEST_METHOD(EraseFromEmptyList)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Erase an element not in the list element.
+            //
+
+            Assert::IsFalse(l.Erase(0), L"No elements should be removed from an empty list.");
+        }
+
+        //
+        // Erase the first element.
+        //
+        // Result: erase should succeed and the erased item should not be in the list.
+        //
+
+        TEST_METHOD(EraseFirstItem)
         {
             std::string erasedelements[] =
             {
@@ -2096,10 +2114,7 @@ namespace ListTest
             // Erase the first element. The erase should succeed.
             //
 
-            Assert::IsTrue(l.Erase(0),
-                L"Erase should succeed for first element",
-                LINE_INFO()
-            );
+            Assert::IsTrue(l.Erase(0), L"Erase should succeed for first element.");
 
             //
             // Verify the element was erased.
@@ -2108,18 +2123,16 @@ namespace ListTest
             CompareListToElements(
                 l,
                 erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0])
-            );
+                sizeof(erasedelements) / sizeof(erasedelements[0]));
         }
 
         //
-        // Test the list erase method, erasing a middle element.
+        // Erasing a middle element.
         //
-        // Result: Erased item should not be in the list and the erase method
-        // should succeed.
+        // Result: erase should succeed and the erased item should not be in the list.
         //
 
-        TEST_METHOD(ListErase2)
+        TEST_METHOD(EraseMiddleItem)
         {
             std::string erasedelements[] =
             {
@@ -2145,10 +2158,7 @@ namespace ListTest
             // Erase the third element.
             //
 
-            Assert::IsTrue(l.Erase(2),
-                L"Middle element should be erased from the list",
-                LINE_INFO()
-            );
+            Assert::IsTrue(l.Erase(2), L"Middle element should be erased from the list.");
 
             //
             // Verify the element was erased.
@@ -2157,18 +2167,16 @@ namespace ListTest
             CompareListToElements(
                 l,
                 erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0])
-            );
+                sizeof(erasedelements) / sizeof(erasedelements[0]));
         }
 
         //
-        // Test the list erase method, erasing the last element.
+        // Erasing the last element.
         //
-        // Result: Erased item should not be in the list and the erase method
-        // should succeed.
+        // Result: erase method should succeed and the erased item should not be in the list.
         //
 
-        TEST_METHOD(ListErase3)
+        TEST_METHOD(EraseLastItem)
         {
             std::string erasedelements[] =
             {
@@ -2194,10 +2202,7 @@ namespace ListTest
             // Erase the last element.
             //
 
-            Assert::IsTrue(l.Erase(l.Count() - 1),
-                L"Last element should be erased from the list",
-                LINE_INFO()
-            );
+            Assert::IsTrue(l.Erase(l.Count() - 1), L"Last element should be erased from the list.");
 
             //
             // Verify the element was erased.
@@ -2206,17 +2211,16 @@ namespace ListTest
             CompareListToElements(
                 l,
                 erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0])
-            );
+                sizeof(erasedelements) / sizeof(erasedelements[0]));
         }
 
         //
-        // Test the list erase method, removing an item beyond the list.
+        // Erase an item beyond the list.
         //
-        // Result: List should not be modified.
+        // Result: erase method should fail and the list should not be modified.
         //
 
-        TEST_METHOD(ListErase4)
+        TEST_METHOD(EraseItemOutOfBounds)
         {
             std::string erasedelements[] =
             {
@@ -2243,10 +2247,7 @@ namespace ListTest
             // Erase an element not in the list element.
             //
 
-            Assert::IsFalse(l.Erase(l.Count()),
-                L"No elements should be removed from the list",
-                LINE_INFO()
-            );
+            Assert::IsFalse(l.Erase(l.Count()), L"No elements should be removed from the list.");
 
             //
             // Verify no elements were removed.
@@ -2255,17 +2256,16 @@ namespace ListTest
             CompareListToElements(
                 l,
                 erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0])
-            );
+                sizeof(erasedelements) / sizeof(erasedelements[0]));
         }
 
         //
-        // Test the list erase method, erasing an item from an empty list.
+        // Replace an item in an empty list.
         //
-        // Result: Erase should return False.
+        // Result: count of items replaced should be zero.
         //
 
-        TEST_METHOD(ListErase5)
+        TEST_METHOD(ReplaceInEmptyList)
         {
             //
             // Create a new list.
@@ -2274,14 +2274,266 @@ namespace ListTest
             List l;
 
             //
-            // Erase an element not in the list element.
+            // Replace an element in the empty list.
             //
 
-            Assert::IsFalse(l.Erase(0),
-                L"No elements should be removed from the list",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Replace("Zero", "Empty"), (size_t) 0, L"Empty list replace should fail.");
         }
+
+        //
+        // Replace the first element.
+        //
+        // Result: replaced element should have a new value.
+        //
+
+        TEST_METHOD(ReplaceFirstElement)
+        {
+            std::string replacedelements[] =
+            {
+                "Zero",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Replace the first element.  Only one entry should have been
+            // replaced.
+            //
+
+            Assert::AreEqual(l.Replace("One", "Zero"), (size_t) 1, L"Only one element should be replaced in the list.");
+
+            //
+            // Verify the element was replaced.
+            //
+
+            CompareListToElements(
+                l,
+                replacedelements,
+                sizeof(replacedelements) / sizeof(replacedelements[0]));
+        }
+
+        //
+        // Replace the last element.
+        //
+        // Result: replaced element should have a new value.
+        //
+
+        TEST_METHOD(ReplaceLastElement)
+        {
+            std::string replacedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Last"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Replace the last element.  Only one entry should have been
+            // replaced.
+            //
+
+            Assert::AreEqual(l.Replace("Five", "Last"), (size_t) 1, L"Only one element should be replaced in the list.");
+
+            //
+            // Verify the element was replaced.
+            //
+
+            CompareListToElements(
+                l,
+                replacedelements,
+                sizeof(replacedelements) / sizeof(replacedelements[0]));
+        }
+
+        //
+        // Replace a middle element.
+        //
+        // Result: replaced element should have a new value.
+        //
+
+        TEST_METHOD(ReplaceMiddleElement)
+        {
+            std::string replacedelements[] =
+            {
+                "One",
+                "Two",
+                "Middle",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Replace the last element.  Only one entry should have been
+            // replaced.
+            //
+
+            Assert::AreEqual(l.Replace("Three", "Middle"), (size_t) 1, L"Only one element should be replaced in the list.");
+
+            //
+            // Verify the element was replaced.
+            //
+
+            CompareListToElements(
+                l,
+                replacedelements,
+                sizeof(replacedelements) / sizeof(replacedelements[0]));
+        }
+
+        //
+        // Replace an item that is not in the list.
+        //
+        // Result: list should not be modified.
+        //
+
+        TEST_METHOD(ReplaceItemNoInList)
+        {
+            std::string replacedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Replace an element not in the list element.
+            //
+
+            Assert::AreEqual(l.Replace("Zero", "Empty"), (size_t) 0, L"No elements should be replaced in the list.");
+
+            //
+            // Verify no elements were replaced.
+            //
+
+            CompareListToElements(
+                l,
+                replacedelements,
+                sizeof(replacedelements) / sizeof(replacedelements[0]));
+        }
+
+        //
+        // Replace an entry that occurs more than once in a list.
+        //
+        // Result: replaced item should be replaced for each occurence in the original list.
+        //
+
+        TEST_METHOD(ReplaceMultiple)
+        {
+            std::string replacedelements[] =
+            {
+                "One",
+                "Two",
+                "Zero",
+                "Four",
+                "Five",
+                "One",
+                "Two",
+                "Zero",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Append the list to itself.
+            //
+
+            std::string appenditems[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            for (auto ix : appenditems)
+            {
+                l.Append(ix);
+            }
+
+            //
+            // Replace the third element. Two entries should have been
+            // replaced.
+            //
+
+            Assert::AreEqual(l.Replace("Three", "Zero"), (size_t) 2, L"Two elements should be replaced in the list.");
+
+            //
+            // Verify the element was replaced.
+            //
+
+            CompareListToElements(
+                l,
+                replacedelements,
+                sizeof(replacedelements) / sizeof(replacedelements[0]));
+        }
+
+
+        /***
 
         //
         // Test the list Find method, finding each element
@@ -2490,216 +2742,7 @@ namespace ListTest
             );
         }
 
-        //
-        // Test the list replace method, replacing the first element.
-        //
-        // Result: Replaced element should have a new value.
-        //
 
-        TEST_METHOD(ListReplace1)
-        {
-            std::string replacedelements[] =
-            {
-                "Zero",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Replace the first element.  Only one entry should have been
-            // replaced.
-            //
-
-            Assert::IsTrue(l.Replace(
-                std::string("One"),
-                std::string("Zero")
-            ) == 1,
-                L"Only one element should be replaced from the list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the element was replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0])
-            );
-        }
-
-        //
-        // Test the list replace method, duplicating a list and replacing
-        // an element.
-        //
-        // Result: Replaced item should not be in the list and the replace
-        // count should be two.
-        //
-
-        TEST_METHOD(ListReplace2)
-        {
-            std::string replacedelements[] =
-            {
-                "One",
-                "Two",
-                "Zero",
-                "Four",
-                "Five",
-                "One",
-                "Two",
-                "Zero",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Append the list to itself.
-            //
-
-            const std::string *pitem;
-            size_t appendCount;
-
-            appendCount = l.Count();
-            for (size_t index = 0; index < appendCount; ++index)
-            {
-                Assert::IsTrue(l.Item(index, &pitem),
-                    L"Could not retrieve item",
-                    LINE_INFO()
-                );
-
-                l.Append(*pitem);
-            }
-
-            //
-            // Replace the third element.  Two entries should have been
-            // replaced.
-            //
-
-            Assert::IsTrue(l.Replace(
-                std::string("Three"),
-                std::string("Zero")
-            ) == 2,
-                L"Two elements should be replaced in the list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the element was replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0])
-            );
-        }
-
-        //
-        // Test the list replace method, replacing an item that is not in the
-        // list.
-        //
-        // Result: List should not be modified.
-        //
-
-        TEST_METHOD(ListReplace3)
-        {
-            std::string replacedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Replace an element not in the list element.
-            //
-
-            Assert::IsTrue(l.Replace(
-                std::string("Zero"),
-                std::string("Empty")
-            ) == 0,
-                L"No elements should be removed from the list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify no elements were replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0])
-            );
-        }
-
-        //
-        // Test the list replace method on an empty list.
-        //
-        // Result: Count of zero should be returned.
-        //
-
-        TEST_METHOD(ListReplace4)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Replace an element in the empty list.
-            //
-
-            Assert::IsTrue(l.Replace(
-                std::string("Zero"),
-                std::string("Empty")
-            ) == 0,
-                L"No elements should be removed from the list",
-                LINE_INFO()
-            );
-        }
 
         //
         // Test the list Head method.
