@@ -1787,24 +1787,14 @@ namespace ListTest
                 sizeof(appendedelements) / sizeof(appendedelements[0]));
         }
 
-        /***
-
         //
-        // Test the list remove method, removing the first element.
+        // Remove an item from an empty list.
         //
-        // Result: Removed item should not be in the list.
+        // Result: remove should return zero items removed.
         //
 
-        TEST_METHOD(ListRemove1)
+        TEST_METHOD(RemoveFromEmptyList)
         {
-            std::string removedelements[] =
-            {
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
             //
             // Create a new list.
             //
@@ -1812,113 +1802,25 @@ namespace ListTest
             List l;
 
             //
-            // Append five elements to the list.
+            // Remove an element from the empty list.
             //
 
-            AppendFive(l);
+            Assert::AreEqual(l.Remove("Zero"), (size_t) 0, L"Can not remove item from empty list.");
 
             //
-            // Remove the first element.  Only one entry should have been
-            // removed.
+            // Length of the list should be zero.
             //
 
-            Assert::IsTrue(l.Remove(std::string("One")) == 1,
-                L"Only one element should be removed from the list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the element was removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0])
-            );
+            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty.");
         }
 
         //
-        // Test the list remove method, duplicating a list and removing
-        // an element.
+        // Remove an item that is not in the list.
         //
-        // Result: Removed item should not be in the list and the remove
-        // count should be two.
+        // Result: No items should be remvoed and the list should not be modified.
         //
 
-        TEST_METHOD(ListRemove2)
-        {
-            std::string removedelements[] =
-            {
-                "One",
-                "Two",
-                "Four",
-                "Five",
-                "One",
-                "Two",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Append the list to itself.
-            //
-
-            const std::string *pitem;
-            size_t appendCount;
-
-            appendCount = l.Count();
-            for (size_t index = 0; index < appendCount; ++index)
-            {
-                Assert::IsTrue(l.Item(index, &pitem),
-                    L"Could not retrieve item",
-                    LINE_INFO()
-                );
-
-                l.Append(*pitem);
-            }
-
-            //
-            // Remove the third element.  Two entries should have been
-            // removed.
-            //
-
-            Assert::IsTrue(l.Remove(std::string("Three")) == 2,
-                L"Two elements should be removed from the list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify the element was removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0])
-            );
-        }
-
-        //
-        // Test the list remove method, removing an item that is not in the
-        // list.
-        //
-        // Result: List should not be modified.
-        //
-
-        TEST_METHOD(ListRemove3)
+        TEST_METHOD(RemoveItemNotInList)
         {
             std::string removedelements[] =
             {
@@ -1945,10 +1847,7 @@ namespace ListTest
             // Remove an element not in the list element.
             //
 
-            Assert::IsTrue(l.Remove(std::string("Zero")) == 0,
-                L"No elements should be removed from the list",
-                LINE_INFO()
-            );
+            Assert::AreEqual(l.Remove(std::string("Zero")), (size_t) 0, L"No elements should be removed from the list");
 
             //
             // Verify no elements were removed.
@@ -1957,18 +1856,25 @@ namespace ListTest
             CompareListToElements(
                 l,
                 removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0])
-            );
+                sizeof(removedelements) / sizeof(removedelements[0]));
         }
 
         //
-        // Test the list remove method on an empty list.
+        // Remove the first element from the list.
         //
-        // Result: Remove should return zero items removed.
+        // Result: only the first item should be removed.
         //
 
-        TEST_METHOD(ListRemove4)
+        TEST_METHOD(RemoveFirstItem)
         {
+            std::string removedelements[] =
+            {
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
             //
             // Create a new list.
             //
@@ -1976,14 +1882,187 @@ namespace ListTest
             List l;
 
             //
-            // Remove an element from the empty list.
+            // Append five elements to the list.
             //
 
-            Assert::IsTrue(l.Remove(std::string("Zero")) == 0,
-                L"No elements should be removed from the list",
-                LINE_INFO()
-            );
+            AppendFive(l);
+
+            //
+            // Remove the first element.  Only one entry should have been
+            // removed.
+            //
+
+            Assert::AreEqual(l.Remove(std::string("One")), (size_t) 1, L"Only one element should be removed from the list");
+
+            //
+            // Verify the element was removed.
+            //
+
+            CompareListToElements(
+                l,
+                removedelements,
+                sizeof(removedelements) / sizeof(removedelements[0]));
         }
+
+        //
+        // Remove the last element from the list.
+        //
+        // Result: only the last item should be removed.
+        //
+
+        TEST_METHOD(RemoveLastItem)
+        {
+            std::string removedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Remove the first element.  Only one entry should have been
+            // removed.
+            //
+
+            Assert::AreEqual(l.Remove(std::string("Five")), (size_t) 1, L"Only one element should be removed from the list");
+
+            //
+            // Verify the element was removed.
+            //
+
+            CompareListToElements(
+                l,
+                removedelements,
+                sizeof(removedelements) / sizeof(removedelements[0]));
+        }
+
+        //
+        // Remove a middle element from the list.
+        //
+        // Result: only the middle item should be removed.
+        //
+
+        TEST_METHOD(RemoveMiddleItem)
+        {
+            std::string removedelements[] =
+            {
+                "One",
+                "Two",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Remove the first element.  Only one entry should have been
+            // removed.
+            //
+
+            Assert::AreEqual(l.Remove(std::string("Three")), (size_t) 1, L"Only one element should be removed from the list");
+
+            //
+            // Verify the element was removed.
+            //
+
+            CompareListToElements(
+                l,
+                removedelements,
+                sizeof(removedelements) / sizeof(removedelements[0]));
+        }
+
+        //
+        // Tuplicate a list and remove an element.
+        //
+        // Result: removed item should not be in the list and the remove
+        // count should be two.
+        //
+
+        TEST_METHOD(RemoveMultiple)
+        {
+            std::string removedelements[] =
+            {
+                "One",
+                "Two",
+                "Four",
+                "Five",
+                "One",
+                "Two",
+                "Four",
+                "Five"
+            };
+            std::string appendelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append the list to itself.
+            //
+
+            AppendFive(l);
+
+            //
+            // Append five elements to the list.
+            //
+
+            for (auto x : appendelements)
+            {
+                l.Append(x);
+            }
+
+            //
+            // Remove the third element.  Two entries should have been
+            // removed.
+            //
+
+            Assert::AreEqual(l.Remove(std::string("Three")), (size_t) 2, L"Two elements should be removed from the list.");
+
+            //
+            // Verify the element was removed.
+            //
+
+            CompareListToElements(
+                l,
+                removedelements,
+                sizeof(removedelements) / sizeof(removedelements[0]));
+        }
+
+
+        /***
 
         //
         // Test the list erase method, removing the first element.
