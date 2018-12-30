@@ -14,7 +14,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Collections::Containers;
 
-namespace ListTest
+namespace ListUnitTests
 {
     //
     // Test List Operations (Creation, Count, Clear, Contains, Splice, Index, Item,
@@ -22,20 +22,20 @@ namespace ListTest
     // CountOf.
     //
 
-    TEST_CLASS(ListUnitTest1)
+    TEST_CLASS(ListMacroInterfaceUnitTests)
     {
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
             TEST_CLASS_ATTRIBUTE(L"Collections", L"List")
-        END_TEST_CLASS_ATTRIBUTE()
+            END_TEST_CLASS_ATTRIBUTE()
 
-        //
-        // Test the List constructor.
-        //
-        // Result: a new zero element list is created.
-        //
+            //
+            // Test the List constructor.
+            //
+            // Result: a new zero element list is created.
+            //
 
-        TEST_METHOD(Constructor)
+            TEST_METHOD(Constructor)
         {
             //
             // Create a new list.
@@ -770,7 +770,7 @@ namespace ListTest
             //
 
             Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), (size_t)0, L"Splice must have a length of zero.");
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
         }
 
         //
@@ -2758,6 +2758,85 @@ namespace ListTest
             Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty");
         }
 
+        //
+        // Retrieve the CountOf on an empty list.
+        //
+        // Result: The value returned should be zero.
+        //
+
+        TEST_METHOD(CountOfOnEmptyList)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            Assert::AreEqual(l.CountOf("Zero"), (size_t) 0, L"CountOf should return zero.");
+        }
+
+        //
+        // Retrieve CountOf for an element that does not exist.
+        //
+        // Result: the value should be zero.
+        //
+
+        TEST_METHOD(CountOfNonexistantElement)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            Assert::AreEqual(l.CountOf("Zero"), (size_t) 0, L"CountOf should return zero.");
+        }
+
+        //
+        // Retrieve the CountOf for each element in the list.
+        //
+        // Result: each element should occur once in the list.
+        //
+
+        TEST_METHOD(CountOfKnownElements)
+        {
+            std::string elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Verify that each element occurs once in the the list.
+            //
+
+            for (auto it : elements)
+            {
+                Assert::AreEqual(l.CountOf(it), (size_t) 1, L"CountOf should return one.");
+            }
+        }
+
         /***
 
         //
@@ -2967,47 +3046,6 @@ namespace ListTest
             );
         }
 
-        //
-        // Test the list CountOf method.
-        //
-        // Result: Each element should occur once in the list.
-        //
-
-        TEST_METHOD(ListCountOf1)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Verify that each element occurs once in the the list.
-            //
-
-            for (auto it : elements)
-            {
-                Assert::IsTrue(l.CountOf(it) == 1,
-                    L"CountOf should return 1",
-                    LINE_INFO()
-                );
-            }
-        }
 
         //
         // Test the list CountOf method.  Append the list to itself.
@@ -3069,51 +3107,7 @@ namespace ListTest
             }
         }
 
-        //
-        // Test the list CountOf method for an element that does not exist.
-        //
-        // Result: The value should be zero.
-        //
 
-        TEST_METHOD(ListCountOf3)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            Assert::IsTrue(l.CountOf(std::string("Zero")) == 0,
-                L"CountOf should return 0",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the list CountOf method on an empty list.
-        //
-        // Result: The value should be zero.
-        //
-
-        TEST_METHOD(ListCountOf4)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            Assert::IsTrue(l.CountOf(std::string("Zero")) == 0,
-                L"CountOf should return 0",
-                LINE_INFO()
-            );
-        }
 
         //
         // Test the results of the GetMember interface for the Clear method on
@@ -3814,7 +3808,7 @@ namespace ListTest
             source.Ptr = pl.get();
 
             //
-            // Insert the item 
+            // Insert the item
             //
 
             bResult = List::GetMemberInvoker(source, "Insert", "2,", dest);
@@ -6214,12 +6208,12 @@ namespace ListTest
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult,
-                L"GetMember Count failed",
-                LINE_INFO()
+                           L"GetMember Count failed",
+                           LINE_INFO()
             );
             Assert::IsTrue(dest.Int == 0,
-                L"GetMember Count should be zero",
-                LINE_INFO()
+                           L"GetMember Count should be zero",
+                           LINE_INFO()
             );
 
             //
@@ -6228,12 +6222,12 @@ namespace ListTest
 
             bResult = List::GetMemberInvoker(source, "Append", "A", dest);
             Assert::IsTrue(bResult,
-                L"GetMember Append failed",
-                LINE_INFO()
+                           L"GetMember Append failed",
+                           LINE_INFO()
             );
             Assert::IsTrue(dest.Int == 1,
-                L"GetMember Append should return True",
-                LINE_INFO()
+                           L"GetMember Append should return True",
+                           LINE_INFO()
             );
 
             //
@@ -6242,12 +6236,12 @@ namespace ListTest
 
             bResult = List::GetMemberInvoker(source, "Append", "B,C,D", dest);
             Assert::IsTrue(bResult,
-                L"GetMember Append failed",
-                LINE_INFO()
+                           L"GetMember Append failed",
+                           LINE_INFO()
             );
             Assert::IsTrue(dest.Int == 1,
-                L"GetMember Append should return True",
-                LINE_INFO()
+                           L"GetMember Append should return True",
+                           LINE_INFO()
             );
 
             //
@@ -6256,12 +6250,12 @@ namespace ListTest
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult,
-                L"GetMember Count failed",
-                LINE_INFO()
+                           L"GetMember Count failed",
+                           LINE_INFO()
             );
             Assert::IsTrue(dest.Int == 4,
-                L"GetMember Count should be 4",
-                LINE_INFO()
+                           L"GetMember Count should be 4",
+                           LINE_INFO()
             );
 
             return pl;
@@ -6288,15 +6282,15 @@ namespace ListTest
             if (iter.get()->IsEnd())
             {
                 Assert::IsTrue(currentItem == elements,
-                    L"IsEnd succeeded and we are not at end",
-                    LINE_INFO()
+                               L"IsEnd succeeded and we are not at end",
+                               LINE_INFO()
                 );
             }
             else
             {
                 Assert::IsTrue(currentItem != elements,
-                    L"IsEnd failed and we are at end",
-                    LINE_INFO()
+                               L"IsEnd failed and we are at end",
+                               LINE_INFO()
                 );
             }
 
@@ -6313,13 +6307,13 @@ namespace ListTest
                 //
 
                 Assert::IsTrue(iter.get()->Value(&item),
-                    L"Value failed for iterator",
-                    LINE_INFO()
+                               L"Value failed for iterator",
+                               LINE_INFO()
                 );
 
                 Assert::IsTrue(*item == items[currentItem],
-                    L"item should be equal to item under current position",
-                    LINE_INFO()
+                               L"item should be equal to item under current position",
+                               LINE_INFO()
                 );
 
                 //
@@ -6327,8 +6321,8 @@ namespace ListTest
                 //
 
                 Assert::IsTrue(iter.get()->Advance(),
-                    L"Advance failed",
-                    LINE_INFO()
+                               L"Advance failed",
+                               LINE_INFO()
                 );
 
                 //

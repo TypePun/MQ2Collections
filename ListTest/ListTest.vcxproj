@@ -100,7 +100,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ListUnitTest.cpp" />
+    <ClCompile Include="ListIteratorUnitTest.cpp" />
+    <ClCompile Include="ListMacroUnitTest.cpp" />
+    <ClCompile Include="ListInterfaceUnitTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
