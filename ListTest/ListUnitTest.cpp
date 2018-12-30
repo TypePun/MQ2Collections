@@ -2424,7 +2424,7 @@ namespace ListTest
         // Result: list should not be modified.
         //
 
-        TEST_METHOD(ReplaceItemNoInList)
+        TEST_METHOD(ReplaceItemNotInList)
         {
             std::string replacedelements[] =
             {
@@ -2552,7 +2552,7 @@ namespace ListTest
 
             std::unique_ptr<const std::string> pitem;
 
-            Assert::IsFalse(l.Head(&pitem), L"Head of an empty list should fail");
+            Assert::IsFalse(l.Head(&pitem), L"Head of an empty list should fail.");
         }
 
         //
@@ -2584,7 +2584,7 @@ namespace ListTest
             std::unique_ptr<const std::string> pItem;
             Assert::IsTrue(l.Head(&pItem), L"Could not remove head of list.");
 
-            Assert::AreEqual(*pItem, std::string("One"), L"Incorrect item popped from list.");
+            Assert::AreEqual(*pItem, element, L"Incorrect item popped from list.");
         }
 
         //
@@ -2593,7 +2593,7 @@ namespace ListTest
         // Result: Each entry must match and at the end the list must be empty.
         //
 
-        TEST_METHOD(PopAllWithHead)
+        TEST_METHOD(PopAllFromHead)
         {
             std::string elements[] =
             {
@@ -2628,6 +2628,119 @@ namespace ListTest
             while (true)
             {
                 Assert::IsTrue(l.Head(&pitem), L"Could not retrieve item from head of list.");
+                Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
+
+                ++nItem;
+
+                if (nItem == (sizeof(elements) / sizeof(elements[0])))
+                {
+                    break;
+                }
+            }
+
+            //
+            // The list should be empty once all of the elements are removed.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty.");
+        }
+
+        //
+        // Get the tail of an empty list.
+        //
+        // Result: the tail method call should fail.
+        //
+
+        TEST_METHOD(TailOfEmptyList)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Popping the tail should fail.
+            //
+
+            std::unique_ptr<const std::string> pitem;
+
+            Assert::IsFalse(l.Tail(&pitem), L"Tail of an empty list should fail.");
+        }
+
+        //
+        // Retrieve the tail of the list.
+        //
+        // Result: the tail should be successfully returned.
+        //
+
+        TEST_METHOD(TailOfList)
+        {
+            std::string element = "Five";
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Pop the tail and verify it is expected value.
+            //
+
+            std::unique_ptr<const std::string> pItem;
+            Assert::IsTrue(l.Tail(&pItem), L"Could not remove tail of list.");
+
+            Assert::AreEqual(*pItem, element, L"Incorrect item popped from list.");
+        }
+
+        //
+        // Pop all entries from the list using the Tail method.
+        //
+        // Result: Each entry must match and at the end the list must be empty.
+        //
+
+        TEST_METHOD(PopAllFromTail)
+        {
+            std::string elements[] =
+            {
+                "Five",
+                "Four",
+                "Three",
+                "Two",
+                "One"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Pop each item and verify that it is the same as the
+            // corresponding entry in the elements list.
+            //
+
+            std::unique_ptr<const std::string> pitem;
+            size_t nItem;
+
+            nItem = 0;
+            while (true)
+            {
+                Assert::IsTrue(l.Tail(&pitem), L"Could not retrieve item from tail of list.");
                 Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
 
                 ++nItem;
@@ -2850,99 +2963,6 @@ namespace ListTest
 
             Assert::IsTrue(iter->IsEnd(),
                 L"IsEnd should be true",
-                LINE_INFO()
-            );
-        }
-
-
-
-        //
-        // Test the list Tail method.
-        //
-        // Result: Remove each element by popping the tail until the list
-        // is empty.
-        //
-
-        TEST_METHOD(ListTail1)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Pop each item and verify that it is the same as the
-            // corresponding entry in the elements list.
-            //
-
-            const std::string *pitem;
-            size_t nItem;
-
-            nItem = 4;
-            while (l.Tail(&pitem))
-            {
-                Assert::IsTrue(*pitem == elements[nItem],
-                    L"Item returned is incorrect",
-                    LINE_INFO()
-                );
-
-                //
-                // Done with the item.  Delete it.
-                //
-
-                delete pitem;
-
-                --nItem;
-            }
-
-            //
-            // The list should be empty once all of the elements are removed.
-            //
-
-            Assert::IsTrue(l.Count() == 0,
-                L"List must be empty",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the list Tail method on an empty list.
-        //
-        // Result: The Tail method call should fail.
-        //
-
-        TEST_METHOD(ListTail2)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Popping the tail should fail.
-            //
-
-            const std::string *pitem;
-
-            Assert::IsFalse(l.Tail(&pitem),
-                L"Tail of an empty list should fail",
                 LINE_INFO()
             );
         }
