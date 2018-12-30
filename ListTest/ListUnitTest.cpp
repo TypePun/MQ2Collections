@@ -2532,6 +2532,118 @@ namespace ListTest
                 sizeof(replacedelements) / sizeof(replacedelements[0]));
         }
 
+        //
+        // Get the head of an empty list.
+        //
+        // Result: the head method call should fail.
+        //
+
+        TEST_METHOD(HeadOfEmptyList)
+        {
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Popping the head should fail.
+            //
+
+            std::unique_ptr<const std::string> pitem;
+
+            Assert::IsFalse(l.Head(&pitem), L"Head of an empty list should fail");
+        }
+
+        //
+        // Retrieve the head of the list.
+        //
+        // Result: the head should be successfully returned.
+        //
+
+        TEST_METHOD(HeadOfList)
+        {
+            std::string element = "One";
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Pop the head and verify it is expected value.
+            //
+
+            std::unique_ptr<const std::string> pItem;
+            Assert::IsTrue(l.Head(&pItem), L"Could not remove head of list.");
+
+            Assert::AreEqual(*pItem, std::string("One"), L"Incorrect item popped from list.");
+        }
+
+        //
+        // Pop all entries from the list using the Head method.
+        //
+        // Result: Each entry must match and at the end the list must be empty.
+        //
+
+        TEST_METHOD(PopAllWithHead)
+        {
+            std::string elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Pop each item and verify that it is the same as the
+            // corresponding entry in the elements list.
+            //
+
+            std::unique_ptr<const std::string> pitem;
+            size_t nItem;
+
+            nItem = 0;
+            while (true)
+            {
+                Assert::IsTrue(l.Head(&pitem), L"Could not retrieve item from head of list.");
+                Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
+
+                ++nItem;
+
+                if (nItem == (sizeof(elements) / sizeof(elements[0])))
+                {
+                    break;
+                }
+            }
+
+            //
+            // The list should be empty once all of the elements are removed.
+            //
+
+            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty");
+        }
 
         /***
 
@@ -2743,97 +2855,6 @@ namespace ListTest
         }
 
 
-
-        //
-        // Test the list Head method.
-        //
-        // Result: Remove each element by popping the head until the list
-        // is empty.
-        //
-
-        TEST_METHOD(ListHead1)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Pop each item and verify that it is the same as the
-            // corresponding entry in the elements list.
-            //
-
-            const std::string *pitem;
-            size_t nItem;
-
-            nItem = 0;
-            while (l.Head(&pitem))
-            {
-                Assert::IsTrue(*pitem == elements[nItem],
-                    L"Item returned is incorrect",
-                    LINE_INFO()
-                );
-
-                //
-                // Done with the item.  Delete it.
-                //
-
-                delete pitem;
-
-                ++nItem;
-            }
-
-            //
-            // The list should be empty once all of the elements are removed.
-            //
-
-            Assert::IsTrue(l.Count() == 0,
-                L"List must be empty",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the list Head method on an empty list.
-        //
-        // Result: The Head method call should fail.
-        //
-
-        TEST_METHOD(ListHead2)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Popping the head should fail.
-            //
-
-            const std::string *pitem;
-
-            Assert::IsFalse(l.Head(&pitem),
-                L"Head of an empty list should fail",
-                LINE_INFO()
-            );
-        }
 
         //
         // Test the list Tail method.

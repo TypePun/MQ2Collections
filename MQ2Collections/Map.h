@@ -199,8 +199,7 @@ namespace Collections
             std::map<std::string, std::string>,
             std::string,
             std::string,
-            KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>
-        >,
+            KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>>,
             public ObjectType<Map>
         {
         public:
@@ -320,8 +319,7 @@ namespace Collections
                 const std::map<std::string, std::string> & refCollection) const
             {
                 return std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>>(
-                    new MapIterator(refCollection)
-                    );
+                    new MapIterator(refCollection));
             }
 
         private:

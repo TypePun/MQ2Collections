@@ -175,7 +175,6 @@ namespace Collections
 
             List(const std::list<std::string> & source);
 
-
             //
             // Destructor.
             //

@@ -187,8 +187,7 @@ namespace Collections
         typename coll,
         typename ValueType = coll::value_type,
         typename KeyType = ValueType,
-        typename IteratorType = IteratorBase<coll>
-    >
+        typename IteratorType = IteratorBase<coll>>
         class Collection
     {
     public:
@@ -250,8 +249,7 @@ namespace Collections
         //
 
         virtual std::unique_ptr<IteratorType> GetNewIterator(
-            const coll & refCollection
-        ) const = 0;
+            const coll & refCollection) const = 0;
 
         //
         // Container maintained by the collection.
