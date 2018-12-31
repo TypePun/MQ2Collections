@@ -8,7 +8,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include <algorithm>
 #include "list.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -25,64 +24,150 @@ namespace ListUnitTests
     TEST_CLASS(ListMacroInterfaceUnitTests)
     {
     public:
+
         BEGIN_TEST_CLASS_ATTRIBUTE()
             TEST_CLASS_ATTRIBUTE(L"Collections", L"List")
-            END_TEST_CLASS_ATTRIBUTE()
+            TEST_CLASS_ATTRIBUTE(L"MQ2Interface", L"List")
+        END_TEST_CLASS_ATTRIBUTE()
 
-            //
-            // Test the List constructor.
-            //
-            // Result: a new zero element list is created.
-            //
+        //
+        // Call the Count method on an empty list.
+        //
+        // Result: count should return zero.
+        //
 
-            TEST_METHOD(Constructor)
+        TEST_METHOD(CountOnEmptyList)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
-            // Create a new list.
+            // Make a new List.
             //
 
-            List l;
+            auto pl = std::make_unique<List>();
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Count should return 0.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
+            Assert::IsTrue(bResult, L"Count invocation failed.");
+            Assert::AreEqual(dest.Int, 0, L"Count should be zero.");
         }
 
         //
-        // Create a list and clear it.
+        // Call the Count method on a a populated list.
         //
-        // Result: the list should contain zero elements.
+        // Result: count should return five.
+        //
+
+        TEST_METHOD(CountOnPopulatedList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Make a new List.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Count should return 0.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
+            Assert::IsTrue(bResult, L"Count invocation failed.");
+            Assert::AreEqual(dest.Int, 5, L"Count should be zero.");
+        }
+
+        //
+        // Call the Clear method on an empty list.
+        //
+        // Result: clear should return succeed.
         //
 
         TEST_METHOD(ClearEmptyList)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
-            // Create a new list.
+            // Make a new List.
             //
 
-            List l;
+            auto pl = std::make_unique<List>();
 
-            l.Clear();
+            //
+            // Set the source pointer to the new instance.
+            //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+            source.Ptr = pl.get();
+
+            //
+            // Clear should succeed.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Clear", nullptr, dest);
+            Assert::IsTrue(bResult, L"Clear invocation failed.");
+            Assert::AreEqual(dest.Int, 1, L"Clear should succeed.");
         }
 
         //
-        // Create a list, populate it and clear it.
+        // Call Clear on a populated list.
         //
-        // Result: the list should contain zero elements.
+        // Result: list should have a count of zero.
         //
 
         TEST_METHOD(ClearList)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
-            AppendFive(l);
-            l.Clear();
+            //
+            // Initialize the source pointer for this member call.
+            //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+            source.Ptr = pl.get();
+
+            //
+            // Clear the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Clear", nullptr, dest);
+            Assert::IsTrue(bResult, L"Clear invocation failed.");
+            Assert::AreEqual(dest.Int, 1, L"Clear should return true.");
+
+            //
+            // Count should return 0.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
+            Assert::IsTrue(bResult, L"Count invocation failed");
+            Assert::AreEqual(dest.Int, 0, L"Count should be zero");
         }
 
         //
@@ -93,23 +178,29 @@ namespace ListUnitTests
 
         TEST_METHOD(ContainsAnElement)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Initialize the source pointer for this member call.
             //
 
-            AppendFive(l);
+            source.Ptr = pl.get();
 
             //
-            // See if the list contains 'Three'.
+            // Test Contains on an item we know is in the list.
             //
 
-            Assert::IsTrue(l.Contains(std::string("Three")), L"List should contain 'Three'.");
+            bResult = List::GetMemberInvoker(source, "Contains", "C", dest);
+            Assert::IsTrue(bResult, L"Contains invocation failed.");
+            Assert::AreEqual(dest.Int, 1, L"Contains should return true.");
         }
 
         //
@@ -120,17 +211,29 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptyListDoesNotContainAnElement)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = std::make_unique<List>();
 
             //
-            // The list must not contain 'One'.
+            // Initialize the source pointer for this member call.
             //
 
-            Assert::IsFalse(l.Contains(std::string("One")), L"List should not contain 'One'.");
+            source.Ptr = pl.get();
+
+            //
+            // Test Contains on an item we know can not be in the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Contains", "A", dest);
+            Assert::IsTrue(bResult, L"Contains invocation failed.");
+            Assert::AreEqual(dest.Int, 0, L"Contains should return false.");
         }
 
         //
@@ -141,23 +244,29 @@ namespace ListUnitTests
 
         TEST_METHOD(DoesNotContainsAnElement)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Initialize the source pointer for this member call.
             //
 
-            AppendFive(l);
+            source.Ptr = pl.get();
 
             //
-            // See if the list contains 'Six'.
+            // Test Contains on an item we know can not be in the list.
             //
 
-            Assert::IsFalse(l.Contains(std::string("Six")), L"List should contain not 'Six'.");
+            bResult = List::GetMemberInvoker(source, "Contains", "F", dest);
+            Assert::IsTrue(bResult, L"Contains invocation failed.");
+            Assert::AreEqual(dest.Int, 0, L"Contains should return false.");
         }
 
         //
@@ -168,25 +277,37 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptySpliceWithZeroIndex)
         {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            auto splice = l.Splice(0);
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
-            // See if the returned splice exists.
+            // Make a new List.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            auto pl = std::make_unique<List>();
 
             //
-            // Splice must have no elements.
+            // Set the source pointer to the new instance.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            source.Ptr = pl.get();
+
+            //
+            // Retrieve a splice starting at the first (0th) element.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of returned list must be zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
 
         //
@@ -197,31 +318,38 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromEnd)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(l.Count());
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting past the end of the list -- chose the 100th
+            // element.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "100", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must be zero length.
+            // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have zero elements.");
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
 
         //
@@ -232,25 +360,38 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptySpliceWithLargeIndex)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
-
-            auto splice = l.Splice(10000L);
+            auto pl = std::make_unique<List>();
 
             //
-            // See if the returned splice exists.
+            // Set the source pointer to the new instance.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            source.Ptr = pl.get();
 
             //
-            // Splice must have no elements.
+            // Retrieve a splice starting past the end of the list -- chose the 100th
+            // element.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            bResult = List::GetMemberInvoker(source, "Splice", "100", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of returned list must be zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
 
         //
@@ -261,35 +402,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromStart)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(0);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting past the origin of the list.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must be the same length as the original list.
+            // Length of returned list and splice must be the same.
             //
 
-            Assert::AreEqual(l.Count(),
-                             splice->Count(),
-                             L"Splice and original must be the same length.");
+            Assert::AreEqual(pl->Count(), splice->Count(), L"Length of original list and splice must be the same.");
 
-            CompareListAndSplice(l, 0, splice, 0);
+            CompareListAndSplice(*pl, 0, splice, 0);
         }
 
         //
@@ -300,27 +445,33 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromMiddle)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice((size_t) l.Count() / 2);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting past the origin of the list.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "2", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
 
-            size_t splice_length = (size_t) std::ceil(l.Count() / 2.0);
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            size_t splice_length = (size_t) std::ceil(pl->Count() / 2.0);
 
             //
             // Check the length of the splice.
@@ -328,7 +479,7 @@ namespace ListUnitTests
 
             Assert::AreEqual(splice_length, splice->Count(), L"Splice length is incorrect.");
 
-            CompareListAndSplice(l, l.Count() - splice_length, splice, 0);
+            CompareListAndSplice(*pl, pl->Count() - splice_length, splice, 0);
         }
 
         //
@@ -339,25 +490,38 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptySpliceWithZeroLength)
         {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            auto splice = l.Splice(0, 0);
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
-            // See if the returned splice exists.
+            // Make a new List.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            auto pl = std::make_unique<List>();
 
             //
-            // Splice must have no elements.
+            // Set the source pointer to the new instance.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            source.Ptr = pl.get();
+
+            //
+            // Retrieve a splice starting at the first (0th) element with a length
+            // of zero.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "0,0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of returned list must be zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
 
         //
@@ -368,25 +532,38 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptySpliceWithPositiveLength)
         {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            auto splice = l.Splice(0, 1);
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
-            // See if the returned splice exists.
+            // Make a new List.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            auto pl = std::make_unique<List>();
 
             //
-            // Splice must have no elements.
+            // Set the source pointer to the new instance.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            source.Ptr = pl.get();
+
+            //
+            // Retrieve a splice starting at the first (0th) element with a length
+            // of one.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "0,1", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of returned list must be zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
 
         //
@@ -397,25 +574,37 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptySpliceWithPositiveOffsetAndZeroLength)
         {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            auto splice = l.Splice(10, 0);
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
-            // See if the returned splice exists.
+            // Make a new List.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            auto pl = std::make_unique<List>();
 
             //
-            // Splice must have no elements.
+            // Set the source pointer to the new instance.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            source.Ptr = pl.get();
+
+            //
+            // Retrieve a splice starting at position 10 with a length of zero.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "10,0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of returned list must be zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
 
         //
@@ -426,27 +615,38 @@ namespace ListUnitTests
 
         TEST_METHOD(EmptySpliceWithPositiveOffsetAndPositiveLength)
         {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            auto splice = l.Splice(10, 10);
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
-            // See if the returned splice exists.
+            // Make a new List.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            auto pl = std::make_unique<List>();
 
             //
-            // Splice must have no elements.
+            // Set the source pointer to the new instance.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            source.Ptr = pl.get();
+
+            //
+            // Retrieve a splice starting at position 10 with a length of 10.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "10,10", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of returned list must be zero.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
         }
-
         //
         // Create a list and retrieve a splice from the start with a length
         // longer than the list.
@@ -456,35 +656,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromStartPastTheEnd)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(0, l.Count() * 2);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting at the origin past the length of the list.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "0, 100", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must be the same length as the original list.
+            // Check the length of the splice.
             //
 
-            Assert::AreEqual(l.Count(),
-                             splice->Count(),
-                             L"Splice and original must be the same length.");
+            Assert::AreEqual(pl->Count(), splice->Count(), L"Splice and original list must be of the same length.");
 
-            CompareListAndSplice(l, 0, splice, 0);
+            CompareListAndSplice(*pl, 0, splice, 0);
         }
 
         //
@@ -496,35 +700,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromStartForLengthOfList)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(0, l.Count());
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting from the origin for the length of the list.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "0, 5", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must be the same length as the original list.
+            // Check the length of the splice.
             //
 
-            Assert::AreEqual(l.Count(),
-                             splice->Count(),
-                             L"Splice and original must be the same length.");
+            Assert::AreEqual(pl->Count(), splice->Count(), L"Splice and original list must be of the same length.");
 
-            CompareListAndSplice(l, 0, splice, 0);
+            CompareListAndSplice(*pl, 0, splice, 0);
         }
 
         //
@@ -536,31 +744,37 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromStartWithZeroLength)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(0, 0);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting from the origin for a length of zero.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "0, 0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must have a length of zero.
+            // Return splice must have a length of zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Returned splice must have a length of zero.");
+            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
         }
 
         //
@@ -571,33 +785,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromStartForLengthOfOne)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(0, 1);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice starting from the origin for a length of one.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "0, 1", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must have a length of one.
+            // Return splice must have a length of one.
             //
 
             Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
 
-            CompareListAndSplice(l, 0, splice, 0);
+            CompareListAndSplice(*pl, 0, splice, 0);
         }
 
         //
@@ -608,33 +828,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromEndForLengthOfOne)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(l.Count() - 1, 1);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice from the last element for a length of one.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "4, 1", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must have a length of one.
+            // Return splice must have a length of one.
             //
 
             Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
 
-            CompareListAndSplice(l, l.Count() - 1, splice, 0);
+            CompareListAndSplice(*pl, 4, splice, 0);
         }
 
         //
@@ -645,28 +871,34 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromEndForLengthOfZero)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(l.Count() - 1, 0);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice from the end for a length of zero.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "4, 0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must have a length of zero.
+            // Return splice must have a length of zero.
             //
 
             Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
@@ -680,33 +912,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromEndForLargeLength)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            auto splice = l.Splice(l.Count() - 1, l.Count() * 2);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice from the last element for a large length.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "4, 100", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
             //
-            // Splice must have a length of one.
+            // Return splice must have a length of one.
             //
 
             Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
 
-            CompareListAndSplice(l, l.Count() - 1, splice, 0);
+            CompareListAndSplice(*pl, 4, splice, 0);
         }
 
         //
@@ -717,29 +955,39 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromMiddleWithLengthOfOne)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            size_t splice_pos = l.Count() / 2;
-            auto splice = l.Splice(splice_pos, 1);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice from the middle for a length of one.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice length is incorrect.");
+            bResult = List::GetMemberInvoker(source, "Splice", "2, 1", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
 
-            CompareListAndSplice(l, splice_pos, splice, 0);
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Return splice must have a length of one.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+
+            CompareListAndSplice(*pl, 2, splice, 0);
         }
 
         //
@@ -750,26 +998,36 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromMiddleWithLengthOfZero)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            size_t splice_pos = l.Count() / 2;
-            auto splice = l.Splice(splice_pos, 0);
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice from the middle for a length of zero.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
+            bResult = List::GetMemberInvoker(source, "Splice", "2, 0", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Return splice must have a length of zero.
+            //
+
             Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
         }
 
@@ -782,2440 +1040,96 @@ namespace ListUnitTests
 
         TEST_METHOD(SpliceFromMiddleForRemainder)
         {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
-
-            size_t splice_pos = l.Count() / 2;
-            auto splice = l.Splice(splice_pos, l.Count() - splice_pos);
-            auto splice_length = l.Count() - splice_pos;
+            source.Ptr = pl.get();
 
             //
-            // See if the returned splice exists.
+            // Retrieve a splice from the middle for a length of one.
             //
 
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), splice_length, L"Splice length is incorrect");
+            bResult = List::GetMemberInvoker(source, "Splice", "2, 3", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
 
-            CompareListAndSplice(l, splice_pos, splice, 0);
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Return splice must have a length of three.
+            //
+
+            Assert::AreEqual(splice->Count(), (size_t) 3, L"Splice must have a length of three.");
+
+            CompareListAndSplice(*pl, 2, splice, 0);
         }
-
         //
-        // Create a list and retrieve a splice from the middle with a large length/
+
+        // Create a list and retrieve a splice from the middle with a large length.
         //
         // Result: the splice should contain half the elements.
         //
 
         TEST_METHOD(SpliceFromMiddleForLargeLength)
         {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            size_t splice_pos = l.Count() / 2;
-            auto splice = l.Splice(splice_pos, 10000);
-            auto splice_length = l.Count() - splice_pos;
-
-            //
-            // See if the returned splice exists.
-            //
-
-            Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), splice_length, L"Splice length is incorrect.");
-
-            CompareListAndSplice(l, splice_pos, splice, 0);
-        }
-
-        //
-        // Test the list index method on an empty list.
-        //
-        // Result: -1 should be returned.
-        //
-
-        TEST_METHOD(IndexOnEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Look up 'Zero'  -- it should return -1 indicating the element is
-            // not in the list.
-            //
-
-            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1.");
-        }
-
-        //
-        // Test the list index method. An index is the zero-based position of
-        // an item in the list.
-        //
-        // Result: return the index of an item in a list.
-        //
-
-        TEST_METHOD(IndexForKnownElements)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
             // Create a new list.
             //
 
-            List l;
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Append five elements to the list.
+            // Set the source pointer to the new instance.
             //
 
-            AppendFive(l);
+            source.Ptr = pl.get();
 
             //
-            // Index each element in the list.  It should succeed.
+            // Retrieve a splice from the middle for a length of one.
             //
 
-            for (long index = 0; index < sizeof(elements) / sizeof(elements[0]); ++index)
-            {
-                Assert::AreEqual(l.Index(elements[index]), index, L"Index was incorrect for element.");
-            }
-        }
+            bResult = List::GetMemberInvoker(source, "Splice", "2, 100", dest);
+            Assert::IsTrue(bResult, L"Splice invocation failed.");
+            Assert::IsNotNull(dest.Ptr, L"Splice should not return a nullptr.");
 
-        //
-        // Test the list index method for an element not in the list.
-        //
-        // Result: -1 should be returned.
-        //
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
 
-        TEST_METHOD(IndexForUnknownElement)
-        {
             //
-            // Create a new list.
+            // Return splice must have a length of three.
             //
 
-            List l;
+            Assert::AreEqual(splice->Count(), (size_t) 3, L"Splice must have a length of three.");
 
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Look up 'Zero'  -- it should return -1 indicating the element is
-            // not in the list.
-            //
-
-            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1.");
-        }
-
-        //
-        // Retrieve the item at position zero in an empty list.
-        //
-        // Result: the item method should return false.
-        //
-
-        TEST_METHOD(ItemEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            const std::string *pitem;
-
-            //
-            // Look up an entry beyond the end of the list.  It should fail.
-            //
-
-            Assert::IsFalse(l.Item(0, &pitem), L"Item for empty list should fail.");
-        }
-
-        //
-        // Retrieve each item in a populated list.
-        //
-        // Result: the items should be returned in order.
-        //
-
-        TEST_METHOD(ItemCompareEachEntry)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Compare the list to the expected elements.
-            //
-
-            CompareListToElements(l, elements, sizeof(elements) / sizeof(elements[0]));
-        }
-
-        //
-        // Retrieve an item after the end of a list.
-        //
-        // Result: the items should be returned in order.
-        //
-
-        TEST_METHOD(ItemAfterListEnd)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Retrieve and item after the list end.
-            //
-
-            const std::string * pitem;
-            Assert::IsFalse(l.Item(l.Count() + 1, &pitem), L"Item beyond end should return false.");
-        }
-
-        //
-        // Insert an empty list into an empty list.
-        //
-        // Result: the list should be empty.
-        //
-
-        TEST_METHOD(InsertEmptyListIntoEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Create a new list with no elements.
-            //
-
-            std::list<std::string> l1;
-
-            //
-            // Insert the empty list at the start of l.
-            //
-
-            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
-
-            //
-            // l should be zero entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 0, L"Final list should be empty.");
-        }
-
-        //
-        // Insert an empty list at the start of a list.
-        //
-        // Result: existing list should be the same.
-        //
-
-        TEST_METHOD(InsertEmptyListAtStartOfList)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with no elements.
-            //
-
-            std::list<std::string> l1;
-
-            //
-            // Insert an empty list at the start of the list.
-            //
-
-            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
-
-            //
-            // l should be 5 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                elements,
-                sizeof(elements) / sizeof(elements[0]));
-        }
-
-        //
-        // Insert an empty list at the end of a list.
-        //
-        // Result: existing list should be the same.
-        //
-
-        TEST_METHOD(InsertEmptyListAtEndOfList)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with no elements.
-            //
-
-            std::list<std::string> l1;
-
-            //
-            // Insert an empty list at the end of the list.
-            //
-
-            Assert::IsTrue(l.Insert(l.Count() - 1, l1), L"Could not insert at end of list.");
-
-            //
-            // l should be 5 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                elements,
-                sizeof(elements) / sizeof(elements[0]));
-        }
-
-        //
-        // Insert an empty list in the middle of a list.
-        //
-        // Result: existing list should be the same.
-        //
-
-        TEST_METHOD(InsertEmptyListInMiddleOfList)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with no elements.
-            //
-
-            std::list<std::string> l1;
-
-            //
-            // Insert an empty list in the middle of the list.
-            //
-
-            Assert::IsTrue(l.Insert(l.Count() / 2, l1), L"Could not insert in the middle of list.");
-
-            //
-            // l should be 5 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                elements,
-                sizeof(elements) / sizeof(elements[0]));
-        }
-
-        //
-        // Insert a list at the start of another list.
-        //
-        // Result: new list is prepended to the old list.
-        //
-
-        TEST_METHOD(InsertListAtStartOfAnotherList)
-        {
-            std::string insertedelements[] =
-            {
-                "A",
-                "B",
-                "C",
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1 =
-            {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Insert a new list at the start of l.
-            //
-
-            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
-
-            //
-            // l should be 8 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0]));
-        }
-
-        //
-        // Insert a list at the end of another list.
-        //
-        // Result: new list is appended to the old list.
-        //
-
-        TEST_METHOD(InsertListAtEndOfAnotherList)
-        {
-            std::string insertedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five",
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1 =
-            {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Insert the new list at the end of l.
-            //
-
-            Assert::IsTrue(l.Insert(l.Count(), l1), L"Could not insert at end of list.");
-
-            //
-            // l should be 8 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0]));
-        }
-
-        //
-        // Insert a list in the middle of another list.
-        //
-        // Result: the new list is composed of first list with second list
-        // inserted in the middle of the first list.
-        //
-
-        TEST_METHOD(InsertListInMiddleOfAnotherList)
-        {
-            std::string insertedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "A",
-                "B",
-                "C",
-                "Four",
-                "Five",
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1 =
-            {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Insert the new list in the middle of the list.
-            //
-
-            Assert::IsTrue(l.Insert((l.Count() / 2) + 1, l1), L"Could not insert in middle of list.");
-
-            //
-            // l should be 8 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0]));
-        }
-
-        //
-        // Insert a list at in invalid entry past the end of the list.
-        //
-        // Result: list should not be modified.
-        //
-
-        TEST_METHOD(InsertPastEnd)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1 =
-            {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Insert the new list after the end of the list.
-            //
-
-            Assert::IsFalse(l.Insert(l.Count() + 1, l1), L"Insert past end should fail.");
-
-            //
-            // l should be 5 entries long (unmodified).
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                elements,
-                sizeof(elements) / sizeof(elements[0]));
-        }
-
-
-        //
-        // Insert a list into an empty list.
-        //
-        // Result: list should contain the inserted elements.
-        //
-
-        TEST_METHOD(InsertIntoEmptyList)
-        {
-            std::string insertedelements[] =
-            {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Create a new list with three elements.
-            //
-
-            std::list<std::string> l1 =
-            {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Insert the empty list at the start of l.
-            //
-
-            Assert::IsTrue(l.Insert(0, l1), L"Could not insert at start of list.");
-
-            //
-            // l should be 3 entries long.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 3, L"Target list should be 3 entries long.");
-
-            //
-            // Verify the elements in the list.
-            //
-
-            CompareListToElements(
-                l,
-                insertedelements,
-                sizeof(insertedelements) / sizeof(insertedelements[0]));
-        }
-
-        //
-        // Sort an empty list.
-        //
-        // Result: empty list should be returned.
-        //
-
-        TEST_METHOD(SortEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Sort the list.
-            //
-
-            l.Sort();
-
-            //
-            // List should contain zero elements.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must have zero entries.");
-        }
-
-        //
-        // Sort the list.
-        //
-        // Result: list should be sorted.
-        //
-
-        TEST_METHOD(SortList)
-        {
-            std::string sortedelements[] =
-            {
-                "Five",
-                "Four",
-                "One",
-                "Three",
-                "Two"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Sort the list.
-            //
-
-            l.Sort();
-
-            //
-            // List must be five in length.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Sorted list must be same length.");
-
-            //
-            // Verify the elements are sorted.
-            //
-
-            CompareListToElements(
-                l,
-                sortedelements,
-                sizeof(sortedelements) / sizeof(sortedelements[0]));
-        }
-
-        //
-        // Reverse an empty list.
-        //
-        // Result: an empty list should be returned.
-        //
-
-        TEST_METHOD(ReverseAnEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Reverse the list.
-            //
-
-            l.Reverse();
-
-            //
-            // List must contain zero elements.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 0, L"Reversed list must be empty.");
-        }
-
-        //
-        // Reverse the list.
-        //
-        // Result: list should be reversed.
-        //
-
-        TEST_METHOD(ReverseList)
-        {
-            std::string reservsedelements[] =
-            {
-                "Five",
-                "Four",
-                "Three",
-                "Two",
-                "One"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Reverse the list.
-            //
-
-            l.Reverse();
-
-            //
-            // List must be five in length.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Reversed list must be same length.");
-
-            //
-            // Verify the elements are reversed.
-            //
-
-            CompareListToElements(
-                l,
-                reservsedelements,
-                sizeof(reservsedelements) / sizeof(reservsedelements[0]));
-        }
-
-        //
-        // Append an item to an empty list.
-        //
-        // Result: new elements should be added to the list.
-        //
-
-        TEST_METHOD(AppendToEmptyList)
-        {
-            std::string appendedelements[] =
-            {
-                "One"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append an item to the list
-            //
-
-            l.Append("One");
-
-            //
-            // Verify the list has one item.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 1, L"List length must be one.");
-
-            //
-            // Verify the elements are correct.
-            //
-
-            CompareListToElements(
-                l,
-                appendedelements,
-                sizeof(appendedelements) / sizeof(appendedelements[0]));
-        }
-
-        //
-        // Append an item to a populated list.
-        //
-        // Result: new elements should be added to the list.
-        //
-
-        TEST_METHOD(AppendToList)
-        {
-            std::string appendedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five",
-                "One",
-                "Two"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Append an item to the list
-            //
-
-            l.Append("One");
-            l.Append("Two");
-
-            //
-            // Verify the list has seven item.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 7, L"List length must be seven.");
-
-            //
-            // Verify the elements are correct.
-            //
-
-            CompareListToElements(
-                l,
-                appendedelements,
-                sizeof(appendedelements) / sizeof(appendedelements[0]));
-        }
-
-        //
-        // Remove an item from an empty list.
-        //
-        // Result: remove should return zero items removed.
-        //
-
-        TEST_METHOD(RemoveFromEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Remove an element from the empty list.
-            //
-
-            Assert::AreEqual(l.Remove("Zero"), (size_t) 0, L"Can not remove item from empty list.");
-
-            //
-            // Length of the list should be zero.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty.");
-        }
-
-        //
-        // Remove an item that is not in the list.
-        //
-        // Result: No items should be remvoed and the list should not be modified.
-        //
-
-        TEST_METHOD(RemoveItemNotInList)
-        {
-            std::string removedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Remove an element not in the list element.
-            //
-
-            Assert::AreEqual(l.Remove(std::string("Zero")), (size_t) 0, L"No elements should be removed from the list");
-
-            //
-            // Verify no elements were removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0]));
-        }
-
-        //
-        // Remove the first element from the list.
-        //
-        // Result: only the first item should be removed.
-        //
-
-        TEST_METHOD(RemoveFirstItem)
-        {
-            std::string removedelements[] =
-            {
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Remove the first element.  Only one entry should have been
-            // removed.
-            //
-
-            Assert::AreEqual(l.Remove(std::string("One")), (size_t) 1, L"Only one element should be removed from the list");
-
-            //
-            // Verify the element was removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0]));
-        }
-
-        //
-        // Remove the last element from the list.
-        //
-        // Result: only the last item should be removed.
-        //
-
-        TEST_METHOD(RemoveLastItem)
-        {
-            std::string removedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Remove the first element.  Only one entry should have been
-            // removed.
-            //
-
-            Assert::AreEqual(l.Remove(std::string("Five")), (size_t) 1, L"Only one element should be removed from the list");
-
-            //
-            // Verify the element was removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0]));
-        }
-
-        //
-        // Remove a middle element from the list.
-        //
-        // Result: only the middle item should be removed.
-        //
-
-        TEST_METHOD(RemoveMiddleItem)
-        {
-            std::string removedelements[] =
-            {
-                "One",
-                "Two",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Remove the first element.  Only one entry should have been
-            // removed.
-            //
-
-            Assert::AreEqual(l.Remove(std::string("Three")), (size_t) 1, L"Only one element should be removed from the list");
-
-            //
-            // Verify the element was removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0]));
-        }
-
-        //
-        // Duplicate a list and remove an element.
-        //
-        // Result: removed item should not be in the list and the remove
-        // count should be two.
-        //
-
-        TEST_METHOD(RemoveMultiple)
-        {
-            std::string removedelements[] =
-            {
-                "One",
-                "Two",
-                "Four",
-                "Five",
-                "One",
-                "Two",
-                "Four",
-                "Five"
-            };
-            std::string appendelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append the list to itself.
-            //
-
-            AppendFive(l);
-
-            //
-            // Append five elements to the list.
-            //
-
-            for (auto x : appendelements)
-            {
-                l.Append(x);
-            }
-
-            //
-            // Remove the third element.  Two entries should have been
-            // removed.
-            //
-
-            Assert::AreEqual(l.Remove(std::string("Three")), (size_t) 2, L"Two elements should be removed from the list.");
-
-            //
-            // Verify the element was removed.
-            //
-
-            CompareListToElements(
-                l,
-                removedelements,
-                sizeof(removedelements) / sizeof(removedelements[0]));
-        }
-
-        //
-        // Erase an item from an empty list.
-        //
-        // Result: erase should return false.
-        //
-
-        TEST_METHOD(EraseFromEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Erase an element not in the list element.
-            //
-
-            Assert::IsFalse(l.Erase(0), L"No elements should be removed from an empty list.");
-        }
-
-        //
-        // Erase the first element.
-        //
-        // Result: erase should succeed and the erased item should not be in the list.
-        //
-
-        TEST_METHOD(EraseFirstItem)
-        {
-            std::string erasedelements[] =
-            {
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Erase the first element. The erase should succeed.
-            //
-
-            Assert::IsTrue(l.Erase(0), L"Erase should succeed for first element.");
-
-            //
-            // Verify the element was erased.
-            //
-
-            CompareListToElements(
-                l,
-                erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0]));
-        }
-
-        //
-        // Erasing a middle element.
-        //
-        // Result: erase should succeed and the erased item should not be in the list.
-        //
-
-        TEST_METHOD(EraseMiddleItem)
-        {
-            std::string erasedelements[] =
-            {
-                "One",
-                "Two",
-                "Four",
-                "Five",
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Erase the third element.
-            //
-
-            Assert::IsTrue(l.Erase(2), L"Middle element should be erased from the list.");
-
-            //
-            // Verify the element was erased.
-            //
-
-            CompareListToElements(
-                l,
-                erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0]));
-        }
-
-        //
-        // Erasing the last element.
-        //
-        // Result: erase method should succeed and the erased item should not be in the list.
-        //
-
-        TEST_METHOD(EraseLastItem)
-        {
-            std::string erasedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Erase the last element.
-            //
-
-            Assert::IsTrue(l.Erase(l.Count() - 1), L"Last element should be erased from the list.");
-
-            //
-            // Verify the element was erased.
-            //
-
-            CompareListToElements(
-                l,
-                erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0]));
-        }
-
-        //
-        // Erase an item beyond the list.
-        //
-        // Result: erase method should fail and the list should not be modified.
-        //
-
-        TEST_METHOD(EraseItemOutOfBounds)
-        {
-            std::string erasedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Erase an element not in the list element.
-            //
-
-            Assert::IsFalse(l.Erase(l.Count()), L"No elements should be removed from the list.");
-
-            //
-            // Verify no elements were removed.
-            //
-
-            CompareListToElements(
-                l,
-                erasedelements,
-                sizeof(erasedelements) / sizeof(erasedelements[0]));
-        }
-
-        //
-        // Replace an item in an empty list.
-        //
-        // Result: count of items replaced should be zero.
-        //
-
-        TEST_METHOD(ReplaceInEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Replace an element in the empty list.
-            //
-
-            Assert::AreEqual(l.Replace("Zero", "Empty"), (size_t) 0, L"Empty list replace should fail.");
-        }
-
-        //
-        // Replace the first element.
-        //
-        // Result: replaced element should have a new value.
-        //
-
-        TEST_METHOD(ReplaceFirstElement)
-        {
-            std::string replacedelements[] =
-            {
-                "Zero",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Replace the first element.  Only one entry should have been
-            // replaced.
-            //
-
-            Assert::AreEqual(l.Replace("One", "Zero"), (size_t) 1, L"Only one element should be replaced in the list.");
-
-            //
-            // Verify the element was replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0]));
-        }
-
-        //
-        // Replace the last element.
-        //
-        // Result: replaced element should have a new value.
-        //
-
-        TEST_METHOD(ReplaceLastElement)
-        {
-            std::string replacedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Last"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Replace the last element.  Only one entry should have been
-            // replaced.
-            //
-
-            Assert::AreEqual(l.Replace("Five", "Last"), (size_t) 1, L"Only one element should be replaced in the list.");
-
-            //
-            // Verify the element was replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0]));
-        }
-
-        //
-        // Replace a middle element.
-        //
-        // Result: replaced element should have a new value.
-        //
-
-        TEST_METHOD(ReplaceMiddleElement)
-        {
-            std::string replacedelements[] =
-            {
-                "One",
-                "Two",
-                "Middle",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Replace the last element.  Only one entry should have been
-            // replaced.
-            //
-
-            Assert::AreEqual(l.Replace("Three", "Middle"), (size_t) 1, L"Only one element should be replaced in the list.");
-
-            //
-            // Verify the element was replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0]));
-        }
-
-        //
-        // Replace an item that is not in the list.
-        //
-        // Result: list should not be modified.
-        //
-
-        TEST_METHOD(ReplaceItemNotInList)
-        {
-            std::string replacedelements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Replace an element not in the list element.
-            //
-
-            Assert::AreEqual(l.Replace("Zero", "Empty"), (size_t) 0, L"No elements should be replaced in the list.");
-
-            //
-            // Verify no elements were replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0]));
-        }
-
-        //
-        // Replace an entry that occurs more than once in a list.
-        //
-        // Result: replaced item should be replaced for each occurence in the original list.
-        //
-
-        TEST_METHOD(ReplaceMultiple)
-        {
-            std::string replacedelements[] =
-            {
-                "One",
-                "Two",
-                "Zero",
-                "Four",
-                "Five",
-                "One",
-                "Two",
-                "Zero",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Append the list to itself.
-            //
-
-            std::string appenditems[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            for (auto ix : appenditems)
-            {
-                l.Append(ix);
-            }
-
-            //
-            // Replace the third element. Two entries should have been
-            // replaced.
-            //
-
-            Assert::AreEqual(l.Replace("Three", "Zero"), (size_t) 2, L"Two elements should be replaced in the list.");
-
-            //
-            // Verify the element was replaced.
-            //
-
-            CompareListToElements(
-                l,
-                replacedelements,
-                sizeof(replacedelements) / sizeof(replacedelements[0]));
-        }
-
-        //
-        // Get the head of an empty list.
-        //
-        // Result: the head method call should fail.
-        //
-
-        TEST_METHOD(HeadOfEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Popping the head should fail.
-            //
-
-            std::unique_ptr<const std::string> pitem;
-
-            Assert::IsFalse(l.Head(&pitem), L"Head of an empty list should fail.");
-        }
-
-        //
-        // Retrieve the head of the list.
-        //
-        // Result: the head should be successfully returned.
-        //
-
-        TEST_METHOD(HeadOfList)
-        {
-            std::string element = "One";
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Pop the head and verify it is expected value.
-            //
-
-            std::unique_ptr<const std::string> pItem;
-            Assert::IsTrue(l.Head(&pItem), L"Could not remove head of list.");
-
-            Assert::AreEqual(*pItem, element, L"Incorrect item popped from list.");
-        }
-
-        //
-        // Pop all entries from the list using the Head method.
-        //
-        // Result: Each entry must match and at the end the list must be empty.
-        //
-
-        TEST_METHOD(PopAllFromHead)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Pop each item and verify that it is the same as the
-            // corresponding entry in the elements list.
-            //
-
-            std::unique_ptr<const std::string> pitem;
-            size_t nItem;
-
-            nItem = 0;
-            while (true)
-            {
-                Assert::IsTrue(l.Head(&pitem), L"Could not retrieve item from head of list.");
-                Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
-
-                ++nItem;
-
-                if (nItem == (sizeof(elements) / sizeof(elements[0])))
-                {
-                    break;
-                }
-            }
-
-            //
-            // The list should be empty once all of the elements are removed.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty.");
-        }
-
-        //
-        // Get the tail of an empty list.
-        //
-        // Result: the tail method call should fail.
-        //
-
-        TEST_METHOD(TailOfEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Popping the tail should fail.
-            //
-
-            std::unique_ptr<const std::string> pitem;
-
-            Assert::IsFalse(l.Tail(&pitem), L"Tail of an empty list should fail.");
-        }
-
-        //
-        // Retrieve the tail of the list.
-        //
-        // Result: the tail should be successfully returned.
-        //
-
-        TEST_METHOD(TailOfList)
-        {
-            std::string element = "Five";
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Pop the tail and verify it is expected value.
-            //
-
-            std::unique_ptr<const std::string> pItem;
-            Assert::IsTrue(l.Tail(&pItem), L"Could not remove tail of list.");
-
-            Assert::AreEqual(*pItem, element, L"Incorrect item popped from list.");
-        }
-
-        //
-        // Pop all entries from the list using the Tail method.
-        //
-        // Result: Each entry must match and at the end the list must be empty.
-        //
-
-        TEST_METHOD(PopAllFromTail)
-        {
-            std::string elements[] =
-            {
-                "Five",
-                "Four",
-                "Three",
-                "Two",
-                "One"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Pop each item and verify that it is the same as the
-            // corresponding entry in the elements list.
-            //
-
-            std::unique_ptr<const std::string> pitem;
-            size_t nItem;
-
-            nItem = 0;
-            while (true)
-            {
-                Assert::IsTrue(l.Tail(&pitem), L"Could not retrieve item from tail of list.");
-                Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
-
-                ++nItem;
-
-                if (nItem == (sizeof(elements) / sizeof(elements[0])))
-                {
-                    break;
-                }
-            }
-
-            //
-            // The list should be empty once all of the elements are removed.
-            //
-
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty");
-        }
-
-        //
-        // Retrieve the CountOf on an empty list.
-        //
-        // Result: The value returned should be zero.
-        //
-
-        TEST_METHOD(CountOfOnEmptyList)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            Assert::AreEqual(l.CountOf("Zero"), (size_t) 0, L"CountOf should return zero.");
-        }
-
-        //
-        // Retrieve CountOf for an element that does not exist.
-        //
-        // Result: the value should be zero.
-        //
-
-        TEST_METHOD(CountOfNonexistantElement)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            Assert::AreEqual(l.CountOf("Zero"), (size_t) 0, L"CountOf should return zero.");
-        }
-
-        //
-        // Retrieve the CountOf for each element in the list.
-        //
-        // Result: each element should occur once in the list.
-        //
-
-        TEST_METHOD(CountOfKnownElements)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Verify that each element occurs once in the the list.
-            //
-
-            for (auto it : elements)
-            {
-                Assert::AreEqual(l.CountOf(it), (size_t) 1, L"CountOf should return one.");
-            }
+            CompareListAndSplice(*pl, 2, splice, 0);
         }
 
         /***
 
         //
-        // Test the list Find method, finding each element
-        // in the list and using the returned iterator.
+        // Test the results of the GetMember interface for the splice method
+        // with one argument.  A positive argument represent an origin of the
+        // splice to the end of the list.  A negative arguments represents an
+        // offset from the end of the list.
         //
-        // Result: The iterator should be returned and be usable.
-        //
-
-        TEST_METHOD(ListFind1)
-        {
-            const std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Iterate over the elements, finding each one.  The find must
-            // succeed and the list of elements must be equal to the
-            // tail following the current element.
-            //
-
-            size_t items = sizeof(elements) / sizeof(elements[0]);
-            size_t currentItem = 0;
-            for (const auto & item : elements)
-            {
-                auto iter = l.Find(item);
-
-                //
-                // Validate and use the iterator.
-                //
-
-                ValidateAndUseIterator(
-                    iter,
-                    elements,
-                    items,
-                    currentItem
-                );
-
-                ++currentItem;
-
-                //
-                // Then reset the iterator and use it.
-                //
-
-                iter->Reset();
-                ValidateAndUseIterator(
-                    iter,
-                    elements,
-                    items,
-                    0
-                );
-            }
-        }
-
-        //
-        // Test the list find method, finding an element that is
-        // not in the list.
-        //
-        // Result: Returned iterator should be at end.
+        // Result: a new list is returned from a given position.
         //
 
-        TEST_METHOD(ListFind2)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Find an item that is not in the list.  IsEnd should be true.
-            //
-
-            auto iter = l.Find(std::string("Zero"));
-
-            Assert::IsTrue(iter->IsEnd(),
-                L"IsEnd should be true",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the list find method on an empty list.
-        //
-        // Result: Returned iterator should be at end.
-        //
-
-        TEST_METHOD(ListFind3)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Find an item.  Since the list is empty, IsEnd should be true.
-            //
-
-            auto iter = l.Find(std::string("Zero"));
-
-            Assert::IsTrue(iter->IsEnd(),
-                L"IsEnd should be true",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the list first method, returning an iterator to the first
-        // element of the list.
-        //
-        // Result: the iterator should be returned and be usable.
-        //
-
-        TEST_METHOD(ListFirst1)
-        {
-            const std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-            size_t items = sizeof(elements) / sizeof(elements[0]);
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            auto iter = l.First();
-
-            //
-            // Validate and use the iterator.
-            //
-
-            ValidateAndUseIterator(
-                iter,
-                elements,
-                items,
-                0
-            );
-
-            //
-            // Then reset the iterator and use it.
-            //
-
-            iter->Reset();
-            ValidateAndUseIterator(
-                iter,
-                elements,
-                items,
-                0
-            );
-        }
-
-        //
-        // Test the list first method on an empty list.
-        //
-        // Result: the iterator should be returned and be at the end.
-        //
-
-        TEST_METHOD(ListFirst2)
-        {
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            auto iter = l.First();
-
-            Assert::IsTrue(iter->IsEnd(),
-                L"IsEnd should be true",
-                LINE_INFO()
-            );
-        }
-
-
-        //
-        // Test the list CountOf method.  Append the list to itself.
-        //
-        // Result: Each element should occur twice in the list.
-        //
-
-        TEST_METHOD(ListCountOf2)
-        {
-            std::string elements[] =
-            {
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            List l;
-
-            //
-            // Append five elements to the list.
-            //
-
-            AppendFive(l);
-
-            //
-            // Append the list to itself.
-            //
-
-            const std::string *pitem;
-            size_t appendCount;
-
-            appendCount = l.Count();
-            for (size_t index = 0; index < appendCount; ++index)
-            {
-                Assert::IsTrue(l.Item(index, &pitem),
-                    L"Could not retrieve item",
-                    LINE_INFO()
-                );
-
-                l.Append(*pitem);
-            }
-
-            //
-            // Verify that each element occurs twice in the the list.
-            //
-
-            for (auto it : elements)
-            {
-                Assert::IsTrue(l.CountOf(it) == 2,
-                    L"CountOf should return 2",
-                    LINE_INFO()
-                );
-            }
-        }
-
-
-
-        //
-        // Test the results of the GetMember interface for the Clear method on
-        // an empty list.
-        //
-
-        TEST_METHOD(ListGetMemberClear)
-        {
-            std::unique_ptr<List> pl(new List);
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Clear the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Clear", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Clear failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Clear should return True",
-                LINE_INFO()
-            );
-
-            //
-            // Count should return 0.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Count failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Count should be zero",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Count, Clear
-        // and Append methods.
-        //
-
-        TEST_METHOD(ListGetMemberAppendAndClear)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Clear the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Clear", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Clear failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Clear should return True",
-                LINE_INFO()
-            );
-
-            //
-            // Count should return 0.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Count failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Count should be zero",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Contains method.
-        //
-
-        TEST_METHOD(ListGetMemberContains1)
+        TEST_METHOD(ListGetMemberSplice1)
         {
             std::unique_ptr<List> pl;
             MQ2VARPTR source;
@@ -3241,50 +1155,180 @@ namespace ListUnitTests
             source.Ptr = pl.get();
 
             //
-            // Verify that each element is contained in the list.
+            // Retrieve a splice starting at the first (0th) element.
             //
 
-            PCHAR argument;
-            for (auto & item : elements)
+            bResult = List::GetMemberInvoker(source, "Splice", "0", dest);
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of original and splice must be the same.
+            //
+
+            Assert::IsTrue(splice->Count() == pl->Count(),
+                L"Splice length must be equal to length of original list",
+                LINE_INFO()
+            );
+
+            //
+            // Verify that the original and returned list have the same
+            // elements.
+            //
+
+            CompareListToElements(
+                *pl.get(),
+                elements,
+                sizeof(elements) / sizeof(elements[0])
+            );
+
+            CompareListToElements(
+                *splice.get(),
+                elements,
+                sizeof(elements) / sizeof(elements[0])
+            );
+
+            //
+            // Test splice returning an empty list.  Use an index beyond the
+            // list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "5", dest);
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+            Assert::IsTrue(splice->Count() == 0,
+                L"Splice must be empty",
+                LINE_INFO()
+            );
+
+            //
+            // Test splice from the end of the list, returning the entire list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Splice", "-4", dest);
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+            Assert::IsTrue(splice->Count() == pl->Count(),
+                L"Splice length must be equal to length of original list",
+                LINE_INFO()
+            );
+
+            //
+            // Create forward splices from position zero to the length.
+            //
+
+            for (unsigned long index = 0; index < pl->Count(); ++index)
             {
-                argument = const_cast<PCHAR>(item.c_str());
-                bResult = List::GetMemberInvoker(source, "Contains", argument, dest);
+                auto indexAsString = std::to_string(index);
+
+                bResult = List::GetMemberInvoker(
+                    source,
+                    "Splice",
+                    const_cast<PCHAR>(indexAsString.c_str()),
+                    dest
+                );
                 Assert::IsTrue(bResult,
-                    L"GetMember Contains failed",
+                    L"GetMember Splice failed",
                     LINE_INFO()
                 );
-                Assert::IsTrue(dest.Int == 1,
-                    L"GetMember Contains should return True",
+                Assert::IsTrue(dest.Ptr != nullptr,
+                    L"GetMember Splice should not return a nullptr",
+                    LINE_INFO()
+                );
+
+                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+                Assert::IsTrue(splice->Count() == (pl->Count() - index),
+                    L"Splice must equal index length",
                     LINE_INFO()
                 );
             }
 
             //
-            // Test Contains on an item we know is not in the list.
+            // Create reverse splices from the back of the list to the start.
             //
 
-            bResult = List::GetMemberInvoker(source, "Contains", "E", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Contains failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Contains should return False",
-                LINE_INFO()
-            );
+            for (unsigned long index = 1; index <= pl->Count(); ++index)
+            {
+                auto indexAsString = std::to_string(-(long) index);
+
+                bResult = List::GetMemberInvoker(
+                    source,
+                    "Splice",
+                    const_cast<PCHAR>(indexAsString.c_str()),
+                    dest
+                );
+                Assert::IsTrue(bResult,
+                    L"GetMember Splice failed",
+                    LINE_INFO()
+                );
+                Assert::IsTrue(dest.Ptr != nullptr,
+                    L"GetMember Splice should not return a nullptr",
+                    LINE_INFO()
+                );
+
+                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+                Assert::IsTrue(splice->Count() == index,
+                    L"Splice must equal index length",
+                    LINE_INFO()
+                );
+            }
         }
 
         //
-        // Test the results of the GetMember interface for the Contains method
-        // on an empty list.
+        // Test the results of the GetMember interface for the splice method
+        // with two arguments.  The first argument is a starting position and
+        // the second is an ending position.  If an argument is positive,
+        // it represents an offset from the start of the list and if it is
+        // negative it represents an offset from the end of the list.
+        //
+        // The ending index is an exclusive range, that is, it is not included
+        // in the output list.
+        //
+        // Result: a new list is returned.
         //
 
-        TEST_METHOD(ListGetMemberContains2)
+        TEST_METHOD(ListGetMemberSplice2)
         {
-            std::unique_ptr<List> pl(new List);
+            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
+            std::string elements[] = {
+                "A",
+                "B",
+                "C",
+                "D"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            pl = CreateAndAppendUsingGetMember();
 
             //
             // Initialize the source pointer for this member call.
@@ -3293,19 +1337,409 @@ namespace ListUnitTests
             source.Ptr = pl.get();
 
             //
-            // Test Contains on an item we know is not in the list.
+            // Return a splice of the list from the start to the end.
             //
 
-            bResult = List::GetMemberInvoker(source, "Contains", "E", dest);
+            auto argAsString = "0," + std::to_string(pl->Count());
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
             Assert::IsTrue(bResult,
-                L"GetMember Contains failed",
+                L"GetMember Splice failed",
                 LINE_INFO()
             );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Contains should return False",
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of original and splice must be the same.
+            //
+
+            Assert::IsTrue(splice->Count() == pl->Count(),
+                L"Splice length must be equal to length of original list",
+                LINE_INFO()
+            );
+
+            //
+            // Verify that the original and returned list have the same
+            // elements.
+            //
+
+            CompareListToElements(
+                *pl.get(),
+                elements,
+                sizeof(elements) / sizeof(elements[0])
+            );
+
+            CompareListToElements(
+                *splice.get(),
+                elements,
+                sizeof(elements) / sizeof(elements[0])
+            );
+
+            //
+            // Test splice returning an empty list.  Use an index beyond the
+            // list.
+            //
+
+            argAsString = std::to_string(pl->Count() + 1) + std::to_string(pl->Count());
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+            Assert::IsTrue(splice->Count() == 0,
+                L"Splice must be empty",
+                LINE_INFO()
+            );
+
+            //
+            // Test splice from the end of the list, returning the list
+            // exclusive of the last element.
+            //
+
+            argAsString = std::to_string(-((long) pl->Count())) + ",-1";
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+            Assert::IsTrue(splice->Count() == pl->Count() - 1,
+                L"Splice length must be one shorter than the length of original list",
+                LINE_INFO()
+            );
+
+            //
+            // Create forward splices from the start to the next to last
+            // position.
+            //
+
+            for (unsigned long index = 0; index <= pl->Count() - 1; ++index)
+            {
+                argAsString = std::to_string(index) + ",-1";
+                bResult = List::GetMemberInvoker(
+                    source,
+                    "Splice",
+                    const_cast<PCHAR>(argAsString.c_str()),
+                    dest
+                );
+                Assert::IsTrue(bResult,
+                    L"GetMember Splice failed",
+                    LINE_INFO()
+                );
+                Assert::IsTrue(dest.Ptr != nullptr,
+                    L"GetMember Splice should not return a nullptr",
+                    LINE_INFO()
+                );
+
+                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+                Assert::IsTrue(splice->Count() == (pl->Count() - index) - 1,
+                    L"Splice must equal index length",
+                    LINE_INFO()
+                );
+            }
+
+            //
+            // Create reverse splices from the back of the list to the start.
+            //
+
+            //
+            // Use the std::max templated function, not the macro.
+            //
+
+#if defined(max)
+#pragma push_macro("max")
+#undef max
+#define PUSHED_MAX
+#endif
+
+            long upperBound;
+            long lowerBound;
+
+            upperBound = pl->Count() - 1;
+            for (unsigned long index = 0; index <= pl->Count(); ++index)
+            {
+                argAsString = std::to_string(-((long) index)) + ",-1";
+                bResult = List::GetMemberInvoker(
+                    source,
+                    "Splice",
+                    const_cast<PCHAR>(argAsString.c_str()),
+                    dest
+                );
+                Assert::IsTrue(bResult,
+                    L"GetMember Splice failed",
+                    LINE_INFO()
+                );
+                Assert::IsTrue(dest.Ptr != nullptr,
+                    L"GetMember Splice should not return a nullptr",
+                    LINE_INFO()
+                );
+
+                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+
+                //
+                // Compute the expected length of the splice.  If bounds are
+                // negative, the position is the length - bound.
+                //
+
+                lowerBound = -(long) index;
+                if (lowerBound < 0)
+                {
+                    lowerBound = (long) pl->Count() + lowerBound;
+                }
+
+                Assert::IsTrue(splice->Count() == std::max(
+                    0L,
+                    upperBound - lowerBound
+                ),
+                    L"Splice must equal index length",
+                    LINE_INFO()
+                );
+
+                //
+                // If we undefined the macro, make it visible again.
+                //
+
+#if defined(PUSHED_MAX)
+#pragma pop_macro("max")
+#undef PUSHED_MAX
+#endif
+
+            }
+        }
+
+        //
+        // Test the list splice method with three arguments.  This is like
+        // ListSplice2 except the third argument is a 'stride' which is how
+        // many elements to skip.
+        //
+        // Result: a new list is returned.
+        //
+
+        TEST_METHOD(ListGetMemberSplice3)
+        {
+            std::unique_ptr<List> pl;
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+            std::string firstthird[] = {
+                "A",
+                "C"
+            };
+            std::string elements[] = {
+                "A",
+                "B",
+                "C",
+                "D"
+            };
+
+            //
+            // Create a new list.
+            //
+
+            pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Initialize the source pointer for this member call.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Return a splice of the list from the start to the end, skipping
+            // no elements.
+            //
+
+            auto argAsString = "0," + std::to_string(pl->Count()) + ",1";
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
+
+            //
+            // Length of original and splice must be the same.
+            //
+
+            Assert::IsTrue(splice->Count() == pl->Count(),
+                L"Splice length must be equal to length of original list",
+                LINE_INFO()
+            );
+
+            //
+            // Return a splice with a stride of 0.  This should return an
+            // empty list.
+            //
+
+            argAsString = "0," + std::to_string(pl->Count()) + ",0";
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+
+            Assert::IsTrue(splice->Count() == 0,
+                L"Splice length must be zero",
+                LINE_INFO()
+            );
+
+            //
+            // Test stride of 2.  This should return a list half the length
+            // of the source list.
+            //
+
+            argAsString = "0," + std::to_string(pl->Count()) + ",2";
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+
+            Assert::IsTrue(splice->Count() == pl->Count() / 2,
+                L"Splice must be half the length of the original",
+                LINE_INFO()
+            );
+
+            //
+            // Test for the 1st and 3rd elements.
+            //
+
+            CompareListToElements(
+                *splice,
+                firstthird,
+                sizeof(firstthird) / sizeof(firstthird[0])
+            );
+
+            //
+            // Test a stride longer than the source list.  The first element
+            // should be returned.
+            //
+
+            argAsString = "0," + std::to_string(pl->Count()) + "," + std::to_string(pl->Count() + 1);
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+
+            Assert::IsTrue(splice->Count() == 1,
+                L"Splice must contain only one element",
+                LINE_INFO()
+            );
+
+            const std::string *pitem;
+            Assert::IsTrue(splice->Item(0, &pitem),
+                L"Could not return item",
+                LINE_INFO()
+            );
+
+            Assert::IsTrue(*pitem == elements[0],
+                L"Items in splice are not equal",
+                LINE_INFO()
+            );
+
+            //
+            // Return a slice from the end by -3.  This should return the
+            // last and third elements.
+            //
+
+            argAsString = "0," + std::to_string(pl->Count()) + ",-3";
+            bResult = List::GetMemberInvoker(
+                source,
+                "Splice",
+                const_cast<PCHAR>(argAsString.c_str()),
+                dest
+            );
+            Assert::IsTrue(bResult,
+                L"GetMember Splice failed",
+                LINE_INFO()
+            );
+            Assert::IsTrue(dest.Ptr != nullptr,
+                L"GetMember Splice should not return a nullptr",
+                LINE_INFO()
+            );
+
+            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
+
+            Assert::IsTrue(splice->Count() == pl->Count() / 3,
+                L"Splice must be a third of the list long",
                 LINE_INFO()
             );
         }
+
 
         //
         // Test the results of the GetMember interface for the Index method.
@@ -5480,626 +3914,6 @@ namespace ListUnitTests
             );
         }
 
-        //
-        // Test the results of the GetMember interface for the splice method
-        // with one argument.  A positive argument represent an origin of the
-        // splice to the end of the list.  A negative arguments represents an
-        // offset from the end of the list.
-        //
-        // Result: a new list is returned from a given position.
-        //
-
-        TEST_METHOD(ListGetMemberSplice1)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Retrieve a splice starting at the first (0th) element.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Splice", "0", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the original and returned list have the same
-            // elements.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            CompareListToElements(
-                *splice.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            //
-            // Test splice returning an empty list.  Use an index beyond the
-            // list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Splice", "5", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice must be empty",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice from the end of the list, returning the entire list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Splice", "-4", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Create forward splices from position zero to the length.
-            //
-
-            for (unsigned long index = 0; index < pl->Count(); ++index)
-            {
-                auto indexAsString = std::to_string(index);
-
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(indexAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-                Assert::IsTrue(splice->Count() == (pl->Count() - index),
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Create reverse splices from the back of the list to the start.
-            //
-
-            for (unsigned long index = 1; index <= pl->Count(); ++index)
-            {
-                auto indexAsString = std::to_string(-(long) index);
-
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(indexAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-                Assert::IsTrue(splice->Count() == index,
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-        }
-
-        //
-        // Test the results of the GetMember interface for the splice method
-        // with two arguments.  The first argument is a starting position and
-        // the second is an ending position.  If an argument is positive,
-        // it represents an offset from the start of the list and if it is
-        // negative it represents an offset from the end of the list.
-        //
-        // The ending index is an exclusive range, that is, it is not included
-        // in the output list.
-        //
-        // Result: a new list is returned.
-        //
-
-        TEST_METHOD(ListGetMemberSplice2)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Return a splice of the list from the start to the end.
-            //
-
-            auto argAsString = "0," + std::to_string(pl->Count());
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the original and returned list have the same
-            // elements.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            CompareListToElements(
-                *splice.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            //
-            // Test splice returning an empty list.  Use an index beyond the
-            // list.
-            //
-
-            argAsString = std::to_string(pl->Count() + 1) + std::to_string(pl->Count());
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice must be empty",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice from the end of the list, returning the list
-            // exclusive of the last element.
-            //
-
-            argAsString = std::to_string(-((long) pl->Count())) + ",-1";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == pl->Count() - 1,
-                L"Splice length must be one shorter than the length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Create forward splices from the start to the next to last
-            // position.
-            //
-
-            for (unsigned long index = 0; index <= pl->Count() - 1; ++index)
-            {
-                argAsString = std::to_string(index) + ",-1";
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(argAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-                Assert::IsTrue(splice->Count() == (pl->Count() - index) - 1,
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Create reverse splices from the back of the list to the start.
-            //
-
-            //
-            // Use the std::max templated function, not the macro.
-            //
-
-#if defined(max)
-#pragma push_macro("max")
-#undef max
-#define PUSHED_MAX
-#endif
-
-            long upperBound;
-            long lowerBound;
-
-            upperBound = pl->Count() - 1;
-            for (unsigned long index = 0; index <= pl->Count(); ++index)
-            {
-                argAsString = std::to_string(-((long) index)) + ",-1";
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(argAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-                //
-                // Compute the expected length of the splice.  If bounds are
-                // negative, the position is the length - bound.
-                //
-
-                lowerBound = -(long) index;
-                if (lowerBound < 0)
-                {
-                    lowerBound = (long) pl->Count() + lowerBound;
-                }
-
-                Assert::IsTrue(splice->Count() == std::max(
-                    0L,
-                    upperBound - lowerBound
-                ),
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-
-                //
-                // If we undefined the macro, make it visible again.
-                //
-
-#if defined(PUSHED_MAX)
-#pragma pop_macro("max")
-#undef PUSHED_MAX
-#endif
-
-            }
-        }
-
-        //
-        // Test the list splice method with three arguments.  This is like
-        // ListSplice2 except the third argument is a 'stride' which is how
-        // many elements to skip.
-        //
-        // Result: a new list is returned.
-        //
-
-        TEST_METHOD(ListGetMemberSplice3)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string firstthird[] = {
-                "A",
-                "C"
-            };
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Return a splice of the list from the start to the end, skipping
-            // no elements.
-            //
-
-            auto argAsString = "0," + std::to_string(pl->Count()) + ",1";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Return a splice with a stride of 0.  This should return an
-            // empty list.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + ",0";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice length must be zero",
-                LINE_INFO()
-            );
-
-            //
-            // Test stride of 2.  This should return a list half the length
-            // of the source list.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + ",2";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == pl->Count() / 2,
-                L"Splice must be half the length of the original",
-                LINE_INFO()
-            );
-
-            //
-            // Test for the 1st and 3rd elements.
-            //
-
-            CompareListToElements(
-                *splice,
-                firstthird,
-                sizeof(firstthird) / sizeof(firstthird[0])
-            );
-
-            //
-            // Test a stride longer than the source list.  The first element
-            // should be returned.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + "," + std::to_string(pl->Count() + 1);
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == 1,
-                L"Splice must contain only one element",
-                LINE_INFO()
-            );
-
-            const std::string *pitem;
-            Assert::IsTrue(splice->Item(0, &pitem),
-                L"Could not return item",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(*pitem == elements[0],
-                L"Items in splice are not equal",
-                LINE_INFO()
-            );
-
-            //
-            // Return a slice from the end by -3.  This should return the
-            // last and third elements.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + ",-3";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == pl->Count() / 3,
-                L"Splice must be a third of the list long",
-                LINE_INFO()
-            );
-        }
-
         ***/
 
     private:
@@ -6185,7 +3999,6 @@ namespace ListUnitTests
 
         std::unique_ptr<List> CreateAndAppendUsingGetMember() const
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
@@ -6194,7 +4007,7 @@ namespace ListUnitTests
             // Create a new list.
             //
 
-            pl = std::unique_ptr<List>(new List());
+            auto pl = std::make_unique<List>();
 
             //
             // Initialize the source pointer for this member call.
@@ -6207,56 +4020,32 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
-            Assert::IsTrue(bResult,
-                           L"GetMember Count failed",
-                           LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                           L"GetMember Count should be zero",
-                           LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Count invocation failed.");
+            Assert::AreEqual(dest.Int, 0, L"Count should be zero.");
 
             //
             // Append a single item to the list.
             //
 
             bResult = List::GetMemberInvoker(source, "Append", "A", dest);
-            Assert::IsTrue(bResult,
-                           L"GetMember Append failed",
-                           LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                           L"GetMember Append should return True",
-                           LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Append invocation failed");
+            Assert::AreEqual(dest.Int, 1, L"Append should return True");
 
             //
             // Append a sequence of items to the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Append", "B,C,D", dest);
-            Assert::IsTrue(bResult,
-                           L"GetMember Append failed",
-                           LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                           L"GetMember Append should return True",
-                           LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Append", "B,C,D,E", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(dest.Int, 1, L"Append should return True");
 
             //
-            // Count should return 4.
+            // Count should return 5.
             //
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
-            Assert::IsTrue(bResult,
-                           L"GetMember Count failed",
-                           LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 4,
-                           L"GetMember Count should be 4",
-                           LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Count invocation failed");
+            Assert::AreEqual(dest.Int, 5, L"GetMember Count should be five");
 
             return pl;
         }

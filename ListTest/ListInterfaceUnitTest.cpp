@@ -809,7 +809,7 @@ namespace ListUnitTests
         }
 
         //
-        // Create a list and retrieve a splice from the middle with a large length/
+        // Create a list and retrieve a splice from the middle with a large length.
         //
         // Result: the splice should contain half the elements.
         //

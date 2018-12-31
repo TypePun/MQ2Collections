@@ -1302,6 +1302,10 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
         {
             start_it = FindIteratorForPosition(startIndex);
         }
+        else
+        {
+            start_it = m_coll.cend();
+        }
     }
 
     //
