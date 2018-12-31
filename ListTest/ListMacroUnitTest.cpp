@@ -1118,734 +1118,119 @@ namespace ListUnitTests
             CompareListAndSplice(*pl, 2, splice, 0);
         }
 
+        //
+        // Test the list index method on an empty list.
+        //
+        // Result: -1 should be returned.
+        //
+
+        TEST_METHOD(IndexOnEmptyList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Make a new List.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Index of 'Zero' should be -1, indicating it was not found.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Index", "Zero", dest);
+            Assert::IsTrue(bResult, L"Index invocation failed.");
+            Assert::AreEqual(dest.Int, -1, L"Index of 'Zero' should be -1.");
+        }
+
+        //
+        // Test the list index method. An index is the zero-based position of
+        // an item in the list.
+        //
+        // Result: return the index of an item in a list.
+        //
+
+        TEST_METHOD(IndexForKnownElements)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Index each element in the list.  It should succeed.
+            //
+
+            for (long index = 0; index < sizeof(elements) / sizeof(elements[0]); ++index)
+            {
+                bResult = List::GetMemberInvoker(source, "Index", elements[index], dest);
+                Assert::IsTrue(bResult, L"Index invocation failed.");
+                Assert::AreEqual((long) dest.Int, index, L"Index is incorrect for element.");
+            }
+        }
+
+        //
+        // Test the list index method for an element not in the list.
+        //
+        // Result: -1 should be returned.
+        //
+
+        TEST_METHOD(IndexForUnknownElement)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Index of 'Zero' should be -1, indicating it was not found.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Index", "Zero", dest);
+            Assert::IsTrue(bResult, L"Index invocation failed.");
+            Assert::AreEqual(dest.Int, -1, L"Index of 'Zero' should be -1.");
+        }
+
         /***
-
-        //
-        // Test the results of the GetMember interface for the splice method
-        // with one argument.  A positive argument represent an origin of the
-        // splice to the end of the list.  A negative arguments represents an
-        // offset from the end of the list.
-        //
-        // Result: a new list is returned from a given position.
-        //
-
-        TEST_METHOD(ListGetMemberSplice1)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Retrieve a splice starting at the first (0th) element.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Splice", "0", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the original and returned list have the same
-            // elements.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            CompareListToElements(
-                *splice.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            //
-            // Test splice returning an empty list.  Use an index beyond the
-            // list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Splice", "5", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice must be empty",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice from the end of the list, returning the entire list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Splice", "-4", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Create forward splices from position zero to the length.
-            //
-
-            for (unsigned long index = 0; index < pl->Count(); ++index)
-            {
-                auto indexAsString = std::to_string(index);
-
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(indexAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-                Assert::IsTrue(splice->Count() == (pl->Count() - index),
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Create reverse splices from the back of the list to the start.
-            //
-
-            for (unsigned long index = 1; index <= pl->Count(); ++index)
-            {
-                auto indexAsString = std::to_string(-(long) index);
-
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(indexAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-                Assert::IsTrue(splice->Count() == index,
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-        }
-
-        //
-        // Test the results of the GetMember interface for the splice method
-        // with two arguments.  The first argument is a starting position and
-        // the second is an ending position.  If an argument is positive,
-        // it represents an offset from the start of the list and if it is
-        // negative it represents an offset from the end of the list.
-        //
-        // The ending index is an exclusive range, that is, it is not included
-        // in the output list.
-        //
-        // Result: a new list is returned.
-        //
-
-        TEST_METHOD(ListGetMemberSplice2)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Return a splice of the list from the start to the end.
-            //
-
-            auto argAsString = "0," + std::to_string(pl->Count());
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the original and returned list have the same
-            // elements.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            CompareListToElements(
-                *splice.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-
-            //
-            // Test splice returning an empty list.  Use an index beyond the
-            // list.
-            //
-
-            argAsString = std::to_string(pl->Count() + 1) + std::to_string(pl->Count());
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice must be empty",
-                LINE_INFO()
-            );
-
-            //
-            // Test splice from the end of the list, returning the list
-            // exclusive of the last element.
-            //
-
-            argAsString = std::to_string(-((long) pl->Count())) + ",-1";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-            Assert::IsTrue(splice->Count() == pl->Count() - 1,
-                L"Splice length must be one shorter than the length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Create forward splices from the start to the next to last
-            // position.
-            //
-
-            for (unsigned long index = 0; index <= pl->Count() - 1; ++index)
-            {
-                argAsString = std::to_string(index) + ",-1";
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(argAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-                Assert::IsTrue(splice->Count() == (pl->Count() - index) - 1,
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Create reverse splices from the back of the list to the start.
-            //
-
-            //
-            // Use the std::max templated function, not the macro.
-            //
-
-#if defined(max)
-#pragma push_macro("max")
-#undef max
-#define PUSHED_MAX
-#endif
-
-            long upperBound;
-            long lowerBound;
-
-            upperBound = pl->Count() - 1;
-            for (unsigned long index = 0; index <= pl->Count(); ++index)
-            {
-                argAsString = std::to_string(-((long) index)) + ",-1";
-                bResult = List::GetMemberInvoker(
-                    source,
-                    "Splice",
-                    const_cast<PCHAR>(argAsString.c_str()),
-                    dest
-                );
-                Assert::IsTrue(bResult,
-                    L"GetMember Splice failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Splice should not return a nullptr",
-                    LINE_INFO()
-                );
-
-                splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-                //
-                // Compute the expected length of the splice.  If bounds are
-                // negative, the position is the length - bound.
-                //
-
-                lowerBound = -(long) index;
-                if (lowerBound < 0)
-                {
-                    lowerBound = (long) pl->Count() + lowerBound;
-                }
-
-                Assert::IsTrue(splice->Count() == std::max(
-                    0L,
-                    upperBound - lowerBound
-                ),
-                    L"Splice must equal index length",
-                    LINE_INFO()
-                );
-
-                //
-                // If we undefined the macro, make it visible again.
-                //
-
-#if defined(PUSHED_MAX)
-#pragma pop_macro("max")
-#undef PUSHED_MAX
-#endif
-
-            }
-        }
-
-        //
-        // Test the list splice method with three arguments.  This is like
-        // ListSplice2 except the third argument is a 'stride' which is how
-        // many elements to skip.
-        //
-        // Result: a new list is returned.
-        //
-
-        TEST_METHOD(ListGetMemberSplice3)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string firstthird[] = {
-                "A",
-                "C"
-            };
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Return a splice of the list from the start to the end, skipping
-            // no elements.
-            //
-
-            auto argAsString = "0," + std::to_string(pl->Count()) + ",1";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            std::unique_ptr<List> splice(reinterpret_cast<List *>(dest.Ptr));
-
-            //
-            // Length of original and splice must be the same.
-            //
-
-            Assert::IsTrue(splice->Count() == pl->Count(),
-                L"Splice length must be equal to length of original list",
-                LINE_INFO()
-            );
-
-            //
-            // Return a splice with a stride of 0.  This should return an
-            // empty list.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + ",0";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == 0,
-                L"Splice length must be zero",
-                LINE_INFO()
-            );
-
-            //
-            // Test stride of 2.  This should return a list half the length
-            // of the source list.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + ",2";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == pl->Count() / 2,
-                L"Splice must be half the length of the original",
-                LINE_INFO()
-            );
-
-            //
-            // Test for the 1st and 3rd elements.
-            //
-
-            CompareListToElements(
-                *splice,
-                firstthird,
-                sizeof(firstthird) / sizeof(firstthird[0])
-            );
-
-            //
-            // Test a stride longer than the source list.  The first element
-            // should be returned.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + "," + std::to_string(pl->Count() + 1);
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == 1,
-                L"Splice must contain only one element",
-                LINE_INFO()
-            );
-
-            const std::string *pitem;
-            Assert::IsTrue(splice->Item(0, &pitem),
-                L"Could not return item",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(*pitem == elements[0],
-                L"Items in splice are not equal",
-                LINE_INFO()
-            );
-
-            //
-            // Return a slice from the end by -3.  This should return the
-            // last and third elements.
-            //
-
-            argAsString = "0," + std::to_string(pl->Count()) + ",-3";
-            bResult = List::GetMemberInvoker(
-                source,
-                "Splice",
-                const_cast<PCHAR>(argAsString.c_str()),
-                dest
-            );
-            Assert::IsTrue(bResult,
-                L"GetMember Splice failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Splice should not return a nullptr",
-                LINE_INFO()
-            );
-
-            splice = std::unique_ptr<List>(reinterpret_cast<List *>(dest.Ptr));
-
-            Assert::IsTrue(splice->Count() == pl->Count() / 3,
-                L"Splice must be a third of the list long",
-                LINE_INFO()
-            );
-        }
-
-
-        //
-        // Test the results of the GetMember interface for the Index method.
-        //
-
-        TEST_METHOD(ListGetMemberIndex1)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Verify that each element is contained in the list at the
-            // same offset as in the array.
-            //
-
-            PCHAR argument;
-            int index;
-
-            index = 0;
-            for (auto & item : elements)
-            {
-                argument = const_cast<PCHAR>(item.c_str());
-                bResult = List::GetMemberInvoker(source, "Index", argument, dest);
-                Assert::IsTrue(bResult,
-                    L"GetMember Index failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Int == index,
-                    L"GetMember Index result mismatch",
-                    LINE_INFO()
-                );
-
-                //
-                // Advance to the next element.
-                //
-
-                ++index;
-            }
-
-            //
-            // Test Index on an item we know is not in the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Index", "E", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Index failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == -1,
-                L"GetMember Index should return -1",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Index method
-        // on an empty list.
-        //
-
-        TEST_METHOD(ListGetMemberIndex2)
-        {
-            std::unique_ptr<List> pl(new List);
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Test Index on an item we know is not in the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Index", "E", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Index failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == -1,
-                L"GetMember Index should return -1",
-                LINE_INFO()
-            );
-        }
 
         //
         // Test the results of the GetMember interface for the Item method.
