@@ -1230,111 +1230,112 @@ namespace ListUnitTests
             Assert::AreEqual(dest.Int, -1, L"Index of 'Zero' should be -1.");
         }
 
-        /***
-
         //
-        // Test the results of the GetMember interface for the Item method.
+        // Retrieve the item at position zero in an empty list.
+        //
+        // Result: the item method should return false.
         //
 
-        TEST_METHOD(ListGetMemberItem1)
+        TEST_METHOD(ItemEmptyList)
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-            std::string elements[] = {
+
+            //
+            // Make a new List.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Index of 'Zero' should be -1, indicating it was not found.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Item", "0", dest);
+            Assert::IsTrue(bResult, L"Item invocation failed.");
+            Assert::IsNull(dest.Ptr, L"Returned pointer should be null.");
+        }
+
+        //
+        // Retrieve each item in a populated list.
+        //
+        // Result: the items should be returned in order.
+        //
+
+        TEST_METHOD(ItemCompareEachEntry)
+        {
+            PCHAR elements[] =
+            {
                 "A",
                 "B",
                 "C",
-                "D"
+                "D",
+                "E"
             };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Retrieve each item at the specified offset and compare
-            // it to the same offset in the elements array.
+            // Compare the list to the expected elements.
             //
 
-            PCHAR argument;
-            std::string listItem;
-            for (auto & item : {0, 1, 2, 3})
-            {
-                listItem = std::to_string(item);
-                argument = const_cast<PCHAR>(listItem.c_str());
-                bResult = List::GetMemberInvoker(source, "Item", argument, dest);
-                Assert::IsTrue(bResult,
-                    L"GetMember Item failed",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(dest.Ptr != nullptr,
-                    L"GetMember Item null pointer returned",
-                    LINE_INFO()
-                );
-                Assert::IsTrue(reinterpret_cast<const char *>(dest.Ptr) == elements[item],
-                    L"GetMember Item result mismatch",
-                    LINE_INFO()
-                );
-            }
-
-            //
-            // Test Item on an item we know is not in the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Item", "5", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Item failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Item should return False",
-                LINE_INFO()
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the results of the GetMember interface for the Item method
-        // on an empty List.
+        // Retrieve an item after the end of a list.
+        //
+        // Result: the items should be returned in order.
         //
 
-        TEST_METHOD(ListGetMemberItem2)
+        TEST_METHOD(ItemAfterListEnd)
         {
-            std::unique_ptr<List> pl(new List);
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
 
             //
-            // Initialize the source pointer for this member call.
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Test Item on an item we know is not in the list.
+            // Get the item after the end of the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Item", "5", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Item failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Item should return False",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Item", "100", dest);
+            Assert::IsTrue(bResult, L"Item invocation failed.");
+            Assert::AreEqual(dest.Int, 0, L"Item method should return false.");
         }
 
+        /***
         //
         // Test the results of the GetMember interface for the Insert
         // method where a sequence is inserted before the first entry.
@@ -3357,28 +3358,6 @@ namespace ListUnitTests
         }
 
         //
-        // Compare a list with a sequence of strings.
-        //
-
-        void CompareListToElements(
-            const List & l,
-            const std::string elements[],
-            size_t numElements) const
-        {
-            //
-            // Retrieve the item at a position in the list.
-            //
-
-            const std::string *pitem;
-            for (size_t index = 0; index < numElements; ++index)
-            {
-                Assert::IsTrue(l.Item(index, &pitem), L"Index was incorrect for element.");
-
-                Assert::AreEqual(*pitem, elements[index], L"Returned string does not match expected string");
-            }
-        }
-
-        //
         // Create a list and append the elements using the GetMember interface.
         //
 
@@ -3433,6 +3412,30 @@ namespace ListUnitTests
             Assert::AreEqual(dest.Int, 5, L"GetMember Count should be five");
 
             return pl;
+        }
+
+        //
+        // Compare a list with a sequence of strings.
+        //
+
+        void CompareListToElements(MQ2VARPTR & source, const PCHAR elements[], size_t numElements) const
+        {
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+            //
+            // Retrieve the item at a position in the list.
+            //
+
+            for (size_t index = 0; index < numElements; ++index)
+            {
+                std::string item_s = std::to_string(index);
+                bResult = List::GetMemberInvoker(source, "Item", (PCHAR) item_s.c_str(), dest);
+                Assert::IsTrue(bResult, L"Item invocation failed.");
+                Assert::IsNotNull(dest.Ptr, L"Returned item is a null pointer.");
+
+                auto compare_result = strcmp((const char *) dest.Ptr, elements[index]);
+                Assert::AreEqual(compare_result, 0, L"Returned string does not match expected string.");
+            }
         }
 
         //
