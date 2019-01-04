@@ -1963,6 +1963,144 @@ namespace ListUnitTests
             CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
+        //
+        // Append an item to an empty list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendToEmptyList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append a sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "A,B,C,D,E", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Append an item to a populated list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendToList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two",
+                "Three"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append a sequence onto the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "One,Two,Three", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Append an empty sequence to an empty list.
+        //
+        // Result: no element should be added to the list.
+        //
+
+        TEST_METHOD(AppendEmptySequenceToEmptyList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append an empty sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Append should return false.");
+
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
+        }
+
         /***
         //
         // Test the results of the GetMember interface for the Remove
