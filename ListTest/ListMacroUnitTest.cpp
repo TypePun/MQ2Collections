@@ -1964,7 +1964,6 @@ namespace ListUnitTests
         }
 
         /***
-
         //
         // Test the results of the GetMember interface for the Remove
         // method where an item is in the list.
