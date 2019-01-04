@@ -1966,66 +1966,6 @@ namespace ListUnitTests
         /***
 
         //
-        // Test the results of the GetMember interface for the Reverse
-        // method.
-        //
-
-        TEST_METHOD(ListGetMemberReverse)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "D",
-                "C",
-                "B",
-                "A"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Reverse the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Reverse", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Reverse failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Reverse should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
         // Test the results of the GetMember interface for the Remove
         // method where an item is in the list.
         //
