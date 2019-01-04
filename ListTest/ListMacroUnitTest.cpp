@@ -1780,529 +1780,105 @@ namespace ListUnitTests
             CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
-        /***
         //
-        // Test the results of the GetMember interface for the Insert
-        // method where a sequence is inserted before the first entry.
+        // Sort an empty list.
+        //
+        // Result: empty list should be returned.
         //
 
-        TEST_METHOD(ListGetMemberInsert1)
+        TEST_METHOD(SortEmptyList)
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-            std::string elements[] = {
-                "X",
-                "Y",
-                "Z",
-                "A",
-                "B",
-                "C",
-                "D"
-            };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = std::make_unique<List>();
 
             //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Insert the sequence X,Y,Z before the first element.
-            // Since the collection has a zero origin, use zero as
-            // the position.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Insert", "0,X,Y,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Insert should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 7,
-                L"List must have seven elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Insert
-        // method where a sequence is inserted in the middle of the list.
-        //
-
-        TEST_METHOD(ListGetMemberInsert2)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "X",
-                "Y",
-                "Z",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Insert the sequence X,Y,Z after the second element.
-            // Since the collection has a zero origin, use two as
-            // the position.
+            // Sort the empty list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Insert", "2,X,Y,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Insert should return True",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Sort", nullptr, dest);
+            Assert::IsTrue(bResult, L"Sort invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Sort should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 7,
-                L"List must have seven elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
         }
 
         //
-        // Test the results of the GetMember interface for the Insert
-        // method where a sequence is inserted after the end of the list.
+        // Sort the list.
         //
-        // Note: This operation should fail.
+        // Result: list should be sorted.
         //
 
-        TEST_METHOD(ListGetMemberInsert3)
+        TEST_METHOD(SortList)
         {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Inserting a sequence after the end of the list is an
-            // append operation. This should fail.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Insert", "4,X,Y,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Insert should return False",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values. That is,
-            // the list should not have been modified.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Insert
-        // method where a sequence composed of a single item is inserted
-        // before the first entry.
-        //
-
-        TEST_METHOD(ListGetMemberInsert4)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "X",
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Insert the item X before the first element.  Since the collection has
-            // a zero origin, use zero as the position.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Insert", "0,X", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Insert should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 5,
-                L"List must have five elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Insert
-        // method where an empty list is inserted into an existing list.
-        //
-        // Result: Existing list should contain a null string at the
-        // point of insertion.
-        //
-
-        TEST_METHOD(ListGetMemberInsert5)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Insert the item
-            //
-
-            bResult = List::GetMemberInvoker(source, "Insert", "2,", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Insert should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 5,
-                L"List must have five elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Insert
-        // method where an index is specified and no sequence is provided.
-        //
-        // Note: The insert should fail.
-        //
-
-        TEST_METHOD(ListGetMemberInsert6)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Insert an empty sequence before the first entry.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Insert", "0", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Insert should return False",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Insert
-        // method where a list is inserted into an empty list.
-        //
-        // Result: List should be inserted at the start.
-        //
-
-        TEST_METHOD(ListGetMemberInsert7)
-        {
-            std::unique_ptr<List> pl(new List);
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Insert the sequence at the start of the empty list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Insert", "0,A,B,C,D", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Insert should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Sort
-        // method.
-        //
-
-        TEST_METHOD(ListGetMemberSort)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
+            PCHAR elements[] =
+            {
                 "A",
                 "B",
                 "C",
                 "D",
-                "X",
-                "Y",
-                "Z",
+                "E",
+                "F",
+                "G",
+                "H"
             };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Insert the sequence X,Y,Z before the first element.
-            // Since the collection has a zero origin, use zero as
-            // the position.
+            // Insert larger elements at the front.
             //
 
-            bResult = List::GetMemberInvoker(source, "Insert", "0,X,Y,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Insert failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Insert should return True",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Insert", "0,F,G,H", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 7,
-                L"List must have seven elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
 
             //
-            // Sort the list.
+            // Sort the empty list.
             //
 
             bResult = List::GetMemberInvoker(source, "Sort", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Sort failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Sort should return True",
-                LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Sort invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Sort should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 7,
-                L"List must have seven elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
 
             //
-            // Verify that the output list has the expected values.
+            // Verify the elements in the list.
             //
 
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
+
+        /***
 
         //
         // Test the results of the GetMember interface for the Reverse
