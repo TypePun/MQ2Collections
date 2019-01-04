@@ -1862,7 +1862,7 @@ namespace ListUnitTests
             Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
 
             //
-            // Sort the empty list.
+            // Sort the list.
             //
 
             bResult = List::GetMemberInvoker(source, "Sort", nullptr, dest);
@@ -1870,6 +1870,91 @@ namespace ListUnitTests
             Assert::AreEqual(1, dest.Int, L"Sort should return true.");
 
             Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Reverse an empty list.
+        //
+        // Result: an empty list should be returned.
+        //
+
+        TEST_METHOD(ReverseAnEmptyList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Reverse the empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Reverse", nullptr, dest);
+            Assert::IsTrue(bResult, L"Reverse invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Reverse should return true.");
+
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
+        }
+
+        //
+        // Reverse the list.
+        //
+        // Result: list should be reversed.
+        //
+
+        TEST_METHOD(ReverseList)
+        {
+            PCHAR elements[] =
+            {
+                "E",
+                "D",
+                "C",
+                "B",
+                "A"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Reverse the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Reverse", nullptr, dest);
+            Assert::IsTrue(bResult, L"Reverse invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Reverse should return true.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
 
             //
             // Verify the elements in the list.
