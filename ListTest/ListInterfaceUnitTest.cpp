@@ -1481,7 +1481,6 @@ namespace ListUnitTests
                 sizeof(elements) / sizeof(elements[0]));
         }
 
-
         //
         // Insert a list into an empty list.
         //

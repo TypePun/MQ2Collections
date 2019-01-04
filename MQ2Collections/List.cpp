@@ -1115,8 +1115,7 @@ bool List::Item(const std::string & index, const std::string ** const item) cons
 }
 
 //
-// Insert a sequence of items starting at index into the current list.  Index
-// can be negative, in which case it is an offset from the end of the list. 
+// Insert a sequence of items starting at index into the current list. 
 // Return true if the items could be inserted and false otherwise.
 //
 
@@ -1145,6 +1144,15 @@ bool List::Insert(const std::string & args)
     if (coll->size() < 2)
     {
         return false;
+    }
+    else if ((coll->size() == 2) && coll->at(1).empty())
+    {
+        //
+        // If there is only one element to insert and it is empty, ignore the
+        // insertion. The input was a list of the form: "index,".
+        //
+
+        return true;
     }
 
     //
@@ -1368,10 +1376,11 @@ bool List::IndexValueFromString(const std::string & stringIndex, size_t * longIn
     else
     {
         //
-        // Fail if the index is past the end of the list.
+        // Fail if the index is past the end of the list. If it is equal to the
+        // end, treat this as an append.
         //
 
-        if ((size_t) lIndex >= Count())
+        if ((size_t) lIndex > Count())
         {
             return false;
         }

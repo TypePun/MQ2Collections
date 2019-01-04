@@ -1335,6 +1335,451 @@ namespace ListUnitTests
             Assert::AreEqual(dest.Int, 0, L"Item method should return false.");
         }
 
+        //
+        // Insert an empty list into an empty list.
+        //
+        // Result: the list should be empty.
+        //
+
+        TEST_METHOD(InsertEmptyListIntoEmptyList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert an empty sequence at the start of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
+        }
+
+        //
+        // Insert an empty list at the start of a list.
+        //
+        // Result: existing list should be the same.
+        //
+
+        TEST_METHOD(InsertEmptyListAtStartOfList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert an empty sequence at the start of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert an empty list at the end of a list.
+        //
+        // Result: existing list should be the same.
+        //
+
+        TEST_METHOD(InsertEmptyListAtEndOfList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert an empty sequence at the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "5,", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert an empty list in the middle of a list.
+        //
+        // Result: existing list should be the same.
+        //
+
+        TEST_METHOD(InsertEmptyListInMiddleOfList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert an empty sequence in the middle of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "3,", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list at the start of another list.
+        //
+        // Result: new list is prepended to the old list.
+        //
+
+        TEST_METHOD(InsertListAtStartOfAnotherList)
+        {
+            PCHAR elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence at the start of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,One,Two,Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list at the end of another list.
+        //
+        // Result: new list is appended to the old list.
+        //
+
+        TEST_METHOD(InsertListAtEndOfAnotherList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two",
+                "Three"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence at the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "5,One,Two,Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list in the middle of another list.
+        //
+        // Result: the new list is composed of first list with second list
+        // inserted in the middle of the first list.
+        //
+
+        TEST_METHOD(InsertListInMiddleOfAnotherList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "One",
+                "Two",
+                "Three",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence in the middle of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "3,One,Two,Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list at in invalid entry past the end of the list.
+        //
+        // Result: list should not be modified.
+        //
+
+        TEST_METHOD(InsertPastEnd)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "6,One,Two,Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Insert should return false.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list into an empty list.
+        //
+        // Result: list should contain the inserted elements.
+        //
+
+        TEST_METHOD(InsertIntoEmptyList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,A,B,C,D,E", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
         /***
         //
         // Test the results of the GetMember interface for the Insert
