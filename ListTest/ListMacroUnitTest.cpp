@@ -2101,6 +2101,311 @@ namespace ListUnitTests
             Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
         }
 
+        //
+        // Remove an item from an empty list.
+        //
+        // Result: remove should return zero items removed.
+        //
+
+        TEST_METHOD(RemoveFromEmptyList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Remove an item from an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Remove", "A", dest);
+            Assert::IsTrue(bResult, L"Remove invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Remove should return zero items removed.");
+
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
+        }
+
+        //
+        // Remove an item that is not in the list.
+        //
+        // Result: No items should be remvoed and the list should not be modified.
+        //
+
+        TEST_METHOD(RemoveItemNotInList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Remove an element not in the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Remove", "Zero", dest);
+            Assert::IsTrue(bResult, L"Remove invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Remove should return zero elements removed.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Remove the first element from the list.
+        //
+        // Result: only the first item should be removed.
+        //
+
+        TEST_METHOD(RemoveFirstItem)
+        {
+            PCHAR elements[] =
+            {
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Remove the first element from the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Remove", "A", dest);
+            Assert::IsTrue(bResult, L"Remove invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Remove should return one element removed.");
+
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Remove the last element from the list.
+        //
+        // Result: only the last item should be removed.
+        //
+
+        TEST_METHOD(RemoveLastItem)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Remove the last element from the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Remove", "E", dest);
+            Assert::IsTrue(bResult, L"Remove invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Remove should return one element removed.");
+
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Remove a middle element from the list.
+        //
+        // Result: only the middle item should be removed.
+        //
+
+        TEST_METHOD(RemoveMiddleItem)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Remove the middle element from the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Remove", "C", dest);
+            Assert::IsTrue(bResult, L"Remove invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Remove should return one element removed.");
+
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Duplicate a list and remove an element.
+        //
+        // Result: removed item should not be in the list and the remove
+        // count should be two.
+        //
+
+        TEST_METHOD(RemoveMultiple)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "D",
+                "E",
+                "A",
+                "B",
+                "D",
+                "E"
+            };
+            PCHAR appenditems[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append a new sequence to the list.
+            //
+
+            for (auto item : appenditems)
+            {
+                bResult = List::GetMemberInvoker(source, "Append", item, dest);
+                Assert::IsTrue(bResult, L"Append invocation failed.");
+                Assert::AreEqual(1, dest.Int, L"Append should return true.");
+            }
+
+            //
+            // Remove the middle element from the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Remove", "C", dest);
+            Assert::IsTrue(bResult, L"Remove invocation failed.");
+            Assert::AreEqual(2, dest.Int, L"Remove should return two elements removed.");
+
+            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
         /***
         //
         // Test the results of the GetMember interface for the Remove

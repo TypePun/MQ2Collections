@@ -1843,7 +1843,7 @@ namespace ListUnitTests
             AppendFive(l);
 
             //
-            // Remove an element not in the list element.
+            // Remove an element not in the list.
             //
 
             Assert::AreEqual(l.Remove(std::string("Zero")), (size_t) 0, L"No elements should be removed from the list");
