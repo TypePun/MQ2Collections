@@ -2632,317 +2632,310 @@ namespace ListUnitTests
             CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
-        /***
         //
-        // Test the results of the GetMember interface for the Replace
-        // method where an existing element is replaced with a new value.
+        // Replace an item in an empty list.
+        //
+        // Result: count of items replaced should be zero.
         //
 
-        TEST_METHOD(ListGetMemberReplace1)
+        TEST_METHOD(ReplaceInEmptyList)
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-            std::string elements[] = {
-                "Z",
-                "B",
-                "C",
-                "D"
-            };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = std::make_unique<List>();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Replace the first element with a new value.
+            // Replace an item from an empty list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Replace", "A,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Replace should return one replacement",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            bResult = List::GetMemberInvoker(source, "Replace", "A,Empty", dest);
+            Assert::IsTrue(bResult, L"Replace invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Replace should return zero.");
         }
 
         //
-        // Test the results of the GetMember interface for the Replace
-        // method where an element that does not exist is replaced.
+        // Replace the first element.
+        //
+        // Result: replaced element should have a new value.
         //
 
-        TEST_METHOD(ListGetMemberReplace2)
+        TEST_METHOD(ReplaceFirstElement)
         {
-            std::unique_ptr<List> pl;
+            PSTR elements[] =
+            {
+                "First",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-            std::string elements[] = {
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Replace the first element in the list with another value.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Replace", "A,First", dest);
+            Assert::IsTrue(bResult, L"Replace invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Replace should return one entry replaced.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Replace the last element.
+        //
+        // Result: replaced element should have a new value.
+        //
+
+        TEST_METHOD(ReplaceLastElement)
+        {
+            PSTR elements[] =
+            {
                 "A",
                 "B",
                 "C",
-                "D"
+                "D",
+                "Last"
             };
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Replace a value that is not in the list with a new value.
+            // Replace the last element in the list with another value.
             //
 
-            bResult = List::GetMemberInvoker(source, "Replace", "E,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Replace should return zero replacements",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Replace", "E,Last", dest);
+            Assert::IsTrue(bResult, L"Replace invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Replace should return one entry replaced.");
 
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
 
             //
-            // Verify that the output list has the expected values.
+            // Verify the elements in the list.
             //
 
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the results of the GetMember interface for the Replace
-        // method where a value is replaced multiple times.
+        // Replace a middle element.
+        //
+        // Result: replaced element should have a new value.
         //
 
-        TEST_METHOD(ListGetMemberReplace3)
+        TEST_METHOD(ReplaceMiddleElement)
         {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "1",
+            PSTR elements[] =
+            {
+                "A",
                 "B",
-                "1",
-                "D"
+                "Middle",
+                "D",
+                "E"
             };
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Replace the first element with a new value and then the third
-            // element with a new value.  Then replace both of those values
-            // with the same value.
+            // Replace the middle element in the list with another value.
             //
 
-            bResult = List::GetMemberInvoker(source, "Replace", "A,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Replace should return one replacement",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Replace", "C,Middle", dest);
+            Assert::IsTrue(bResult, L"Replace invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Replace should return one entry replaced.");
 
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            bResult = List::GetMemberInvoker(source, "Replace", "C,Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Replace should return one replacement",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            bResult = List::GetMemberInvoker(source, "Replace", "Z,1", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 2,
-                L"GetMember Replace should return one replacement",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
 
             //
-            // Verify that the output list has the expected values.
+            // Verify the elements in the list.
             //
 
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the results of the GetMember interface for the Replace
-        // method where the replacement string is a null string.
+        // Replace an item that is not in the list.
+        //
+        // Result: list should not be modified.
         //
 
-        TEST_METHOD(ListGetMemberReplace4)
+        TEST_METHOD(ReplaceItemNotInList)
         {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "",
+            PSTR elements[] =
+            {
+                "A",
                 "B",
                 "C",
-                "D"
+                "D",
+                "E"
+            };
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Replace an item that is not in the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Replace", "Zero,Empty", dest);
+            Assert::IsTrue(bResult, L"Replace invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Replace should return zero entries replaced.");
+
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Replace an entry that occurs more than once in a list.
+        //
+        // Result: replaced item should be replaced for each occurence in the original list.
+        //
+
+        TEST_METHOD(ReplaceMultiple)
+        {
+            PSTR elements[] =
+            {
+                "A",
+                "B",
+                "Middle",
+                "D",
+                "E",
+                "A",
+                "B",
+                "Middle",
+                "D",
+                "E"
+            };
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+            PSTR appendelements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
             };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Replace a value that is not in the list with a new value.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Replace", "A,", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Replace should return one replacement",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Replace
-        // method on an empty list.
-        //
-
-        TEST_METHOD(ListGetMemberReplace5)
-        {
-            std::unique_ptr<List> pl(new List);
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-
-            //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Replace a value that is not in the list with a new value.
+            // Append the contents of the list to itself.
             //
 
-            bResult = List::GetMemberInvoker(source, "Replace", "A,", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Replace failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Replace should return zero replacements",
-                LINE_INFO()
-            );
+            for (auto item : appendelements)
+            {
+                bResult = List::GetMemberInvoker(source, "Append", item, dest);
+                Assert::IsTrue(bResult, L"Append invocation failed.");
+                Assert::AreEqual(1, dest.Int, L"Append should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 0,
-                L"List must have zero elements",
-                LINE_INFO()
-            );
+            }
+
+            //
+            // Replace the middle element.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Replace", "C,Middle", dest);
+            Assert::IsTrue(bResult, L"Replace invocation failed.");
+            Assert::AreEqual(2, dest.Int, L"Replace should return two entries replaced.");
+
+            Assert::AreEqual((size_t) 10, pl->Count(), L"List must have ten elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
+        /***
         //
         // Test the results of the GetMember interface for the Head
         // method on an empty list.
