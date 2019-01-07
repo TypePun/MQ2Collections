@@ -2406,189 +2406,66 @@ namespace ListUnitTests
             CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
-        /***
         //
-        // Test the results of the GetMember interface for the Remove
-        // method where an item is in the list.
+        // Erase an item from an empty list.
+        //
+        // Result: erase should return false.
         //
 
-        TEST_METHOD(ListGetMemberRemove1)
+        TEST_METHOD(EraseFromEmptyList)
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-            std::string elements[] = {
-                "A",
-                "C",
-                "D"
-            };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = std::make_unique<List>();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Remove the second element from the list.
+            // Remove an item from an empty list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Remove", "B", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Remove failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Remove should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            bResult = List::GetMemberInvoker(source, "Erase", "0", dest);
+            Assert::IsTrue(bResult, L"Erase invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Erase should return false.");
         }
 
         //
-        // Test the results of the GetMember interface for the Remove
-        // method where an item is not in the list.
+        // Erase the first element.
+        //
+        // Result: erase should succeed and the erased item should not be in the list.
         //
 
-        TEST_METHOD(ListGetMemberRemove2)
+        TEST_METHOD(EraseFirstItem)
         {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
+            PSTR elements[] =
+            {
                 "B",
                 "C",
-                "D"
+                "D",
+                "E"
             };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Remove an element that does not exist in the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Remove", "E", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Remove failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Remove should return False",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Remove
-        // method on an empty list.
-        //
-
-        TEST_METHOD(ListGetMemberRemove3)
-        {
-            std::unique_ptr<List> pl(new List);
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
 
             //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Remove an element that does not exist in the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Remove", "E", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Remove failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Remove should return False",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 0,
-                L"List must have zero elements",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Erase
-        // method using the first element -- index 0.
-        //
-
-        TEST_METHOD(ListGetMemberErase1)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "B",
-                "C",
-                "D"
-            };
-
-            //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
@@ -2598,488 +2475,164 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Erase", "0", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Erase should return True",
-                LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Erase invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Erase should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
 
             //
-            // Verify that the output list has the expected values.
+            // Verify the elements in the list.
             //
 
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the results of the GetMember interface for the Erase
-        // method using the last element -- index 3.
+        // Erasing a middle element.
+        //
+        // Result: erase should succeed and the erased item should not be in the list.
         //
 
-        TEST_METHOD(ListGetMemberErase2)
+        TEST_METHOD(EraseMiddleItem)
         {
-            std::unique_ptr<List> pl;
+            PSTR elements[] =
+            {
+                "A",
+                "B",
+                "D",
+                "E"
+            };
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C"
-            };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Erase the last element from the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Erase", "3", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Erase should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Erase
-        // method using an element in the middle of the list.
-        //
-
-        TEST_METHOD(ListGetMemberErase3)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Erase the third element from the list.
+            // Erase the middle element from the list.
             //
 
             bResult = List::GetMemberInvoker(source, "Erase", "2", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Erase should return True",
-                LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Erase invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Erase should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
 
             //
-            // Verify that the output list has the expected values.
+            // Verify the elements in the list.
             //
 
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the results of the GetMember interface for the Erase
-        // method using an element not in the list.
+        // Erasing the last element.
+        //
+        // Result: erase method should succeed and the erased item should not be in the list.
         //
 
-        TEST_METHOD(ListGetMemberErase4)
+        TEST_METHOD(EraseLastItem)
         {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
+            PSTR elements[] =
+            {
                 "A",
                 "B",
                 "C",
                 "D"
             };
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Erase an element past the end of the list.
+            // Erase the middle element from the list.
             //
 
             bResult = List::GetMemberInvoker(source, "Erase", "4", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Erase should return False",
-                LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"Erase invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Erase should return true.");
 
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
 
             //
-            // Verify that the output list has the expected values.
+            // Verify the elements in the list.
             //
 
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
         //
-        // Test the results of the GetMember interface for the Erase
-        // method using a negative offset to erase the last element.
+        // Erase an item beyond the list.
+        //
+        // Result: erase method should fail and the list should not be modified.
         //
 
-        TEST_METHOD(ListGetMemberErase5)
+        TEST_METHOD(EraseItemOutOfBounds)
         {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Erase the last element using an offset from the end.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Erase", "-1", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Erase should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Erase
-        // method using a negative offset to erase the first element.
-        //
-
-        TEST_METHOD(ListGetMemberErase6)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "B",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Erase the first element using an offset from the end.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Erase", "-4", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Erase should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Erase
-        // method using a negative offset to erase an element in the middle
-        // of the list.
-        //
-
-        TEST_METHOD(ListGetMemberErase7)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "C",
-                "D"
-            };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Erase the second element using an offset from the end.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Erase", "-3", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Erase should return True",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Erase
-        // method using a negative offset to erase an element before the
-        // beginning of the list.
-        //
-
-        TEST_METHOD(ListGetMemberErase8)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
+            PSTR elements[] =
+            {
                 "A",
                 "B",
                 "C",
-                "D"
+                "D",
+                "E"
             };
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Erase an element before the beginning using an offset from
-            // the end.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Erase", "-5", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Erase should return False",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 4,
-                L"List must have four elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Erase
-        // method on an empty list.
-        //
-
-        TEST_METHOD(ListGetMemberErase9)
-        {
-            std::unique_ptr<List> pl(new List);
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
 
             //
-            // Initialize the source pointer for this member call.
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Erase an element before the beginning using an offset from
-            // the end.
+            // Erase the middle element from the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Erase", "0", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Erase failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Erase should return False",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "Erase", "5", dest);
+            Assert::IsTrue(bResult, L"Erase invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Erase should return false.");
 
-            Assert::IsTrue(pl.get()->Count() == 0,
-                L"List must have zero elements",
-                LINE_INFO()
-            );
+            Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
+        /***
         //
         // Test the results of the GetMember interface for the Replace
         // method where an existing element is replaced with a new value.
