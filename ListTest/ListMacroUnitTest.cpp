@@ -2960,7 +2960,7 @@ namespace ListUnitTests
             source.Ptr = pl.get();
 
             //
-            // Replace an item from an empty list.
+            // Pop the head from an empty list.
             //
 
             bResult = List::GetMemberInvoker(source, "Head", nullptr, dest);
@@ -3079,114 +3079,152 @@ namespace ListUnitTests
 
             Assert::AreEqual((size_t) 0, pl->Count(), L"List must be empty.");
         }
-
-        /***
         //
-        // Test the results of the GetMember interface for the Tail
-        // method on an empty list.
+        // Get the tail of an empty list.
+        //
+        // Result: the tail method call should fail.
         //
 
-        TEST_METHOD(ListGetMemberTail1)
+        TEST_METHOD(TailOfEmptyList)
         {
-            std::unique_ptr<List> pl = std::make_unique<List>();
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Retrieve the head of the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Tail", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Tail failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Tail should be false",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 0,
-                L"List must have zero elements",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Tail
-        // method on a list.
-        //
-
-        TEST_METHOD(ListGetMemberTail2)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "A",
-                "B",
-                "C"
-            };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = std::make_unique<List>();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Retrieve the head of the list.
+            // Pop the tail from an empty list.
             //
 
             bResult = List::GetMemberInvoker(source, "Tail", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Tail failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Tail should return an item",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the returned item is the former last item ("D").
-            //
-
-            Assert::IsTrue(std::string("D") == reinterpret_cast<const char *>(dest.Ptr),
-                L"GetMember Head did not return expected value",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            Assert::IsTrue(bResult, L"Tail invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Tail should return false.");
         }
 
+        //
+        // Retrieve the tail of the list.
+        //
+        // Result: the tail should be successfully returned.
+        //
+
+        TEST_METHOD(TailOfList)
+        {
+            PSTR tail = "E";
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Pop the tail and verify it is expected value.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Tail", nullptr, dest);
+            Assert::IsTrue(bResult, L"Tail invocation failed.");
+
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
+
+            Assert::AreEqual(
+                (const char *) tail,
+                (const char *) dest.Ptr,
+                false,
+                L"Tail is not equal to the expected value.");
+        }
+
+        //
+        // Pop all entries from the list using the Tail method.
+        //
+        // Result: Each entry must match and at the end the list must be empty.
+        //
+
+        TEST_METHOD(PopAllFromTail)
+        {
+            PSTR elements[] =
+            {
+                "E",
+                "D",
+                "C",
+                "B",
+                "A"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Pop each item and verify that it is the same as the
+            // corresponding entry in the elements list.
+            //
+
+            size_t nItem;
+
+            nItem = 0;
+            while (true)
+            {
+                //
+                // Pop the tail and verify it is expected value.
+                //
+
+                bResult = List::GetMemberInvoker(source, "Tail", nullptr, dest);
+                Assert::IsTrue(bResult, L"Tail invocation failed.");
+
+                Assert::AreEqual(
+                    (const char *) elements[nItem],
+                    (const char *) dest.Ptr,
+                    false,
+                    L"Tail is not equal to the expected value.");
+
+                ++nItem;
+
+                if (nItem == (sizeof(elements) / sizeof(elements[0])))
+                {
+                    break;
+                }
+            }
+
+            //
+            // The list should be empty once all of the elements are removed.
+            //
+
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must be empty.");
+        }
+
+        /***
         //
         // Test the results of the GetMember interface for the CountOf
         // method on an empty list.
