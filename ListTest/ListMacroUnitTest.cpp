@@ -3224,15 +3224,14 @@ namespace ListUnitTests
             Assert::AreEqual((size_t) 0, pl->Count(), L"List must be empty.");
         }
 
-        /***
         //
-        // Test the results of the GetMember interface for the CountOf
-        // method on an empty list.
+        // Retrieve the CountOf on an empty list.
+        //
+        // Result: The value returned should be zero.
         //
 
-        TEST_METHOD(ListGetMemberCountOf1)
+        TEST_METHOD(CountOfOnEmptyList)
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
@@ -3241,38 +3240,31 @@ namespace ListUnitTests
             // Create a new list.
             //
 
-            pl = std::unique_ptr<List>(new List());
+            auto pl = std::make_unique<List>();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Count the number of "A"'s in the empty list.  The result should be
-            // zero.
+            // Return the CountOf an element in an empty list..
             //
 
             bResult = List::GetMemberInvoker(source, "CountOf", "A", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember CountOf failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember CountOf should return zero",
-                LINE_INFO()
-            );
+            Assert::IsTrue(bResult, L"CountOf invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"CountOf should return zero.");
         }
 
         //
-        // Test the results of the GetMember interface for the CountOf
-        // method where the item does not occur in the list.
+        // Retrieve CountOf for an element that does not exist.
+        //
+        // Result: the value should be zero.
         //
 
-        TEST_METHOD(ListGetMemberCountOf2)
+        TEST_METHOD(CountOfNonexistantElement)
         {
-            std::unique_ptr<List> pl;
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
@@ -3281,44 +3273,40 @@ namespace ListUnitTests
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Count the number of "Z"'s in the empty list.  The result should be
-            // zero.
+            // Count an element we know is not in the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "CountOf", "Z", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember CountOf failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember CountOf should return zero",
-                LINE_INFO()
-            );
+            bResult = List::GetMemberInvoker(source, "CountOf", "F", dest);
+            Assert::IsTrue(bResult, L"CountOf invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"CountOf should return zero.");
         }
 
         //
-        // Test the results of the GetMember interface for the CountOf
-        // method where the item occurs once in the list.
+        // Retrieve the CountOf for each element in the list.
+        //
+        // Result: each element should occur once in the list.
         //
 
-        TEST_METHOD(ListGetMemberCountOf3)
+        TEST_METHOD(CountOfKnownElements)
         {
-            std::unique_ptr<List> pl;
+            PSTR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
@@ -3327,91 +3315,25 @@ namespace ListUnitTests
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = CreateAndAppendUsingGetMember();
 
             //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Count the number of "C"'s in the empty list.  The result should be
-            // one.
+            // Count each element in the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "CountOf", "A", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember CountOf failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember CountOf should return one",
-                LINE_INFO()
-            );
+            for (auto item : elements)
+            {
+                bResult = List::GetMemberInvoker(source, "CountOf", item, dest);
+                Assert::IsTrue(bResult, L"CountOf invocation failed.");
+                Assert::AreEqual(1, dest.Int, L"CountOf should return one.");
+            }
         }
-
-        //
-        // Test the results of the GetMember interface for the CountOf
-        // method where the item occurs twice in the list.
-        //
-
-        TEST_METHOD(ListGetMemberCountOf4)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-
-            //
-            // Create a new list.
-            //
-
-            pl = CreateAndAppendUsingGetMember();
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Append a "C" to the end of the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Append", "C", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Append failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 1,
-                L"GetMember Append should return True",
-                LINE_INFO()
-            );
-
-            //
-            // Count the number of "C"'s in the empty list.  The result should be
-            // two.
-            //
-
-            bResult = List::GetMemberInvoker(source, "CountOf", "C", dest);
-            Assert::IsTrue(bResult,
-                L"GetMember CountOf failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 2,
-                L"GetMember CountOf should return two",
-                LINE_INFO()
-            );
-        }
-
-        ***/
 
     private:
 
@@ -3546,78 +3468,6 @@ namespace ListUnitTests
 
                 auto compare_result = strcmp((const char *) dest.Ptr, elements[index]);
                 Assert::AreEqual(compare_result, 0, L"Returned string does not match expected string.");
-            }
-        }
-
-        //
-        // Use the iterator to access each of the elements in the
-        // list.
-        //
-
-        template<typename T>
-        void ValidateAndUseIterator(
-            const T & iter,
-            const std::string items[],
-            size_t elements,
-            size_t currentItem
-        ) const
-        {
-            //
-            // We should not be at the end unless the currentItem is the
-            // last item.
-            //
-
-            if (iter.get()->IsEnd())
-            {
-                Assert::IsTrue(currentItem == elements,
-                               L"IsEnd succeeded and we are not at end",
-                               LINE_INFO()
-                );
-            }
-            else
-            {
-                Assert::IsTrue(currentItem != elements,
-                               L"IsEnd failed and we are at end",
-                               LINE_INFO()
-                );
-            }
-
-            //
-            // Process each of the elements, comparing against the items.
-            //
-
-            const std::string *item;
-            while (!iter.get()->IsEnd())
-            {
-                //
-                // Retrieve the current element and compare it to
-                // the current position.
-                //
-
-                Assert::IsTrue(iter.get()->Value(&item),
-                               L"Value failed for iterator",
-                               LINE_INFO()
-                );
-
-                Assert::IsTrue(*item == items[currentItem],
-                               L"item should be equal to item under current position",
-                               LINE_INFO()
-                );
-
-                //
-                // Advance the iterator.  This should succeed.
-                //
-
-                Assert::IsTrue(iter.get()->Advance(),
-                               L"Advance failed",
-                               LINE_INFO()
-                );
-
-                //
-                // Advance the current position.
-                //
-
-                ++currentItem;
             }
         }
     };
