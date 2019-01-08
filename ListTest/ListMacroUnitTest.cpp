@@ -2935,113 +2935,152 @@ namespace ListUnitTests
             CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
         }
 
-        /***
         //
-        // Test the results of the GetMember interface for the Head
-        // method on an empty list.
+        // Get the head of an empty list.
+        //
+        // Result: the head method call should fail.
         //
 
-        TEST_METHOD(ListGetMemberHead1)
+        TEST_METHOD(HeadOfEmptyList)
         {
-            std::unique_ptr<List> pl = std::make_unique<List>();
             MQ2VARPTR source;
             MQ2TYPEVAR dest = {0};
             bool bResult;
-
-            //
-            // Initialize the source pointer for this member call.
-            //
-
-            source.Ptr = pl.get();
-
-            //
-            // Retrieve the head of the list.
-            //
-
-            bResult = List::GetMemberInvoker(source, "Head", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Head failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Int == 0,
-                L"GetMember Head should be false",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 0,
-                L"List must have zero elements",
-                LINE_INFO()
-            );
-        }
-
-        //
-        // Test the results of the GetMember interface for the Head
-        // method to return the first member.
-        //
-
-        TEST_METHOD(ListGetMemberHead2)
-        {
-            std::unique_ptr<List> pl;
-            MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
-            bool bResult;
-            std::string elements[] = {
-                "B",
-                "C",
-                "D"
-            };
 
             //
             // Create a new list.
             //
 
-            pl = CreateAndAppendUsingGetMember();
+            auto pl = std::make_unique<List>();
 
             //
-            // Initialize the source pointer for this member call.
+            // Set the source pointer to the new instance.
             //
 
             source.Ptr = pl.get();
 
             //
-            // Retrieve the head of the list.
+            // Replace an item from an empty list.
             //
 
             bResult = List::GetMemberInvoker(source, "Head", nullptr, dest);
-            Assert::IsTrue(bResult,
-                L"GetMember Head failed",
-                LINE_INFO()
-            );
-            Assert::IsTrue(dest.Ptr != nullptr,
-                L"GetMember Head should return an item",
-                LINE_INFO()
-            );
-
-            Assert::IsTrue(pl.get()->Count() == 3,
-                L"List must have three elements",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the returned item is the former first item ("A").
-            //
-
-            Assert::IsTrue(std::string("A") == reinterpret_cast<const char *>(dest.Ptr),
-                L"GetMember Head did not return expected value",
-                LINE_INFO()
-            );
-
-            //
-            // Verify that the output list has the expected values.
-            //
-
-            CompareListToElements(
-                *pl.get(),
-                elements,
-                sizeof(elements) / sizeof(elements[0])
-            );
+            Assert::IsTrue(bResult, L"Head invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Head should return false.");
         }
 
+        //
+        // Retrieve the head of the list.
+        //
+        // Result: the head should be successfully returned.
+        //
+
+        TEST_METHOD(HeadOfList)
+        {
+            PSTR head = "A";
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Pop the head and verify it is expected value.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Head", nullptr, dest);
+            Assert::IsTrue(bResult, L"Head invocation failed.");
+
+            Assert::AreEqual((size_t) 4, pl->Count(), L"List must have four elements.");
+
+            Assert::AreEqual(
+                        (const char *) head,
+                        (const char *) dest.Ptr,
+                        false,
+                        L"Head is not equal to the expected value.");
+        }
+
+        //
+        // Pop all entries from the list using the Head method.
+        //
+        // Result: Each entry must match and at the end the list must be empty.
+        //
+
+        TEST_METHOD(PopAllFromHead)
+        {
+            PSTR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Pop each item and verify that it is the same as the
+            // corresponding entry in the elements list.
+            //
+
+            size_t nItem;
+
+            nItem = 0;
+            while (true)
+            {
+                //
+                // Pop the head and verify it is expected value.
+                //
+
+                bResult = List::GetMemberInvoker(source, "Head", nullptr, dest);
+                Assert::IsTrue(bResult, L"Head invocation failed.");
+
+                Assert::AreEqual(
+                    (const char *) elements[nItem],
+                    (const char *) dest.Ptr,
+                    false,
+                    L"Head is not equal to the expected value.");
+
+                ++nItem;
+
+                if (nItem == (sizeof(elements) / sizeof(elements[0])))
+                {
+                    break;
+                }
+            }
+
+            //
+            // The list should be empty once all of the elements are removed.
+            //
+
+            Assert::AreEqual((size_t) 0, pl->Count(), L"List must be empty.");
+        }
+
+        /***
         //
         // Test the results of the GetMember interface for the Tail
         // method on an empty list.
