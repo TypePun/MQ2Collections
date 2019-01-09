@@ -9,7 +9,7 @@
 #include "CppUnitTest.h"
 
 #include <algorithm>
-#include "list.h"
+#include "List.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Collections::Containers;

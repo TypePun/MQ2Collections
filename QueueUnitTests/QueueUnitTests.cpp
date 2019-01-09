@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "queue.h"
+#include "Queue.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Collections::Containers;

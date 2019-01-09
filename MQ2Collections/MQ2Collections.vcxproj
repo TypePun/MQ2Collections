@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -11,16 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="List.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MQ2Collections.cpp" />
-    <ClCompile Include="Queue.cpp" />
-    <ClCompile Include="Set.cpp" />
-    <ClCompile Include="Stack.cpp" />
-    <ClCompile Include="Types.cpp" />
+    <ClCompile Include="..\src\List.cpp" />
+    <ClCompile Include="..\src\Map.cpp" />
+    <ClCompile Include="..\src\MQ2Collections.cpp" />
+    <ClCompile Include="..\src\Queue.cpp" />
+    <ClCompile Include="..\src\Set.cpp" />
+    <ClCompile Include="..\src\Stack.cpp" />
+    <ClCompile Include="..\src\Types.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MQ2Collections.rc" />
+    <ResourceCompile Include="..\src\MQ2Collections.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\includes\BufferManager.h" />
@@ -68,14 +68,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\includes;$(MQ2);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)includes;$(MQ2);$(IncludePath)</IncludePath>
     <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\includes;$(MQ2);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)includes;$(MQ2);$(IncludePath)</IncludePath>
     <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
