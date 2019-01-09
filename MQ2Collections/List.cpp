@@ -233,6 +233,27 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
 }
 
 //
+// Used by the testing framework to call GetMember through the
+// source variable.
+//
+
+bool ListIterator::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+{
+    ListIterator * pThis;
+
+    DebugSpew("ListIterator::GetMemberInvoker %s", Member);
+
+    pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
+    if (!pThis)
+    {
+        DebugSpewAlways("ListIterator instance is NULL!");
+        return false;
+    }
+
+    return pThis->GetMember(VarPtr, Member, Index, Dest);
+}
+
+//
 // Convert the iterator to a string.  Output the current item or FALSE if there
 // isn't one.
 //

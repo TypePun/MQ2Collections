@@ -101,7 +101,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ListIteratorUnitTest.cpp" />
-    <ClCompile Include="ListMacroUnitTest.cpp" />
+    <ClCompile Include="ListMacroIteratorUnitTest.cpp" />
+    <ClCompile Include="ListMacroInterfaceUnitTest.cpp" />
     <ClCompile Include="ListInterfaceUnitTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

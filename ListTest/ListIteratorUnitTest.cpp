@@ -107,7 +107,7 @@ namespace ListUnitTests
             }
 
             //
-            // Acquire an iterator on an element on in the list.
+            // Acquire an iterator on an element not in the list.
             //
             // Result: a non-null iterator should be returned where IsEnd is true.
             //

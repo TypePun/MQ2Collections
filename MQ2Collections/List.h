@@ -99,6 +99,13 @@ namespace Collections
 
             bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
 
+            //
+            // Used by the testing framework to call GetMember through the
+            // source variable.
+            //
+
+            static bool GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+
         protected:
 
             //
