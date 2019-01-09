@@ -11,19 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BufferManager.h" />
-    <ClInclude Include="Collections.h" />
-    <ClInclude Include="Conversions.h" />
-    <ClInclude Include="List.h" />
-    <ClInclude Include="Macros.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Queue.h" />
-    <ClInclude Include="Set.h" />
-    <ClInclude Include="Stack.h" />
-    <ClInclude Include="StringExtensions.h" />
-    <ClInclude Include="Types.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="List.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MQ2Collections.cpp" />
@@ -34,6 +21,20 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MQ2Collections.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\includes\BufferManager.h" />
+    <ClInclude Include="..\includes\Collections.h" />
+    <ClInclude Include="..\includes\Conversions.h" />
+    <ClInclude Include="..\includes\List.h" />
+    <ClInclude Include="..\includes\Macros.h" />
+    <ClInclude Include="..\includes\Map.h" />
+    <ClInclude Include="..\includes\Queue.h" />
+    <ClInclude Include="..\includes\resource.h" />
+    <ClInclude Include="..\includes\Set.h" />
+    <ClInclude Include="..\includes\Stack.h" />
+    <ClInclude Include="..\includes\StringExtensions.h" />
+    <ClInclude Include="..\includes\Types.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D2CF825E-1F39-4F0C-AF30-15DE7BB51347}</ProjectGuid>
@@ -67,14 +68,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(MQ2);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\includes;$(MQ2);$(IncludePath)</IncludePath>
     <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(MQ2);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\includes;$(MQ2);$(IncludePath)</IncludePath>
     <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
@@ -102,10 +103,10 @@
       <Command>copy $(MQ2)\Release\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)$(Configuration)</Message>
+      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(SolutionDir)\$(Configuration)\MQ2Main.dll</Outputs>
+      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,10 +134,10 @@
       <Command>copy $(MQ2)\Release\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)$(Configuration)</Message>
+      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(SolutionDir)\$(Configuration)\MQ2Main.dll</Outputs>
+      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

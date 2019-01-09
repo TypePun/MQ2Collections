@@ -9,8 +9,7 @@
 *.pdb
 *.dll
 *.exe
-Debug/*
-Release/*
+bin/*
 */Debug/*
 */Release/*
 
@@ -25,6 +24,9 @@ Release/*
 # Build artifacts
 #
 
+*.pch
+*.idb
+*.res
 *.sbr
 *.log
 *.tlog
@@ -36,7 +38,3 @@ Release/*
 #
 
 *~
-
-
-
-
