@@ -79,7 +79,8 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(MQ2);$(SolutionDir)\MQ2Collections;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
-    <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -88,7 +89,8 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(MQ2);$(SolutionDir)\MQ2Collections;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
-    <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -109,9 +111,11 @@
       <AdditionalDependencies>stack.obj;types.obj;MQ2Main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(MQ2)\$(Configuration)\MQ2Main.dll $(SolutionDir)$(Configuration)\</Command>
-      <Message>Copying $(MQ2)\$(Configuration)\MQ2Main.dll to $(SolutionDir)$(Configuration)</Message>
-      <Outputs>$(SolutionDir)\$(Configuration)\MQ2Main.dll;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
+      <Outputs>Performing Custom Build Step</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -148,9 +152,11 @@
       <AdditionalDependencies>stack.obj;types.obj;MQ2Main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(MQ2)\$(Configuration)\MQ2Main.dll $(SolutionDir)$(Configuration)\</Command>
-      <Message>Copying $(MQ2)\$(Configuration)\MQ2Main.dll to $(SolutionDir)$(Configuration)</Message>
-      <Outputs>$(SolutionDir)\$(Configuration)\MQ2Main.dll;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
+      <Outputs>Performing Custom Build Step</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
