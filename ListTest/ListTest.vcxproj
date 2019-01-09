@@ -46,12 +46,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)\MQ2Collections;$(MQ2);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration);$(MQ2)\$(Configuration);$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration);$(MQ2)\Release;$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)\MQ2Collections;$(MQ2);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration);$(MQ2)\$(Configuration);$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration);$(MQ2)\Release;$(MQ2)\Detours\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -59,7 +59,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)TEST</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -80,7 +80,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)TEST</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>

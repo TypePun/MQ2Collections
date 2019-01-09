@@ -82,6 +82,14 @@ namespace Collections
             }
 
             //
+            // Don't permit copy construction and assignment since the MQ2Type does
+            // implement them.
+            //
+
+            SetIterator(const SetIterator &) = delete;
+            const SetIterator &operator=(const SetIterator &) = delete;
+
+            //
             // Return the name of this type - setiterator.
             //
 
@@ -149,14 +157,6 @@ namespace Collections
         private:
 
             //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
-            //
-
-            SetIterator(const SetIterator &) = delete;
-            const SetIterator &operator=(const SetIterator &) = delete;
-
-            //
             // Internal character buffer for an iterated item to return.
             //
 
@@ -217,6 +217,14 @@ namespace Collections
             {
                 DebugSpew("~Set - %x", this);
             }
+
+            //
+            // Don't permit copy construction and assignment since the MQ2Type does
+            // implement them.
+            //
+
+            Set(const Set &) = delete;
+            const Set &operator=(const Set &) = delete;
 
             //
             // Return the name of this type - set.
@@ -302,14 +310,6 @@ namespace Collections
             }
 
         private:
-
-            //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
-            //
-
-            Set(const Set &) = delete;
-            const Set &operator=(const Set &) = delete;
 
             //
             // Map from member ids onto names.

@@ -83,6 +83,14 @@ namespace Collections
             }
 
             //
+            // Don't permit copy construction and assignment since the MQ2Type does
+            // implement them.
+            //
+
+            MapIterator(const MapIterator &) = delete;
+            const MapIterator &operator=(const MapIterator &) = delete;
+
+            //
             // Return the name of this type - mapiterator.
             //
 
@@ -169,14 +177,6 @@ namespace Collections
         private:
 
             //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
-            //
-
-            MapIterator(const MapIterator &) = delete;
-            const MapIterator &operator=(const MapIterator &) = delete;
-
-            //
             // Internal character buffer for an iterated item to return.
             //
 
@@ -237,6 +237,14 @@ namespace Collections
             {
                 DebugSpew("~Map - %x", this);
             }
+
+            //
+            // Don't permit copy construction and assignment since the MQ2Type does
+            // implement them.
+            //
+
+            Map(const Map &) = delete;
+            const Map &operator=(const Map &) = delete;
 
             //
             // Return the name of this type - map.
@@ -323,14 +331,6 @@ namespace Collections
             }
 
         private:
-
-            //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
-            //
-
-            Map(const Map &) = delete;
-            const Map &operator=(const Map &) = delete;
 
             //
             // Add a key and value to the map, returning true if they were

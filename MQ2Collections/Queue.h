@@ -59,6 +59,14 @@ namespace Collections
             }
 
             //
+            // Don't permit copy construction and assignment since the MQ2Type does
+            // implement them.
+            //
+
+            Queue(const Queue &) = delete;
+            const Queue &operator=(const Queue &) = delete;
+
+            //
             // Return the name of this type - queue.
             //
 
@@ -149,14 +157,6 @@ namespace Collections
             bool FromString(MQ2VARPTR &VarPtr, PCHAR Source);
 
         private:
-
-            //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
-            //
-
-            Queue(const Queue &) = delete;
-            const Queue &operator=(const Queue &) = delete;
 
             //
             // Collection on which our queue is implemented.

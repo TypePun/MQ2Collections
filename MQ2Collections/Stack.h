@@ -59,6 +59,14 @@ namespace Collections
             }
 
             //
+            // Don't permit copy construction and assignment since the MQ2Type does
+            // implement them.
+            //
+
+            Stack(const Stack &) = delete;
+            const Stack &operator=(const Stack &) = delete;
+
+            //
             // Return the name of this type - stack.
             //
 
@@ -149,14 +157,6 @@ namespace Collections
             bool FromString(MQ2VARPTR &VarPtr, PCHAR Source);
 
         private:
-
-            //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
-            //
-
-            Stack(const Stack &) = delete;
-            const Stack &operator=(const Stack &) = delete;
 
             //
             // Collection on which our stack is implemented.

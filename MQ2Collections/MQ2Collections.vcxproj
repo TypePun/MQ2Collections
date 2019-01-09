@@ -32,6 +32,9 @@
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Types.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MQ2Collections.rc" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D2CF825E-1F39-4F0C-AF30-15DE7BB51347}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -65,19 +68,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MQ2COLLECTIONS_EXPORTS;_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;TEST;_DEBUG;_WINDOWS;_USRDLL;MQ2COLLECTIONS_EXPORTS;_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -99,7 +102,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MQ2COLLECTIONS_EXPORTS;_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;TEST;NDEBUG;_WINDOWS;_USRDLL;MQ2COLLECTIONS_EXPORTS;_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BrowseInformation>true</BrowseInformation>
