@@ -5,31 +5,31 @@ VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MQ2Collections", "MQ2Collections\MQ2Collections.vcxproj", "{D2CF825E-1F39-4F0C-AF30-15DE7BB51347}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StringExtensionTest", "StringExtensionTest\StringExtensionTest.vcxproj", "{F5A8BC96-9192-4B24-9F06-292B2526B989}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StringExtensionTest", "tests\StringExtensionTest\StringExtensionTest.vcxproj", "{F5A8BC96-9192-4B24-9F06-292B2526B989}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListUnitTests", "ListTest\ListTest.vcxproj", "{625585BA-4834-4B19-9569-D44A4EEF8B85}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListUnitTests", "tests\ListTest\ListTest.vcxproj", "{625585BA-4834-4B19-9569-D44A4EEF8B85}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D2CF825E-1F39-4F0C-AF30-15DE7BB51347} = {D2CF825E-1F39-4F0C-AF30-15DE7BB51347}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SetUnitTests", "SetUnitTests\SetUnitTest1.vcxproj", "{4B2DC889-5C9D-4E6F-9E7E-297F9507703E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SetUnitTests", "tests\SetUnitTests\SetUnitTest1.vcxproj", "{4B2DC889-5C9D-4E6F-9E7E-297F9507703E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D2CF825E-1F39-4F0C-AF30-15DE7BB51347} = {D2CF825E-1F39-4F0C-AF30-15DE7BB51347}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StackUnitTests", "StackUnitTests\StackUnitTests.vcxproj", "{D6DB98DE-7894-4397-BE86-2D7B2D00F060}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StackUnitTests", "tests\StackUnitTests\StackUnitTests.vcxproj", "{D6DB98DE-7894-4397-BE86-2D7B2D00F060}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D2CF825E-1F39-4F0C-AF30-15DE7BB51347} = {D2CF825E-1F39-4F0C-AF30-15DE7BB51347}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{449C50AA-70D8-49AD-85C6-DE1C7BEB71A9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QueueUnitTests", "QueueUnitTests\QueueUnitTests.vcxproj", "{10D36937-49FA-4F8E-AAEF-5817DDF8726B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QueueUnitTests", "tests\QueueUnitTests\QueueUnitTests.vcxproj", "{10D36937-49FA-4F8E-AAEF-5817DDF8726B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D2CF825E-1F39-4F0C-AF30-15DE7BB51347} = {D2CF825E-1F39-4F0C-AF30-15DE7BB51347}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapUnitTests", "MapUnitTests\MapUnitTests.vcxproj", "{3D553744-9B4B-4FC7-BD1D-913EFB2F2A7A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapUnitTests", "tests\MapUnitTests\MapUnitTests.vcxproj", "{3D553744-9B4B-4FC7-BD1D-913EFB2F2A7A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D2CF825E-1F39-4F0C-AF30-15DE7BB51347} = {D2CF825E-1F39-4F0C-AF30-15DE7BB51347}
 	EndProjectSection
