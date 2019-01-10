@@ -1,63 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\List.cpp">
+    <ClCompile Include="..\src\List.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Map.cpp">
+    <ClCompile Include="..\src\Map.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\MQ2Collections.cpp">
+    <ClCompile Include="..\src\MQ2Collections.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Queue.cpp">
+    <ClCompile Include="..\src\Queue.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Set.cpp">
+    <ClCompile Include="..\src\Set.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Stack.cpp">
+    <ClCompile Include="..\src\Stack.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Types.cpp">
+    <ClCompile Include="..\src\Types.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="includes\BufferManager.h">
+    <ClInclude Include="..\includes\BufferManager.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Collections.h">
+    <ClInclude Include="..\includes\Collections.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Conversions.h">
+    <ClInclude Include="..\includes\Conversions.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\List.h">
+    <ClInclude Include="..\includes\List.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Macros.h">
+    <ClInclude Include="..\includes\Macros.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Map.h">
+    <ClInclude Include="..\includes\Map.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Queue.h">
+    <ClInclude Include="..\includes\Queue.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\resource.h">
+    <ClInclude Include="..\includes\resource.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Set.h">
+    <ClInclude Include="..\includes\Set.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Stack.h">
+    <ClInclude Include="..\includes\Stack.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\StringExtensions.h">
+    <ClInclude Include="..\includes\StringExtensions.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="includes\Types.h">
+    <ClInclude Include="..\includes\Types.h">
       <Filter>Includes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -73,7 +73,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\MQ2Collections.rc">
+    <ResourceCompile Include="..\src\MQ2Collections.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
   </ItemGroup>
