@@ -1,0 +1,126 @@
+| - CollectionsTest.mac -
+
+Sub Main
+    /echo 'Starting Collections Test'
+    
+    /call StackTest
+    /call QueueTest
+
+    /echo 'Ending Collections Test'
+    /return
+
+Sub StackTest
+    /declare s stack
+
+    /echo 'Starting Stack Test'
+    /echo 'Stack is Empty: ${s.IsEmpty}'
+    
+    | Push entries on the stack and pop them off.
+    | Note: entries are inserted (Pushed) in and removed
+    | (Popped) in reverse order. That is, Pushing A, B, C, D, E
+    | and then Popping them will return E, D, C, D, A.
+
+    /echo 'Pushing items onto the Stack.'
+    /if (!${s.Push[A]}) {
+    	/echo 'Stack Push of A failed.'
+	/endmacro
+    }
+    /if (!${s.Push[B]}) {
+    	/echo 'Stack Push of B failed.'
+	/endmacro
+    }
+    /if (!${s.Push[C]}) {
+    	/echo 'Stack Push of C failed.'
+	/endmacro
+    }
+    /if (!${s.Push[D]}) {
+    	/echo 'Stack Push of D failed.'
+	/endmacro
+    }
+    /if (!${s.Push[E]}) {
+    	/echo 'Stack Push of E failed.'
+	/endmacro
+    }
+
+    /declare count int
+    /varset count ${s.Count}
+    /if (${count} != 5) {
+    	/echo 'Stack count is: ${count} and should be 5.'
+	/endmacro
+    }
+
+    /echo 'Stack is Empty: ${s.IsEmpty}'
+    
+    | Peek at the top item:
+    /echo 'Top item is: ${s.Peek}'
+    
+    | Pop items off the stack.
+
+    /echo 'Popping item off stack: ${s.Pop}'
+    /echo 'Popping item off stack: ${s.Pop}'
+    /echo 'Popping item off stack: ${s.Pop}'
+    /echo 'Popping item off stack: ${s.Pop}'
+    /echo 'Popping item off stack: ${s.Pop}'
+
+    /echo 'Stack is Empty: ${s.IsEmpty}'
+    /echo 'Ending Stack Test'
+    
+    /return
+    
+Sub QueueTest
+    /declare q queue
+
+    /echo 'Starting Queue Test'
+    /echo 'Queue is Empty: ${q.IsEmpty}'
+    
+    | Push entries on the queue and pop them off.
+    | Note: entries are inserted (Pushed) in and removed
+    | (Popped) in the same order. That is, Pushing A, B, C, D, E
+    | and then Popping them will return A, B, C, D, E.
+    /echo 'Pushing items onto the Queue.'
+
+    /if (!${q.Push[A]}) {
+    	/echo 'Queue Push of A failed.'
+	/endmacro
+    }
+    /if (!${q.Push[B]}) {
+    	/echo 'Queue Push of B failed.'
+	/endmacro
+    }
+    /if (!${q.Push[C]}) {
+    	/echo 'Queue Push of C failed.'
+	/endmacro
+    }
+    /if (!${q.Push[D]}) {
+    	/echo 'Queue Push of D failed.'
+	/endmacro
+    }
+    /if (!${q.Push[E]}) {
+    	/echo 'Queue Push of E failed.'
+	/endmacro
+    }
+
+    /declare count int
+    /varset count ${q.Count}
+    /if (${count} != 5) {
+    	/echo 'Queue count is: ${count} and should be 5.'
+	/endmacro
+    }
+
+    /echo 'Queue is Empty: ${q.IsEmpty}'
+    
+    | Peek at the front item:
+    /echo 'Front item is: ${q.Peek}'
+    
+    | Pop items off the queue.
+
+    /echo 'Popping item off queue: ${q.Pop}'
+    /echo 'Popping item off queue: ${q.Pop}'
+    /echo 'Popping item off queue: ${q.Pop}'
+    /echo 'Popping item off queue: ${q.Pop}'
+    /echo 'Popping item off queue: ${q.Pop}'
+
+    /echo 'Queue is Empty: ${q.IsEmpty}'
+    /echo 'Ending Queue Test'
+    
+    /return
