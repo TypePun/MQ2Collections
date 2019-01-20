@@ -1,2 +1,2 @@
-Collections types for Macroquest 2 (MQ2)
-========================================
+Collection types for Macroquest 2 (MQ2)
+=======================================

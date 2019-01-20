@@ -57,8 +57,7 @@ namespace Collections
 
             explicit SetIterator(
                 const std::set<std::string> & refCollection,
-                const std::string & refKey
-            )
+                const std::string & refKey)
                 : ValueIterator<std::set<std::string>>(refCollection),
                 ReferenceType(SetIteratorMembers)
             {
@@ -178,8 +177,7 @@ namespace Collections
             std::set<std::string>,
             std::string,
             std::string,
-            ValueIterator<std::set<std::string>>
-        >,
+            ValueIterator<std::set<std::string>>>,
             public ObjectType<Set>
         {
         public:

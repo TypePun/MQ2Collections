@@ -5,6 +5,8 @@ Sub Main
     
     /call StackTest
     /call QueueTest
+    /call SetTest
+    /call MapTest
 
     /echo 'Ending Collections Test'
     /return
@@ -124,3 +126,234 @@ Sub QueueTest
     /echo 'Ending Queue Test'
     
     /return
+    
+Sub SetTest
+    /declare s set
+
+    /echo 'Starting Set Test'
+    /echo 'Count of entries in Set: ${s.Count}'
+
+    | Add entries to the set.
+    /echo 'Adding items to the set.
+
+    /if (!${s.Add[A]}) {
+    	/echo 'Set Add of A failed.'
+	/endmacro
+    }
+    /if (!${s.Add[B]}) {
+    	/echo 'Set Add of B failed.'
+	/endmacro
+    }
+    /if (!${s.Add[C]}) {
+    	/echo 'Set Add of C failed.'    
+	/endmacro
+    }
+    /if (!${s.Add[D]}) {
+    	/echo 'Set Add of D failed.'
+	/endmacro
+    }
+    /if (!${s.Add[E]}) {
+    	/echo 'Set Add of E failed.'    
+	/endmacro
+    }
+
+    /declare count int
+    /varset count ${s.Count}
+    /if (${count} != 5) {
+    	/echo 'Set count is: ${count} and should be 5.'
+	/endmacro
+    }
+
+    | Now remove A and E.
+    /if (!${s.Remove[A]}) {
+    	/echo 'Remove of A failed.'
+    }
+    /if (!${s.Remove[E]}) {
+    	/echo 'Remove of E failed.'
+    }
+    
+    /varset count ${s.Count}
+    /if (${count} != 3) {
+    	/echo 'Set count is: ${count} and should be 3.'
+	/endmacro
+    }
+
+    | Verify that the set contains B, C and D.
+    /if (${s.Contains[B]}) {
+    	/echo 'Set Contains B.'
+    } else {
+    	/echo 'Set does not contain B.'
+	/endmacro
+    }
+    /if (${s.Contains[C]}) {
+    	/echo 'Set Contains C.'
+    } else {
+    	/echo 'Set does not contain C.'
+	/endmacro
+    }
+    /if (${s.Contains[D]}) {
+    	/echo 'Set Contains D.'
+    } else {
+    	/echo 'Set does not contain D.'
+	/endmacro
+    }
+
+    | And verify it does NOT contain A and E.
+    /if (${s.Contains[A]}) {
+    	/echo 'Set should not contain A!'
+	/endmacro
+    } else {
+    	/echo 'Set does not contain A.'
+    }
+    /if (${s.Contains[E]}) {
+    	/echo 'Set should not contain E!'
+	/endmacro
+    } else {
+    	/echo 'Set does not contain E.'
+    }
+
+    | Try and Add an element more than once.    
+    /if (!${s.Add[B]}) {
+    	/echo 'Set Add of B failed.'
+	/endmacro
+    }
+
+    | Adding the same item should not modify the set.
+    /varset count ${s.Count}
+    /if (${count} != 3) {
+    	/echo 'Set count is: ${count} and should be 3.'
+	/endmacro
+    }
+    
+    | Clear the set. The count should be zero and it
+    | should not contain any elements.
+    /echo 'Set Clear: ${s.Clear}.'
+    /echo 'Set Count: ${s.Count}.'
+    
+    | And verify it does NOT contain B.
+    /if (${s.Contains[B]}) {
+    	/echo 'Set should not contain B!'
+	/endmacro
+    } else {
+    	/echo 'Set does not contain B.'
+    }
+    
+    /echo 'Ending Set Test'
+    
+    /return
+
+Sub MapTest
+    /declare m map
+
+    /echo 'Starting Map Test'
+    /echo 'Count of entries in Map: ${m.Count}'
+
+    | Add entries to the map.
+    /echo 'Adding items to the map.
+
+    /if (!${m.Add[A,One]}) {
+    	/echo 'Map Add of A failed.'
+	/endmacro
+    }
+    /if (!${m.Add[B,Two]}) {
+    	/echo 'Map Add of B failed.'
+	/endmacro
+    }
+    /if (!${m.Add[C,Three]}) {
+    	/echo 'Map Add of C failed.'    
+	/endmacro
+    }
+    /if (!${m.Add[D,Four]}) {
+    	/echo 'Map Add of D failed.'
+	/endmacro
+    }
+    /if (!${m.Add[E,Five]}) {
+    	/echo 'Map Add of E failed.'    
+	/endmacro
+    }
+
+    /declare count int
+    /varset count ${m.Count}
+    /if (${count} != 5) {
+    	/echo 'Map count is: ${count} and should be 5.'
+	/endmacro
+    }
+
+    | Now remove A and E.
+    /if (!${m.Remove[A]}) {
+    	/echo 'Remove of A failed.'
+    }
+    /if (!${m.Remove[E]}) {
+    	/echo 'Remove of E failed.'
+    }
+    
+    /varset count ${m.Count}
+    /if (${count} != 3) {
+    	/echo ' count is: ${count} and should be 3.'
+	/endmacro
+    }
+
+    | Verify that the map contains B, C and D.
+    /if (${m.Contains[B]}) {
+    	/echo 'Map Contains B.'
+    } else {
+    	/echo 'Map does not contain B.'
+	/endmacro
+    }
+    /if (${m.Contains[C]}) {
+    	/echo 'Map Contains C.'
+    } else {
+    	/echo 'Map does not contain C.'
+	/endmacro
+    }
+    /if (${m.Contains[D]}) {
+    	/echo 'Map Contains D.'
+    } else {
+    	/echo 'Map does not contain D.'
+	/endmacro
+    }
+
+    | And verify it does NOT contain A and E.
+    /if (${m.Contains[A]}) {
+    	/echo 'Map should not contain A!'
+	/endmacro
+    } else {
+    	/echo 'Map does not contain A.'
+    }
+    /if (${m.Contains[E]}) {
+    	/echo 'Map should not contain E!'
+	/endmacro
+    } else {
+    	/echo 'Map does not contain E.'
+    }
+
+    | Adding B again will replace the value associated with B.
+    /if (!${m.Add[B,Some new Value]}) {
+    	/echo 'Set Add of B failed.'
+	/endmacro
+    }
+
+    | Adding the same item should not modify the map.
+    /varset count ${m.Count}
+    /if (${count} != 3) {
+    	/echo 'Map count is: ${count} and should be 3.'
+	/endmacro
+    }
+    
+    | Clear the map. The count should be zero and it
+    | should not contain any elements.
+    /echo 'Map Clear: ${m.Clear}.'
+    /echo 'Set Count: ${m.Count}.'
+    
+    | And verify it does NOT contain B.
+    /if (${m.Contains[B]}) {
+    	/echo 'Map should not contain B!'
+	/endmacro
+    } else {
+    	/echo 'Map does not contain B.'
+    }
+    
+    /echo 'Ending Map Test'
+    
+    /return
+

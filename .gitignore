@@ -23,6 +23,7 @@ bin/*
 # Build artifacts
 #
 
+*.aps
 *.pch
 *.idb
 *.res
