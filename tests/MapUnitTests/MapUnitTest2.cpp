@@ -13,6 +13,14 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Collections::Containers;
 
+//
+// Global lock used to access the Member map. The Mutex is initialized
+// inside MQ2 when it is running. In our unit tests, the initialization
+// code is not run so initialize it before the unit test.
+//
+
+EQLIB_VAR HANDLE ghMemberMapLock;
+
 namespace MapUnitTests
 {
     //
@@ -28,6 +36,32 @@ namespace MapUnitTests
             TEST_CLASS_ATTRIBUTE(L"Collections", L"Map")
             TEST_CLASS_ATTRIBUTE(L"Iterators", L"Map")
         END_TEST_CLASS_ATTRIBUTE()
+
+        //
+        // Initialize the Global Mutex required by the MQ2 API.
+        //
+
+        TEST_CLASS_INITIALIZE(InitClassRequirements)
+        {
+            if (!ghMemberMapLock)
+            {
+                ghMemberMapLock = CreateMutex(NULL, FALSE, NULL);
+                Assert::IsNotNull(ghMemberMapLock, L"Could not initialize global member mutex.");
+            }
+        }
+
+        //
+        // Close the Global Mutex required by the MQ2 API.
+        //
+
+        TEST_CLASS_CLEANUP(CleanupClassRequirements)
+        {
+            if (!ghMemberMapLock)
+            {
+                BOOL b = CloseHandle(ghMemberMapLock);
+                Assert::IsTrue(b, L"Could not close global member mutex.");
+            }
+        }
 
         //
         // Populate the map used by the iterator tests.
