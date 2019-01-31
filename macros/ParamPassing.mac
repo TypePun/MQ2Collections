@@ -21,10 +21,10 @@ Sub Main()
     
     /return
 
-Sub AcceptStack(string s)
-    /echo 'Stack count: ${${s}.Count}'
-    /echo ${${s}.Peek}
-    /if (!${${s}.Push[Z]}) {
+Sub AcceptStack(stack s)
+    /echo 'Stack count: ${s.Count}'
+    /echo ${s.Peek}
+    /if (!${s.Push[Z]}) {
     	/echo 'Could not Push Z.'
     }
     /return

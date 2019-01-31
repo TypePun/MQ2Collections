@@ -466,6 +466,7 @@ size_t List::Remove(const std::string & item)
     //
 
     auto itemCount = std::count(m_coll.cbegin(), m_coll.cend(), item);
+
     //
     // Remove the item if there are any in the list.  This test saves an
     // additional pass over the list for the removal.
@@ -775,6 +776,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 //
 
                 Dest.Int = (int) pThis->Index(std::string(Index));
+                Dest.Type = pIntType;
             }
             break;
 
@@ -863,8 +865,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
         case ListMembers::Remove:
             //
-            // Remove an item from the list.  Return TRUE if it was removed and
-            // FALSE otherwise.
+            // Remove an item from the list.  Return how many items were removed.
             //
 
             //
@@ -874,6 +875,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             if (*Index)
             {
                 Dest.Int = (int) pThis->Remove(std::string(Index));
+                Dest.Type = pIntType;
             }
             break;
 
@@ -908,6 +910,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 if (pThis->Replace(std::string(Index), &replacedItems))
                 {
                     Dest.Int = (int) replacedItems;
+                    Dest.Type = pIntType;
                 }
             }
             break;
