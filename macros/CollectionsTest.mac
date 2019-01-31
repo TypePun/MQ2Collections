@@ -367,7 +367,9 @@ Sub ListTest
     | Add entries to the list
     /echo 'Adding items to the list.
 
-    /if (!${l.Append[One,Two,Three,Four,Five]}) {
+    /if (${l.Append[One,Two,Three,Four,Five]}) {
+    	/echo 'List Append of five items succeeded. Count: ${l.Count}.'
+    } else {
     	/echo 'List Append of five items failed.'
 	    /endmacro
     }
@@ -379,9 +381,10 @@ Sub ListTest
 	    /endmacro
     }
 
-    /echo 'Clearing the list.'
     | Clear the list. The count should be zero.
-    /if (!${l.Clear}) {
+    /if (${l.Clear}) {
+        /echo 'List cleared sucessfully. Count: ${l.Count}.'
+    } else {
         /echo 'List clear failed.'
         /endmacro
     }
@@ -394,7 +397,9 @@ Sub ListTest
 
     /echo 'Inserting items into the empty list.'
     | Recreate the list using Insert.
-    /if (!${l.Insert[0,One,Two,Three,Four,Five]}) {
+    /if (${l.Insert[0,One,Two,Three,Four,Five]}) {
+        /echo 'Insert succeeded. Count: ${l.Count}.'
+    } else {
         /echo 'List insertion failed.'
         /endmacro
     }
@@ -407,12 +412,16 @@ Sub ListTest
 
     /echo 'Testing contents of the list for One and Five.'
     | List should contain One and Five
-    /if (!${l.Contains[One]}) {
+    /if (${l.Contains[One]}) {
+        /echo 'List contains One.'
+    } else {
         /echo 'Contains of One fails.'
         /endmacro
     }
 
-    /if (!${l.Contains[Five]}) {
+    /if (${l.Contains[Five]}) {
+        /echo 'List contains Five.'
+    } else {
         /echo 'Contains of Five fails.'
         /endmacro
     }
@@ -421,6 +430,8 @@ Sub ListTest
     /if (${l.Contains[Six]}) {
         /echo 'Contains of Six succeeded.'
         /endmacro
+    } else {
+        /echo 'List does NOT contain Six.'
     }
 
     /echo 'Testing Index method.'
@@ -450,61 +461,98 @@ Sub ListTest
     /echo 'Testinging Item method.'
 
     | Item of [1] should be Two.
-    /if (!${l.Item[1].Equals[Two]}) {
+    /if (${l.Item[1].Equal[Two]}) {
+        /echo 'Item[1] is: ${l.Item[1]}.'
+    } else {
         /echo 'Item[1] should be Two.'
         /endmacro
     }
 
+    /echo 'Testing Splice method.'
+
     | Copy the list using Splice.
     /declare splice list
-    /varset splice ${l.Splice}
+    /vardata splice l.Splice
 
     | Splice length should be five.
     /if (${splice.Count} != 5) {
-        /echo 'Length of splice is not five.'
+        /echo 'Length of splice is ${splice.Count} not 5.'
         /endmacro
+    } else {
+        /echo 'Splice succeeded. Count of spliced list is: ${splice.Count}'
     }
 
+    /echo 'Testing Sort method.'
+
     | Sort the splice.
-    /if (!{splice.Sort}) {
+    /if (${splice.Sort}) {
+        /echo 'Spliced list sorted successfully.'
+    } else {
         /echo 'Could not sort the splice.'
         /endmacro
-    }
+    } 
 
     | In the sorted list (Five, Four, One, Three, Two), the index
     | of One should be two.
-    /if (!${splice.Index[One]} != 2) {
+    /if (${splice.Index[One]} == 2) {
+        /echo 'Sorted list index of One is: ${splice.Index[One]}.'
+    } else {
         /echo 'Index of One in the sorted splice is not two.'
         /endmacro
     }
 
     | Create another splice from position 2 to the end.
-    /varset splice ${l.Splice[2]}
-    /if (!${splice.Count} != 3) {
+    /vardata splice l.Splice[2]
+    /if (${splice.Count} == 3) {
+        /echo 'Length of spliced list is: ${splice.Count}.'
+    } else {
         /echo 'Length of splice from 2 to the end should be 3.'
         /endmacro
     }
 
+    /echo 'Testing Reverse method.'
+
     | Reverse the new splice. Should be Five, Four, Three.
-    /if (!${slice.Reverse}) {
+    /if (${splice.Reverse}) {
+        /echo 'Reverse succeeded. Count is: ${splice.Count}.'
+    } else {
         /echo 'Splice could not be reversed.'
         /endmacro
     }
 
     | First item in reversed splice should be five.
-    /if (!${splice.Item[0].Equals[Five]}) {
+    /if (${splice.Item[0].Equal[Five]}) {
+        /echo 'First item in Reverses list is: ${splice.Item[0]}.'
+    } else {
         /echo 'Reversed splice first item should be Five.'
         /endmacro
     }
+
+    | Splice using wo arguments.
+    /vardata splice l.Splice[1, 2]
+    /if (${splice.Count} == 2) {
+        /echo 'Splice[1, 2] has length ${splice.Count}.'
+    } else {
+        /echo 'Splice[1, 2] is wrong length. Splice should be length 2 and is ${splice.Count}.'
+        /endmacro
+    }
     
+    /echo 'Testing Remove method.'
+
     | Remove Three from the list.
-    /if (${l.Remove[Three]} != 1) {
+    /if (${l.Remove[Three]} == 1) {
+        /echo 'Remove of Three succeeded. Contains[Three]: ${l.Contains[Three]}.'
+    } else {
         /echo 'Could not remove Three from the list.'
         /endmacro
     }
 
+    /echo 'Testing Erase method.'
+
     | Erase the second element (Two).
-    /if (!${l.Erase[1]}) {
+    /if (${l.Erase[1]}) {
+        /echo 'Erase by position 1 succeeded. Count: ${l.Count}.'
+    } else {
         /echo 'Could not erase the second element from the list.'
         /endmacro
     }
@@ -516,26 +564,40 @@ Sub ListTest
 	    /endmacro
     }
 
+    /echo 'Testing Replace method.'
+
     | Replace One with Zero.
     /if (${l.Replace[One,Zero]} != 1) {
         /echo 'One could not be replaced with Zero.'
         /endmacro
+    } else {
+        /echo 'One replaced with Zero.'
     }
+
+    /echo 'Testing Head and Tail mutators.'
 
     | Pop off the head and the tail.
     /echo 'Popping off the head: ${l.Head}'
     /echo 'Popping off the tail: ${l.Tail}'
 
+    /echo 'Testing Append method.'
+
     | Append, One,One,One to the list and count them.
-    /if (!${l.Append[One,One,One]}) {
+    /if (${l.Append[One,One,One]}) {
+        /echo 'Append succeeded. Count: ${l.Count}.'
+    } else {
         /echo 'Could not append One to the list three times.'
         /endmacro
     }
+
+    /echo 'Testing CountOf method.'
 
     | Count how many Ones are in the list. It should be three.
     /if (${l.CountOf[One]} != 3) {
         /echo 'One is not in the list three times.'
         /endmacro
+    } else {
+        /echo 'CountOf[One] succeeded. CountOf[One]: ${l.CountOf[One]}.'
     }
 
     /echo 'Ending List Test'

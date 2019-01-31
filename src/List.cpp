@@ -1300,14 +1300,6 @@ bool List::Replace(const std::string & args, size_t * count)
 std::unique_ptr<List> List::CreateSplice(const std::string & args) const
 {
     //
-    // Split the strings and find out how many arguments there are.
-    //
-
-    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(",")));
-
-    //
     // Default iterators are beginning and ending.
     //
 
@@ -1315,44 +1307,64 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     auto end_it = m_coll.cend();
 
     //
-    // Update the iterators if there are arguments.
+    // Split the strings and find out how many arguments there are, removing empty
+    // strings from the output.
     //
 
-    size_t startIndex = Count();            // Default start is the end.
-    size_t endIndex = Count();              // Default end is the end.
+    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
 
     //
-    // There is at least a starting index.
-    if (coll->size() > 0)
+    // Trim the string. Then if it is not empty, parse it into items.
+    //
+
+    auto trimmed_string = arguments->Trim();
+    if (!trimmed_string->Contents().empty())
     {
+
+        auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
+            trimmed_string->Split(std::string(",")));
+
+
         //
-        // Select from index to end if index is valid. Otherwise use the end as the
-        // starting element.
+        // Update the iterators if there are arguments.
         //
 
-        if (IndexValueFromString((*coll)[0], &startIndex))
+        size_t startIndex = Count();            // Default start is the end.
+        size_t endIndex = Count();              // Default end is the end.
+
+        //
+        // There is at least a starting index.
+        if (coll->size() > 0)
         {
-            start_it = FindIteratorForPosition(startIndex);
+            //
+            // Select from index to end if index is valid. Otherwise use the end as the
+            // starting element.
+            //
+
+            if (IndexValueFromString((*coll)[0], &startIndex))
+            {
+                start_it = FindIteratorForPosition(startIndex);
+            }
+            else
+            {
+                start_it = m_coll.cend();
+            }
         }
-        else
-        {
-            start_it = m_coll.cend();
-        }
-    }
-
-    //
-    // Two arguments means there is a start and length. Pick up the length.
-    if (coll->size() == 2)
-    {
-        size_t length;
 
         //
-        // Select the length and add it to the start if it is valid.
-        //
-
-        if (IndexValueFromString((*coll)[1], &length))
+        // Two arguments means there is a start and length. Pick up the length.
+        if (coll->size() == 2)
         {
-            end_it = FindIteratorForPosition(startIndex + length);
+            size_t length;
+
+            //
+            // Select the length and add it to the start if it is valid.
+            //
+
+            if (IndexValueFromString((*coll)[1], &length))
+            {
+                end_it = FindIteratorForPosition(startIndex + length);
+            }
         }
     }
 
