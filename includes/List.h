@@ -24,7 +24,7 @@ namespace Collections
         //
 
         class ListIterator : public ValueIterator<std::list<std::string>>,
-            public ReferenceType<ListIterator, std::list<std::string>>
+                             public ReferenceType<ListIterator, std::list<std::string>>
         {
         public:
             //
@@ -51,8 +51,8 @@ namespace Collections
             //
 
             explicit ListIterator(
-                const std::list<std::string> & refCollection,
-                const std::string & refKey);
+                            const std::list<std::string> & refCollection,
+                            const std::string & refKey);
 
             //
             // Destructor.
@@ -316,7 +316,7 @@ namespace Collections
             //
 
             std::unique_ptr<ValueIterator<std::list<std::string>>> Find(
-                const std::string & refKey) const;
+                            const std::string & refKey) const;
 
             //
             // Remove and return the head of the list.  Return true if there
@@ -372,7 +372,7 @@ namespace Collections
             //
 
             std::unique_ptr<ValueIterator<std::list<std::string>>> GetNewIterator(
-                const std::list<std::string> & refCollection) const;
+                                    const std::list<std::string> & refCollection) const;
 
         private:
 

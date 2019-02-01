@@ -56,10 +56,10 @@ namespace Collections
             //
 
             explicit SetIterator(
-                const std::set<std::string> & refCollection,
-                const std::string & refKey)
+                            const std::set<std::string> & refCollection,
+                            const std::string & refKey)
                 : ValueIterator<std::set<std::string>>(refCollection),
-                ReferenceType(SetIteratorMembers)
+                  ReferenceType(SetIteratorMembers)
             {
                 DebugSpew("SetIterator - %x", this);
 
@@ -174,11 +174,11 @@ namespace Collections
         //
 
         class Set : public Collection<
-            std::set<std::string>,
-            std::string,
-            std::string,
-            ValueIterator<std::set<std::string>>>,
-            public ObjectType<Set>
+                                std::set<std::string>,
+                                std::string,
+                                std::string,
+                                ValueIterator<std::set<std::string>>>,
+                    public ObjectType<Set>
         {
         public:
 
@@ -272,7 +272,7 @@ namespace Collections
             //
 
             ValueIterator<std::set<std::string>> * Find(
-                const std::string & refKey) const;
+                            const std::string & refKey) const;
 
             //
             // When a member function is called on the type, this method is called.
@@ -301,8 +301,7 @@ namespace Collections
             //
 
             std::unique_ptr<ValueIterator<std::set<std::string>>> GetNewIterator(
-                const std::set<std::string> & refCollection
-            ) const
+                                    const std::set<std::string> & refCollection) const
             {
                 return std::unique_ptr<ValueIterator<std::set<std::string>>>(new SetIterator(refCollection));
             }

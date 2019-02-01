@@ -13,4 +13,10 @@
 
 #define TO_STRING(token) #token
 
+//
+// Test a string pointer to ensure it isn't empty.
+//
+
+#define NOT_EMPTY(p) ((p != nullptr) && *p)
+
 #endif

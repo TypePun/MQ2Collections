@@ -66,7 +66,7 @@ const MQ2TYPEMEMBER List::ListMembers[] =
 
 ListIterator::ListIterator(const std::list<std::string> & refCollection)
     : ValueIterator<std::list<std::string>>(refCollection),
-    ReferenceType(ListIteratorMembers)
+      ReferenceType(ListIteratorMembers)
 {
     DebugSpew("ListIterator - %x", this);
 }
@@ -77,11 +77,10 @@ ListIterator::ListIterator(const std::list<std::string> & refCollection)
 //
 
 ListIterator::ListIterator(
-    const std::list<std::string> & refCollection,
-    const std::string & refKey
-)
+                    const std::list<std::string> & refCollection,
+                    const std::string & refKey)
     : ValueIterator<std::list<std::string>>(refCollection),
-    ReferenceType(ListIteratorMembers)
+      ReferenceType(ListIteratorMembers)
 {
     DebugSpew("ListIterator - %x", this);
 
@@ -154,7 +153,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
     //
 
     PMQ2TYPEMEMBER pMember = ListIterator::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -168,7 +167,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
     //
 
     pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("ListIterator instance is NULL!");
         return false;
@@ -213,9 +212,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
 
             if (pThis->Value(&pItem))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pItem->c_str(),
-                    pItem->size() + 1);
+                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -244,7 +241,7 @@ bool ListIterator::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index,
     DebugSpew("ListIterator::GetMemberInvoker %s", Member);
 
     pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("ListIterator instance is NULL!");
         return false;
@@ -534,8 +531,7 @@ size_t List::Replace(const std::string & item, const std::string & newItem)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-std::unique_ptr<ValueIterator<std::list<std::string>>> List::Find(
-    const std::string & refKey) const
+std::unique_ptr<ValueIterator<std::list<std::string>>> List::Find(const std::string & refKey) const
 {
     return std::make_unique<ListIterator>(m_coll, refKey);
 }
@@ -660,8 +656,8 @@ std::unique_ptr<List> List::Splice(size_t startIndex, size_t length) const
     //
 
     std::list<std::string> newList(
-        FindIteratorForPosition(startIndex),
-        FindIteratorForPosition(startIndex + length));
+                            FindIteratorForPosition(startIndex),
+                            FindIteratorForPosition(startIndex + length));
 
     return std::make_unique<List>(newList);
 }
@@ -692,7 +688,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
     //
 
     PMQ2TYPEMEMBER pMember = List::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -706,7 +702,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
     //
 
     pThis = reinterpret_cast<List *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("List instance is NULL!");
         return false;
@@ -721,7 +717,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             Dest.Int = (int) pThis->Count();
             Dest.Type = pIntType;
-            return true;
+            break;
 
         case ListMembers::Clear:
             //
@@ -742,7 +738,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = pThis->Contains(std::string(Index)) ? 1 : 0;
             }
@@ -769,7 +765,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 //
                 // -1 is returned if the index was not found.
@@ -789,7 +785,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 //
                 // Item fails if Index does not correspond to an item.
@@ -798,9 +794,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 std::string const * pItem;
                 if (pThis->Item(std::string(Index), &pItem))
                 {
-                    Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                        pItem->c_str(),
-                        pItem->size() + 1);
+                    Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                     Dest.Type = pStringType;
                 }
             }
@@ -815,7 +809,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Insert(std::string(Index));
             }
@@ -851,7 +845,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 pThis->AppendItems(std::string(Index));
 
@@ -872,7 +866,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Only attempt a remove if there is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Remove(std::string(Index));
                 Dest.Type = pIntType;
@@ -889,7 +883,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Only attempt to erase if there is an index.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Erase(std::string(Index));
             }
@@ -905,7 +899,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Verify that there is an argument.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 if (pThis->Replace(std::string(Index), &replacedItems))
                 {
@@ -939,7 +933,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // It only makes sense to find a non-null value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
 
@@ -960,9 +954,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             if (pThis->Head(&pItem))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pItem->c_str(),
-                    pItem->size() + 1);
+                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -975,9 +967,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             if (pThis->Tail(&pItem))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pItem->c_str(),
-                    pItem->size() + 1);
+                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -991,7 +981,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->CountOf(std::string(Index));
                 Dest.Type = pIntType;
@@ -1022,7 +1012,7 @@ bool List::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     DebugSpew("List::GetMemberInvoker %s", Member);
 
     pThis = reinterpret_cast<List *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("List instance is NULL!");
         return false;
@@ -1065,7 +1055,7 @@ bool List::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
     // Don't add null or empty strings!
     //
 
-    if ((pDest != nullptr) && (Source != nullptr) && *Source)
+    if ((pDest != nullptr) && NOT_EMPTY(Source))
     {
         pDest->Append(std::string(Source));
     }
@@ -1078,7 +1068,7 @@ bool List::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
 //
 
 std::unique_ptr<ValueIterator<std::list<std::string>>> List::GetNewIterator(
-    const std::list<std::string> & refCollection) const
+                    const std::list<std::string> & refCollection) const
 {
     return std::make_unique<ListIterator>(refCollection);
 }
@@ -1159,7 +1149,7 @@ bool List::Insert(const std::string & args)
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
     auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(",")));
+                                        arguments->Split(std::string(",")));
 
     //
     // There must be at least two arguments.
@@ -1211,7 +1201,7 @@ void List::AppendItems(const std::string & args)
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
     auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(",")));
+                                    arguments->Split(std::string(",")));
 
     std::for_each(coll->cbegin(),
                   coll->cend(),
@@ -1265,7 +1255,7 @@ bool List::Replace(const std::string & args, size_t * count)
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
     auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-        arguments->Split(std::string(",")));
+                                    arguments->Split(std::string(",")));
 
     if (coll->size() != 2)
     {
@@ -1322,7 +1312,7 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     {
 
         auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-            trimmed_string->Split(std::string(",")));
+                                    trimmed_string->Split(std::string(",")));
 
 
         //

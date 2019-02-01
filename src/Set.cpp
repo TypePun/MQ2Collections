@@ -8,6 +8,7 @@
 
 #include "Set.h"
 #include "Conversions.h"
+#include "Macros.h"
 
 using namespace Collections::Containers;
 
@@ -70,7 +71,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     //
 
     PMQ2TYPEMEMBER pMember = SetIterator::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -84,7 +85,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     //
 
     pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("SetIterator instance is NULL!");
         return false;
@@ -129,10 +130,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 
             if (pThis->Value(&pItem))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pItem->c_str(),
-                    pItem->size() + 1
-                );
+                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -160,7 +158,7 @@ bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     const std::string *item;
 
     pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
-    if (Destination == 0)
+    if (Destination == nullptr)
     {
         return false;
     }
@@ -192,9 +190,7 @@ bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-ValueIterator<std::set<std::string>> * Set::Find(
-    const std::string & refKey
-) const
+ValueIterator<std::set<std::string>> * Set::Find(const std::string & refKey) const
 {
     return new SetIterator(m_coll, refKey);
 }
@@ -224,7 +220,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     //
 
     PMQ2TYPEMEMBER pMember = Set::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -238,7 +234,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     //
 
     pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("Set instance is NULL!");
         return false;
@@ -253,7 +249,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
             Dest.Int = (int) pThis->Count();
             Dest.Type = pIntType;
-            return true;
+            break;
 
         case SetMembers::Clear:
             //
@@ -274,7 +270,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Contains(std::string(Index));
             }
@@ -289,7 +285,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // We can only add an item if Index is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 value = Index;
 
@@ -315,7 +311,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // Only attempt a remove if there is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Remove(std::string(Index));
             }
@@ -345,7 +341,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // It only makes sense to find a non-null key.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
@@ -379,14 +375,13 @@ bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     Set *pThis;
 
     pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
-    if (Destination == 0)
+    if (Destination == nullptr)
     {
         return false;
     }
 
     return Conversions::ToString(pThis->Count(), Destination, BUFFER_SIZE) == 0;
 }
-
 
 //
 // This method is executed when the /varset statement is executed.  Treat
@@ -403,7 +398,7 @@ bool Set::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
     // Don't add null or empty strings!
     //
 
-    if ((pDest != 0) && (Source != 0) && *Source)
+    if ((pDest != nullptr) && NOT_EMPTY(Source))
     {
         pDest->Add(std::string(Source));
     }

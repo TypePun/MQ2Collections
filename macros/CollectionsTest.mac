@@ -8,6 +8,7 @@ Sub Main
     /call SetTest
     /call MapTest
     /call ListTest
+    /call SetIteratorTest
 
     /echo 'Ending Collections Test'
     /return
@@ -25,31 +26,31 @@ Sub StackTest
 
     /echo 'Pushing items onto the Stack.'
     /if (!${s.Push[A]}) {
-    	/echo 'Stack Push of A failed.'
-    	/endmacro
+        /echo 'Stack Push of A failed.'
+        /endmacro
     }
     /if (!${s.Push[B]}) {
-    	/echo 'Stack Push of B failed.'
-    	/endmacro
+        /echo 'Stack Push of B failed.'
+        /endmacro
     }
     /if (!${s.Push[C]}) {
-    	/echo 'Stack Push of C failed.'
-    	/endmacro
+        /echo 'Stack Push of C failed.'
+        /endmacro
     }
     /if (!${s.Push[D]}) {
-    	/echo 'Stack Push of D failed.'
-	/endmacro
+        /echo 'Stack Push of D failed.'
+        /endmacro
     }
     /if (!${s.Push[E]}) {
-    	/echo 'Stack Push of E failed.'
-    	/endmacro
+        /echo 'Stack Push of E failed.'
+        /endmacro
     }
 
     /declare count int
     /varset count ${s.Count}
     /if (${count} != 5) {
-    	/echo 'Stack count is: ${count} and should be 5.'
-    	/endmacro
+        /echo 'Stack count is: ${count} and should be 5.'
+        /endmacro
     }
 
     /echo 'Stack is Empty: ${s.IsEmpty}'
@@ -83,31 +84,31 @@ Sub QueueTest
     /echo 'Pushing items onto the Queue.'
 
     /if (!${q.Push[A]}) {
-    	/echo 'Queue Push of A failed.'
-    	/endmacro
+        /echo 'Queue Push of A failed.'
+        /endmacro
     }
     /if (!${q.Push[B]}) {
-    	/echo 'Queue Push of B failed.'
-    	/endmacro
+        /echo 'Queue Push of B failed.'
+        /endmacro
     }
     /if (!${q.Push[C]}) {
-    	/echo 'Queue Push of C failed.'
-    	/endmacro
+        /echo 'Queue Push of C failed.'
+        /endmacro
     }
     /if (!${q.Push[D]}) {
-    	/echo 'Queue Push of D failed.'
-	    /endmacro
+        /echo 'Queue Push of D failed.'
+            /endmacro
     }
     /if (!${q.Push[E]}) {
-    	/echo 'Queue Push of E failed.'
-    	/endmacro
+        /echo 'Queue Push of E failed.'
+        /endmacro
     }
 
     /declare count int
     /varset count ${q.Count}
     /if (${count} != 5) {
-    	/echo 'Queue count is: ${count} and should be 5.'
-    	/endmacro
+        /echo 'Queue count is: ${count} and should be 5.'
+        /endmacro
     }
 
     /echo 'Queue is Empty: ${q.IsEmpty}'
@@ -138,92 +139,94 @@ Sub SetTest
     /echo 'Adding items to the set.
 
     /if (!${s.Add[A]}) {
-    	/echo 'Set Add of A failed.'
-    	/endmacro
+        /echo 'Set Add of A failed.'
+        /endmacro
     }
     /if (!${s.Add[B]}) {
-    	/echo 'Set Add of B failed.'
-    	/endmacro
+        /echo 'Set Add of B failed.'
+        /endmacro
     }
     /if (!${s.Add[C]}) {
-    	/echo 'Set Add of C failed.'    
-    	/endmacro
+        /echo 'Set Add of C failed.'    
+        /endmacro
     }
     /if (!${s.Add[D]}) {
-    	/echo 'Set Add of D failed.'
-    	/endmacro
+        /echo 'Set Add of D failed.'
+        /endmacro
     }
     /if (!${s.Add[E]}) {
-    	/echo 'Set Add of E failed.'    
-    	/endmacro
+        /echo 'Set Add of E failed.'    
+        /endmacro
     }
 
     /declare count int
     /varset count ${s.Count}
     /if (${count} != 5) {
-    	/echo 'Set count is: ${count} and should be 5.'
-    	/endmacro
+        /echo 'Set count is: ${count} and should be 5.'
+        /endmacro
     }
 
     | Now remove A and E.
     /if (!${s.Remove[A]}) {
-    	/echo 'Remove of A failed.'
+        /echo 'Remove of A failed.'
+        /endmacro
     }
     /if (!${s.Remove[E]}) {
-    	/echo 'Remove of E failed.'
+        /echo 'Remove of E failed.'
+        /endmacro
     }
     
     /varset count ${s.Count}
     /if (${count} != 3) {
-    	/echo 'Set count is: ${count} and should be 3.'
-    	/endmacro
+        /echo 'Set count is: ${count} and should be 3.'
+        /endmacro
     }
 
     | Verify that the set contains B, C and D.
     /if (${s.Contains[B]}) {
-    	/echo 'Set Contains B.'
+        /echo 'Set Contains B.'
     } else {
-    	/echo 'Set does not contain B.'
-    	/endmacro
+        /echo 'Set does not contain B.'
+        /endmacro
     }
     /if (${s.Contains[C]}) {
-    	/echo 'Set Contains C.'
+        /echo 'Set Contains C.'
     } else {
-    	/echo 'Set does not contain C.'
-	    /endmacro
+        /echo 'Set does not contain C.'
+        /endmacro
     }
     /if (${s.Contains[D]}) {
-    	/echo 'Set Contains D.'
+        /echo 'Set Contains D.'
     } else {
-    	/echo 'Set does not contain D.'
-    	/endmacro
+        /echo 'Set does not contain D.'
+        /endmacro
     }
 
     | And verify it does NOT contain A and E.
     /if (${s.Contains[A]}) {
-    	/echo 'Set should not contain A!'
-    	/endmacro
+        /echo 'Set should not contain A!'
+        /endmacro
     } else {
-    	/echo 'Set does not contain A.'
+        /echo 'Set does not contain A.'
     }
     /if (${s.Contains[E]}) {
-    	/echo 'Set should not contain E!'
-    	/endmacro
+        /echo 'Set should not contain E!'
+        /endmacro
     } else {
-    	/echo 'Set does not contain E.'
+        /echo 'Set does not contain E.'
     }
 
     | Try and Add an element more than once.    
     /if (!${s.Add[B]}) {
-    	/echo 'Set Add of B failed.'
-    	/endmacro
+        /echo 'Set Add of B failed.'
+        /endmacro
     }
 
     | Adding the same item should not modify the set.
     /varset count ${s.Count}
     /if (${count} != 3) {
-    	/echo 'Set count is: ${count} and should be 3.'
-    	/endmacro
+        /echo 'Set count is: ${count} and should be 3.'
+        /endmacro
     }
     
     | Clear the set. The count should be zero and it
@@ -233,13 +236,117 @@ Sub SetTest
     
     | And verify it does NOT contain B.
     /if (${s.Contains[B]}) {
-    	/echo 'Set should not contain B!'
-    	/endmacro
+        /echo 'Set should not contain B!'
+        /endmacro
     } else {
-    	/echo 'Set does not contain B.'
+        /echo 'Set does not contain B.'
     }
     
     /echo 'Ending Set Test'
+    
+    /return
+
+Sub SetIteratorTest
+    /declare s set
+
+    /echo 'Starting Set Iterator Test'
+    /echo 'Count of entries in Set: ${s.Count}'
+
+    | Add entries to the set.
+    /echo 'Adding items to the set.
+
+    /if (!${s.Add[A]}) {
+        /echo 'Set Add of A failed.'
+        /endmacro
+    }
+    /if (!${s.Add[B]}) {
+        /echo 'Set Add of B failed.'
+        /endmacro
+    }
+    /if (!${s.Add[C]}) {
+        /echo 'Set Add of C failed.'    
+        /endmacro
+    }
+    /if (!${s.Add[D]}) {
+        /echo 'Set Add of D failed.'
+        /endmacro
+    }
+    /if (!${s.Add[E]}) {
+        /echo 'Set Add of E failed.'    
+        /endmacro
+    }
+
+    /declare count int
+    /varset count ${s.Count}
+    /if (${count} != 5) {
+        /echo 'Set count is: ${count} and should be 5.'
+        /endmacro
+    }
+
+    /echo 'Acquire an iterator to the start of the set.'
+
+    | Get an iterator to the first element and output each
+    | element in the set.
+    /declare si setiterator
+    /vardata si s.First
+
+    /while (!${si.IsEnd}) {
+        /echo ${si.Value}
+        /if (${si.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${si.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    | Test Reset and do it again.
+    /echo 'Testing Reset.'
+
+    /if (${si.Reset}) {
+        /echo 'Iterator Reset.'
+    } else {
+        /echo 'Iterator could not be reset. IsEnd: ${si.IsEnd}.'
+    }
+
+    /while (!${si.IsEnd}) {
+        /echo ${si.Value}
+        /if (${si.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${si.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    /echo 'Calling Find[C] on the set.'
+
+    | Acquire an iterator using Find to C.
+    /vardata si s.Find[C]
+
+    /while (!${si.IsEnd}) {
+        /echo ${si.Value}
+        /if (${si.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${si.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    /echo 'Calling Find[Z] on the set.'
+
+    | Acquire an iterator using Find to Z.
+    /vardata si s.Find[Z]
+
+    /if (${si.IsEnd}) {
+        /echo 'IsEnd for Find[Z]: ${si.IsEnd}.'
+    } else {
+        /echo 'IsEnd is FALSE for Find[Z].'
+        /endmacro
+    }
+
+    /echo 'Ending Set Iterator Test'
     
     /return
 
@@ -253,92 +360,92 @@ Sub MapTest
     /echo 'Adding items to the map.
 
     /if (!${m.Add[A,One]}) {
-    	/echo 'Map Add of A failed.'
-    	/endmacro
+        /echo 'Map Add of A failed.'
+        /endmacro
     }
     /if (!${m.Add[B,Two]}) {
-    	/echo 'Map Add of B failed.'
-    	/endmacro
+        /echo 'Map Add of B failed.'
+        /endmacro
     }
     /if (!${m.Add[C,Three]}) {
-    	/echo 'Map Add of C failed.'    
-    	/endmacro
+        /echo 'Map Add of C failed.'    
+        /endmacro
     }
     /if (!${m.Add[D,Four]}) {
-    	/echo 'Map Add of D failed.'
-	    /endmacro
+        /echo 'Map Add of D failed.'
+        /endmacro
     }
     /if (!${m.Add[E,Five]}) {
-    	/echo 'Map Add of E failed.'    
-    	/endmacro
+        /echo 'Map Add of E failed.'    
+        /endmacro
     }
 
     /declare count int
     /varset count ${m.Count}
     /if (${count} != 5) {
-    	/echo 'Map count is: ${count} and should be 5.'
-	    /endmacro
+        /echo 'Map count is: ${count} and should be 5.'
+        /endmacro
     }
 
     | Now remove A and E.
     /if (!${m.Remove[A]}) {
-    	/echo 'Remove of A failed.'
+        /echo 'Remove of A failed.'
     }
     /if (!${m.Remove[E]}) {
-    	/echo 'Remove of E failed.'
+        /echo 'Remove of E failed.'
     }
     
     /varset count ${m.Count}
     /if (${count} != 3) {
-    	/echo ' count is: ${count} and should be 3.'
-	    /endmacro
+        /echo ' count is: ${count} and should be 3.'
+        /endmacro
     }
 
     | Verify that the map contains B, C and D.
     /if (${m.Contains[B]}) {
-    	/echo 'Map Contains B.'
+        /echo 'Map Contains B.'
     } else {
-    	/echo 'Map does not contain B.'
-	    /endmacro
+        /echo 'Map does not contain B.'
+        /endmacro
     }
     /if (${m.Contains[C]}) {
-    	/echo 'Map Contains C.'
+        /echo 'Map Contains C.'
     } else {
-    	/echo 'Map does not contain C.'
-	    /endmacro
+        /echo 'Map does not contain C.'
+        /endmacro
     }
     /if (${m.Contains[D]}) {
-    	/echo 'Map Contains D.'
+        /echo 'Map Contains D.'
     } else {
-    	/echo 'Map does not contain D.'
-	    /endmacro
+        /echo 'Map does not contain D.'
+        /endmacro
     }
 
     | And verify it does NOT contain A and E.
     /if (${m.Contains[A]}) {
-    	/echo 'Map should not contain A!'
-	    /endmacro
+        /echo 'Map should not contain A!'
+        /endmacro
     } else {
-    	/echo 'Map does not contain A.'
+        /echo 'Map does not contain A.'
     }
     /if (${m.Contains[E]}) {
-    	/echo 'Map should not contain E!'
-	    /endmacro
+        /echo 'Map should not contain E!'
+        /endmacro
     } else {
-    	/echo 'Map does not contain E.'
+        /echo 'Map does not contain E.'
     }
 
     | Adding B again will replace the value associated with B.
     /if (!${m.Add[B,Some new Value]}) {
-    	/echo 'Set Add of B failed.'
-	    /endmacro
+        /echo 'Set Add of B failed.'
+        /endmacro
     }
 
     | Adding the same item should not modify the map.
     /varset count ${m.Count}
     /if (${count} != 3) {
-    	/echo 'Map count is: ${count} and should be 3.'
-	    /endmacro
+        /echo 'Map count is: ${count} and should be 3.'
+        /endmacro
     }
     
     | Clear the map. The count should be zero and it
@@ -348,10 +455,10 @@ Sub MapTest
     
     | And verify it does NOT contain B.
     /if (${m.Contains[B]}) {
-    	/echo 'Map should not contain B!'
-	    /endmacro
+        /echo 'Map should not contain B!'
+        /endmacro
     } else {
-    	/echo 'Map does not contain B.'
+        /echo 'Map does not contain B.'
     }
     
     /echo 'Ending Map Test'
@@ -368,17 +475,17 @@ Sub ListTest
     /echo 'Adding items to the list.
 
     /if (${l.Append[One,Two,Three,Four,Five]}) {
-    	/echo 'List Append of five items succeeded. Count: ${l.Count}.'
+        /echo 'List Append of five items succeeded. Count: ${l.Count}.'
     } else {
-    	/echo 'List Append of five items failed.'
-	    /endmacro
+        /echo 'List Append of five items failed.'
+        /endmacro
     }
 
     /declare count int
     /varset count ${l.Count}
     /if (${count} != 5) {
-    	/echo 'List count is: ${count} and should be 5.'
-	    /endmacro
+        /echo 'List count is: ${count} and should be 5.'
+        /endmacro
     }
 
     | Clear the list. The count should be zero.
@@ -391,8 +498,8 @@ Sub ListTest
 
     /varset count ${l.Count}
     /if (${count} != 0) {
-    	/echo 'List count is: ${count} and should be 0.'
-	    /endmacro
+        /echo 'List count is: ${count} and should be 0.'
+        /endmacro
     }
 
     /echo 'Inserting items into the empty list.'
@@ -406,8 +513,8 @@ Sub ListTest
 
     /varset count ${l.Count}
     /if (${count} != 5) {
-    	/echo 'List count is: ${count} and should be 5.'
-	    /endmacro
+        /echo 'List count is: ${count} and should be 5.'
+        /endmacro
     }
 
     /echo 'Testing contents of the list for One and Five.'
@@ -528,7 +635,7 @@ Sub ListTest
         /endmacro
     }
 
-    | Splice using wo arguments.
+    | Splice using two arguments.
     /vardata splice l.Splice[1, 2]
     /if (${splice.Count} == 2) {
         /echo 'Splice[1, 2] has length ${splice.Count}.'
@@ -560,8 +667,8 @@ Sub ListTest
     | The length should now be three.
     /varset count ${l.Count}
     /if (${count} != 3) {
-    	/echo 'List count is: ${count} and should be 3.'
-	    /endmacro
+        /echo 'List count is: ${count} and should be 3.'
+        /endmacro
     }
 
     /echo 'Testing Replace method.'
