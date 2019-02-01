@@ -34,7 +34,10 @@ using namespace Types;
 
 PreSetup("MQ2Collections");
 
-// Called once, when the plugin is to initialize
+//
+// Called once, when the plugin is to loaded. Register the types.
+//
+
 PLUGIN_API VOID InitializePlugin(VOID)
 {
     DebugSpewAlways("Initializing MQ2Collections");
@@ -49,7 +52,10 @@ PLUGIN_API VOID InitializePlugin(VOID)
     List::RegisterType();
 }
 
-// Called once, when the plugin is to shutdown
+//
+// Called once, when the plugin is to unloaded/shutdown. Unregister the types.
+//
+
 PLUGIN_API VOID ShutdownPlugin(VOID)
 {
     DebugSpewAlways("Shutting down MQ2Collections");

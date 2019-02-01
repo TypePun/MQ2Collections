@@ -73,7 +73,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     //
 
     PMQ2TYPEMEMBER pMember = MapIterator::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -87,7 +87,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     //
 
     pThis = reinterpret_cast<MapIterator *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("MapIterator instance is NULL!");
         return false;
@@ -132,10 +132,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 
             if (pThis->Value(&pItem))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pItem->c_str(),
-                    pItem->size() + 1
-                );
+                Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -148,10 +145,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 
             if (pThis->Key(&pItem))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pItem->c_str(),
-                    pItem->size() + 1
-                );
+                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -179,7 +173,7 @@ bool MapIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     const std::string *item;
 
     pThis = reinterpret_cast<MapIterator *>(VarPtr.Ptr);
-    if (Destination == 0)
+    if (Destination == nullptr)
     {
         return false;
     }
@@ -246,8 +240,8 @@ bool MapIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> *
-Map::Find(const std::string & refKey) const
+KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> * Map::Find(
+                                const std::string & refKey) const
 {
     return new MapIterator(m_coll, refKey);
 }
@@ -277,7 +271,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     //
 
     PMQ2TYPEMEMBER pMember = Map::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -291,7 +285,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     //
 
     pThis = reinterpret_cast<Map *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("Map instance is NULL!");
         return false;
@@ -306,7 +300,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
             Dest.Int = (int) pThis->Count();
             Dest.Type = pIntType;
-            return true;
+            break;
 
         case MapMembers::Clear:
             //
@@ -327,7 +321,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // Check for a valid Index value.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Contains(std::string(Index));
             }
@@ -342,7 +336,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // We can only add an item if Index is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) AddKeyAndValue(pThis, Index);
             }
@@ -358,7 +352,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // Only attempt a remove if there is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Remove(std::string(Index));
             }
@@ -388,7 +382,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // It only makes sense to find a non-null key.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
@@ -467,9 +461,7 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
     // the second as the value.
     //
 
-    argument = new StringExtensions<std::string, std::vector<std::string>>(
-        std::string(Arguments)
-        );
+    argument = new StringExtensions<std::string, std::vector<std::string>>(std::string(Arguments));
     splits = argument->Split(std::string(","));
 
     //
@@ -491,9 +483,7 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
         // Trim the key and value.
         //
 
-        arg = new StringExtensions<std::string, std::vector<std::string>>(
-            (*splits)[0]
-            );
+        arg = new StringExtensions<std::string, std::vector<std::string>>((*splits)[0]);
         key = arg->Trim();
 
         //
@@ -502,9 +492,7 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
 
         delete arg;
 
-        arg = new StringExtensions<std::string, std::vector<std::string>>(
-            (*splits)[1]
-            );
+        arg = new StringExtensions<std::string, std::vector<std::string>>((*splits)[1]);
         value = arg->Trim();
 
         //

@@ -9,6 +9,8 @@ Sub Main
     /call MapTest
     /call ListTest
     /call SetIteratorTest
+    /call ListIteratorTest
+    /call MapIteratorTest
 
     /echo 'Ending Collections Test'
     /return
@@ -465,6 +467,110 @@ Sub MapTest
     
     /return
 
+Sub MapIteratorTest
+    /declare m map
+
+    /echo 'Starting Map Iterator Test'
+    /echo 'Count of entries in Map: ${m.Count}'
+
+    | Add entries to the map.
+    /echo 'Adding items to the map.
+
+    /if (!${m.Add[A,One]}) {
+        /echo 'Map Add of A failed.'
+        /endmacro
+    }
+    /if (!${m.Add[B,Two]}) {
+        /echo 'Map Add of B failed.'
+        /endmacro
+    }
+    /if (!${m.Add[C,Three]}) {
+        /echo 'Map Add of C failed.'    
+        /endmacro
+    }
+    /if (!${m.Add[D,Four]}) {
+        /echo 'Map Add of D failed.'
+        /endmacro
+    }
+    /if (!${m.Add[E,Five]}) {
+        /echo 'Map Add of E failed.'    
+        /endmacro
+    }
+
+    /declare count int
+    /varset count ${m.Count}
+    /if (${count} != 5) {
+        /echo 'Map count is: ${count} and should be 5.'
+        /endmacro
+    }
+
+    /echo 'Acquire an iterator to the start of the map.'
+
+    | Get an iterator to the first element and output each
+    | element in the map.
+    /declare mi mapiterator
+    /vardata mi m.First
+
+    /while (!${mi.IsEnd}) {
+        /echo ${mi.Key}[${mi.Value}]
+        /if (${mi.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${mi.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    | Test Reset and do it again.
+    /echo 'Testing Reset.'
+
+    /if (${mi.Reset}) {
+        /echo 'Iterator Reset.'
+    } else {
+        /echo 'Iterator could not be reset. IsEnd: ${mi.IsEnd}.'
+    }
+
+    /while (!${mi.IsEnd}) {
+        /echo ${mi.Key}[${mi.Value}]
+        /if (${mi.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${mi.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    /echo 'Calling Find[C] on the map.'
+
+    | Acquire an iterator using Find to C.
+    /vardata mi m.Find[C]
+
+    /while (!${mi.IsEnd}) {
+        /echo ${mi.Key}[${mi.Value}]
+        /if (${mi.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${mi.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    /echo 'Calling Find[Z] on the map.'
+
+    | Acquire an iterator using Find to Z.
+    /vardata mi m.Find[Z]
+
+    /if (${mi.IsEnd}) {
+        /echo 'IsEnd for Find[Z]: ${mi.IsEnd}.'
+    } else {
+        /echo 'IsEnd is FALSE for Find[Z].'
+        /endmacro
+    }
+
+    /echo 'Ending Map Iterator Test'
+    
+    /return
+
 Sub ListTest
     /declare l list
 
@@ -708,5 +814,95 @@ Sub ListTest
     }
 
     /echo 'Ending List Test'
+    
+    /return
+
+Sub ListIteratorTest
+    /declare l list
+
+    /echo 'Starting List Iterator Test'
+    /echo 'Count of entries in List: ${l.Count}'
+
+    | Add entries to the list.
+    /echo 'Adding items to the list.
+
+    /if (!${l.Append[One,Two,Three,Four,Five]}) {
+        /echo 'List append failed.'
+        /endmacro
+    }
+
+    /declare count int
+    /varset count ${l.Count}
+    /if (${count} != 5) {
+        /echo 'List count is: ${count} and should be 5.'
+        /endmacro
+    }
+
+    /echo 'Acquire an iterator to the start of the list.'
+
+    | Get an iterator to the first element and output each
+    | element in the list.
+    /declare li listiterator
+    /vardata li l.First
+
+    /while (!${li.IsEnd}) {
+        /echo ${li.Value}
+        /if (${li.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${li.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    | Test Reset and do it again.
+    /echo 'Testing Reset.'
+
+    /if (${li.Reset}) {
+        /echo 'Iterator Reset.'
+    } else {
+        /echo 'Iterator could not be reset. IsEnd: ${li.IsEnd}.'
+    }
+
+    /while (!${li.IsEnd}) {
+        /echo ${li.Value}
+        /if (${li.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${li.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    /echo 'Calling Find[Three] on the list.'
+
+    | Acquire an iterator using Find to Three
+    /vardata li l.Find[Three]
+
+    /echo 'After Find[Three]: IsEnd: ${li.IsEnd}.'
+
+    /while (!${li.IsEnd}) {
+        /echo ${li.Value}
+        /if (${li.Advance}) {
+            /echo 'Iterator advanced to next element.'
+        } else {
+            /echo 'Iterator not advanced. IsEnd: ${li.IsEnd}.'
+            /endmacro
+        }
+    }
+
+    /echo 'Calling Find[Z] on the list.'
+
+    | Acquire an iterator using Find to Z.
+    /vardata li l.Find[Z]
+
+    /if (${li.IsEnd}) {
+        /echo 'IsEnd for Find[Z]: ${li.IsEnd}.'
+    } else {
+        /echo 'IsEnd is FALSE for Find[Z].'
+        /endmacro
+    }
+
+    /echo 'Ending List Iterator Test'
     
     /return

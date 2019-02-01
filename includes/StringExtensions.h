@@ -6,9 +6,6 @@
 
 #include <tchar.h>
 
-#if !defined(__STRINGEXTENTIONS__)
-#define __STRINGEXTENTIONS__
-
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -98,11 +95,9 @@ namespace Extensions
                     while (sepPosition != T::npos)
                     {
                         results->push_back(
-                            m_contents.substr(
-                            currentPosition,
-                            sepPosition - currentPosition
-                        )
-                        );
+                                    m_contents.substr(
+                                        currentPosition,
+                                        sepPosition - currentPosition));
 
                         currentPosition = sepPosition + 1;
 
@@ -110,10 +105,7 @@ namespace Extensions
                         // Find the next separator.
                         //
 
-                        sepPosition = m_contents.find_first_of(
-                            separators,
-                            currentPosition
-                        );
+                        sepPosition = m_contents.find_first_of(separators, currentPosition);
                     }
 
                     //
@@ -405,5 +397,3 @@ namespace Extensions
         }
     }
 }
-
-#endif

@@ -208,8 +208,7 @@ namespace Types
         static BOOL TypeDescriptor(PCHAR szName, MQ2TYPEVAR &Dest)
         {
             Dest.DWord = 1;
-            Dest.Type = TypeMap::GetTypeInstanceForTypeName(
-                ObjectClass::GetTypeName());
+            Dest.Type = TypeMap::GetTypeInstanceForTypeName(ObjectClass::GetTypeName());
 
             return TRUE;
         }

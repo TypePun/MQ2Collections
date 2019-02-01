@@ -53,13 +53,12 @@ bool TypeMap::HasName(const char *typeName)
 MQ2Type * TypeMap::GetTypeInstanceForTypeName(const char *typeName)
 {
     std::string sTypeName(typeName);
-    std::map<std::string, MQ2Type *>::iterator itTypes;
 
     //
     // Look up the instance in the map from type names onto instances.
     //
 
-    itTypes = typeMap.find(sTypeName);
+    auto itTypes = typeMap.find(sTypeName);
     if (itTypes == typeMap.end())
     {
         //
@@ -80,14 +79,13 @@ MQ2Type * TypeMap::GetTypeInstanceForTypeName(const char *typeName)
 bool TypeMap::RemoveType(const char *typeName)
 {
     std::string sTypeName(typeName);
-    std::map<std::string, MQ2Type *>::iterator it;
 
     //
     // See if the type name exists in the map.  If it does, remove
     // it and return true.
     //
 
-    it = typeMap.find(sTypeName);
+    auto it = typeMap.find(sTypeName);
 
     //
     // If the entry already exists, don't add it.

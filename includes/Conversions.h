@@ -15,9 +15,7 @@ namespace Conversions
     //
 
     template<size_t size>
-    inline errno_t ValueToString(long value,
-        char(&buffer)[size],
-        uint16_t radix)
+    inline errno_t ValueToString(long value, char(&buffer)[size], uint16_t radix)
     {
         // Radix must be 2 <= radix <= 36 or an error is returned.
         return _ltoa_s(value, temp_buffer, (int) radix);
@@ -28,9 +26,7 @@ namespace Conversions
     //
 
     template<size_t size>
-    inline errno_t ValueToString(unsigned int value,
-        char(&buffer)[size],
-        uint16_t radix)
+    inline errno_t ValueToString(unsigned int value, char(&buffer)[size], uint16_t radix)
     {
         return ValueToString((unsigned long) value, buffer, radix);
     }
@@ -40,9 +36,7 @@ namespace Conversions
     //
 
     template<size_t size>
-    inline errno_t ValueToString(unsigned long value,
-        char(&buffer)[size],
-        uint16_t radix)
+    inline errno_t ValueToString(unsigned long value, char(&buffer)[size], uint16_t radix)
     {
         // Radix must be 2 <= radix <= 36 or an error is returned.
         return _ultoa_s(value, buffer, (int) radix);
@@ -58,10 +52,7 @@ namespace Conversions
     //                          result string.
 
     template<typename T>
-    inline errno_t ToString(T value,
-        char * buffer,
-        size_t buff_size,
-        uint16_t radix = 10)
+    inline errno_t ToString(T value, char * buffer, size_t buff_size, uint16_t radix = 10)
     {
         char temp_buffer[_MAX_PATH];        // More than enough for any scalar.
         errno_t rc;

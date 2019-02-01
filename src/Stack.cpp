@@ -50,7 +50,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     //
 
     PMQ2TYPEMEMBER pMember = Stack::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -64,7 +64,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     //
 
     pThis = reinterpret_cast<Stack *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("Stack instance is NULL!");
         return false;
@@ -79,15 +79,14 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 
             Dest.Int = (int) pThis->Count();
             Dest.Type = pIntType;
-            return true;
-
+            break;
 
         case StackMembers::Push:
             //
             // We can only add an item if Index is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 value = Index;
 
@@ -111,10 +110,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 
             if (pThis->Pop(&pValue))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pValue->c_str(),
-                    pValue->size() + 1
-                );
+                Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -136,10 +132,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 
             if (pThis->Peek(&pValue))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pValue->c_str(),
-                    pValue->size() + 1
-                );
+                Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -165,7 +158,7 @@ bool Stack::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     Stack *pThis;
 
     pThis = reinterpret_cast<Stack *>(VarPtr.Ptr);
-    if (Destination == 0)
+    if (Destination == nullptr)
     {
         return false;
     }
@@ -183,7 +176,7 @@ bool Stack::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
     Stack *pDest;
 
     pDest = reinterpret_cast<Stack *>(VarPtr.Ptr);
-    if ((pDest != 0) && (Source != 0) && *Source)
+    if ((pDest != nullptr) && NOT_EMPTY(Source))
     {
         pDest->Push(std::string(Source));
     }

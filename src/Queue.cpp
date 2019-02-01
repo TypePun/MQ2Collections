@@ -50,7 +50,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     //
 
     PMQ2TYPEMEMBER pMember = Queue::FindMember(Member);
-    if (!pMember)
+    if (pMember == nullptr)
     {
         //
         // No such member.
@@ -64,7 +64,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     //
 
     pThis = reinterpret_cast<Queue *>(VarPtr.Ptr);
-    if (!pThis)
+    if (pThis == nullptr)
     {
         DebugSpewAlways("Queue instance is NULL!");
         return false;
@@ -79,7 +79,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 
             Dest.Int = (int) pThis->Count();
             Dest.Type = pIntType;
-            return true;
+            break;
 
         case QueueMembers::Push:
             //
@@ -90,7 +90,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             // We can only add an item if Index is a string.
             //
 
-            if (*Index)
+            if (NOT_EMPTY(Index))
             {
                 value = Index;
 
@@ -114,10 +114,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 
             if (pThis->Pop(&pValue))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pValue->c_str(),
-                    pValue->size() + 1
-                );
+                Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -139,10 +136,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 
             if (pThis->Peek(&pValue))
             {
-                Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(
-                    pValue->c_str(),
-                    pValue->size() + 1
-                );
+                Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
                 Dest.Type = pStringType;
             }
             break;
@@ -168,7 +162,7 @@ bool Queue::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     Queue *pThis;
 
     pThis = reinterpret_cast<Queue *>(VarPtr.Ptr);
-    if (Destination == 0)
+    if (Destination == nullptr)
     {
         return false;
     }
@@ -186,7 +180,7 @@ bool Queue::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
     Queue *pDest;
 
     pDest = reinterpret_cast<Queue *>(VarPtr.Ptr);
-    if ((pDest != 0) && (Source != 0) && *Source)
+    if ((pDest != nullptr) && NOT_EMPTY(Source))
     {
         pDest->Push(std::string(Source));
     }
