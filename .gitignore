@@ -23,6 +23,7 @@ bin/*
 # Build artifacts
 #
 
+.vs/*
 *.aps
 *.pch
 *.idb
@@ -38,3 +39,4 @@ bin/*
 #
 
 *~
+/MQ2Collections.cpp
