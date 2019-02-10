@@ -4,8 +4,6 @@
 //
 
 
-#include <MQ2Plugin.h>
-
 #include "Map.h"
 #include "StringExtensions.h"
 #include "Conversions.h"

@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <memory>
-#include <MQ2Plugin.h>
 
 #include "List.h"
 #include "StringExtensions.h"

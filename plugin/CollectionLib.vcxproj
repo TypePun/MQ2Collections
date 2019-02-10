@@ -10,57 +10,31 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="List.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MQ2Collections.cpp" />
-    <ClCompile Include="MQ2CollectionsImpl.cpp" />
-    <ClCompile Include="Queue.cpp" />
-    <ClCompile Include="Set.cpp" />
-    <ClCompile Include="Stack.cpp" />
-    <ClCompile Include="Types.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MQ2Collections.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BufferManager.h" />
-    <ClInclude Include="Collections.h" />
-    <ClInclude Include="Conversions.h" />
-    <ClInclude Include="List.h" />
-    <ClInclude Include="Macros.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="MQ2CollectionsImpl.h" />
-    <ClInclude Include="Queue.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Set.h" />
-    <ClInclude Include="Stack.h" />
-    <ClInclude Include="StringExtensions.h" />
-    <ClInclude Include="Types.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D2CF825E-1F39-4F0C-AF30-15DE7BB51347}</ProjectGuid>
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{DFD19510-27DC-4587-A44E-951734DD53F1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MQ2Collections</RootNamespace>
+    <RootNamespace>CollectionLib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <ToolsPath Condition="'$(MQ2)' == ''">..\..\</ToolsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -71,84 +45,69 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
-    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(MQ2);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
-    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(MQ2);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_SCL_SECURE_NO_WARNINGS;TEST</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;TEST</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <BrowseInformation>true</BrowseInformation>
-      <RuntimeTypeInfo>
-      </RuntimeTypeInfo>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
-      <AdditionalDependencies>mq2main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <CustomBuildStep>
-      <Command>copy $(MQ2)\Release\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_SCL_SECURE_NO_WARNINGS;TEST</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;TEST</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <BrowseInformation>true</BrowseInformation>
-      <RuntimeTypeInfo>
-      </RuntimeTypeInfo>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>mq2main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <CustomBuildStep>
-      <Command>copy $(MQ2)\Release\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="List.cpp">
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
+    </ClCompile>
+    <ClCompile Include="Queue.cpp">
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
+    </ClCompile>
+    <ClCompile Include="Set.cpp">
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
+    </ClCompile>
+    <ClCompile Include="Types.cpp">
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

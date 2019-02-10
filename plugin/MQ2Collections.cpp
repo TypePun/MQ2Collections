@@ -22,15 +22,7 @@
 
 #include <MQ2Plugin.h>
 
-#include "Types.h"
-#include "Set.h"
-#include "Stack.h"
-#include "Queue.h"
-#include "Map.h"
-#include "List.h"
-
-using namespace Collections::Containers;
-using namespace Types;
+#include "MQ2CollectionsImpl.h"
 
 PreSetup("MQ2Collections");
 
@@ -42,14 +34,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
 {
     DebugSpewAlways("Initializing MQ2Collections");
 
-    SetIterator::RegisterType();
-    Set::RegisterType();
-    Stack::RegisterType();
-    Queue::RegisterType();
-    MapIterator::RegisterType();
-    Map::RegisterType();
-    ListIterator::RegisterType();
-    List::RegisterType();
+    RegisterTypes();
 }
 
 //
@@ -60,12 +45,5 @@ PLUGIN_API VOID ShutdownPlugin(VOID)
 {
     DebugSpewAlways("Shutting down MQ2Collections");
 
-    List::UnregisterType();
-    ListIterator::UnregisterType();
-    Map::UnregisterType();
-    MapIterator::UnregisterType();
-    Queue::UnregisterType();
-    Stack::UnregisterType();
-    Set::UnregisterType();
-    SetIterator::UnregisterType();
+    UnregisterTypes();
 }

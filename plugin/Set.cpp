@@ -4,8 +4,6 @@
 //
 
 
-#include <MQ2Plugin.h>
-
 #include "Set.h"
 #include "Conversions.h"
 #include "Macros.h"

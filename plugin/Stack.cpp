@@ -3,8 +3,6 @@
 //
 
 
-#include <MQ2Plugin.h>
-
 #include "Stack.h"
 #include "Conversions.h"
 
