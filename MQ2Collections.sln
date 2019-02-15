@@ -4,11 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MQ2Collections", "plugin\MQ2Collections.vcxproj", "{D2CF825E-1F39-4F0C-AF30-15DE7BB51347}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DFD19510-27DC-4587-A44E-951734DD53F1} = {DFD19510-27DC-4587-A44E-951734DD53F1}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StringExtensionTest", "tests\StringExtensionTest\StringExtensionTest.vcxproj", "{F5A8BC96-9192-4B24-9F06-292B2526B989}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListUnitTests", "tests\ListTest\ListTest.vcxproj", "{625585BA-4834-4B19-9569-D44A4EEF8B85}"
 	ProjectSection(ProjectDependencies) = postProject
+		{DFD19510-27DC-4587-A44E-951734DD53F1} = {DFD19510-27DC-4587-A44E-951734DD53F1}
 		{D2CF825E-1F39-4F0C-AF30-15DE7BB51347} = {D2CF825E-1F39-4F0C-AF30-15DE7BB51347}
 	EndProjectSection
 EndProject

@@ -48,16 +48,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(MQ2);$(SolutionDir)\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(MQ2);$(SolutionDir)plugin;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(MQ2);$(SolutionDir)\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\MQ2Collections\$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(MQ2);$(SolutionDir)plugin;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)$(Configuration)\;$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
@@ -75,7 +75,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>stack.obj;types.obj;MQ2Main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CollectionLib.lib;MQ2Main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -102,7 +102,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>stack.obj;types.obj;MQ2Main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CollectionLib.lib;MQ2Main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>

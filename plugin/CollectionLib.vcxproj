@@ -104,6 +104,7 @@
     <ClCompile Include="Set.cpp">
       <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
     </ClCompile>
+    <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Types.cpp">
       <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
     </ClCompile>
