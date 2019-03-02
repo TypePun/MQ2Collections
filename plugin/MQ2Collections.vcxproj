@@ -72,7 +72,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir);$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(OutDir);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
@@ -80,7 +80,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir);$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(OutDir);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
