@@ -188,9 +188,9 @@ bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-ValueIterator<std::set<std::string>> * Set::Find(const std::string & refKey) const
+std::unique_ptr<ValueIterator<std::set<std::string>>> Set::Find(const std::string & refKey) const
 {
-    return new SetIterator(m_coll, refKey);
+    return std::make_unique<SetIterator>(m_coll, refKey);
 }
 
 //
@@ -341,7 +341,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
             if (NOT_EMPTY(Index))
             {
-                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
 
                 //
                 // Get the SetIterator type and return it.

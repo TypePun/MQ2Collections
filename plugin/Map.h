@@ -293,7 +293,7 @@ namespace Collections
             // Return an iterator to a requested key or to the end of the map.
             //
 
-            KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> * Find(
+            std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> Find(
                                 const std::string & refKey) const;
 
             //

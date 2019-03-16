@@ -271,7 +271,7 @@ namespace Collections
             // Return an iterator to a requested key or to the end of the set.
             //
 
-            ValueIterator<std::set<std::string>> * Find(
+            std::unique_ptr<ValueIterator<std::set<std::string>>> Find(
                             const std::string & refKey) const;
 
             //

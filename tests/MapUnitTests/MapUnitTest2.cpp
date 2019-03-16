@@ -98,17 +98,17 @@ namespace MapUnitTests
         {
             auto iterator = _m.Find("A");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
 
             iterator = _m.Find("B");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
 
             iterator = _m.Find("C");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
         }
 
@@ -122,7 +122,7 @@ namespace MapUnitTests
         {
             auto iterator = _m.Find("D");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsTrue(iterator->IsEnd());
         }
 

@@ -98,17 +98,17 @@ namespace SetUnitTests
         {
             auto iterator = _s.Find("A");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
 
             iterator = _s.Find("B");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
 
             iterator = _s.Find("C");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsFalse(iterator->IsEnd());
         }
 
@@ -122,7 +122,7 @@ namespace SetUnitTests
         {
             auto iterator = _s.Find("D");
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator.get());
             Assert::IsTrue(iterator->IsEnd());
         }
 

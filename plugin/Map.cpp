@@ -238,10 +238,10 @@ bool MapIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> * Map::Find(
+std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> Map::Find(
                                 const std::string & refKey) const
 {
-    return new MapIterator(m_coll, refKey);
+    return std::make_unique<MapIterator>(m_coll, refKey);
 }
 
 //
@@ -382,7 +382,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
             if (NOT_EMPTY(Index))
             {
-                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
 
                 //
                 // Get the MapIterator type and return it.
