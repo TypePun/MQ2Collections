@@ -24,7 +24,7 @@ namespace Extensions
         //
 
         template<class T, typename Container = std::vector<T>>
-        class StringExtensions
+        class StringExtensionsT
         {
         public:
 
@@ -35,7 +35,7 @@ namespace Extensions
             // Constructor.  Hold a reference to our content string.
             //
 
-            StringExtensions(const T & contents)
+            StringExtensionsT(const T & contents)
                 : m_contents(contents)
             {
             }
@@ -44,7 +44,7 @@ namespace Extensions
             // Destructor.
             //
 
-            ~StringExtensions()
+            ~StringExtensionsT()
             {
             }
 
@@ -172,7 +172,7 @@ namespace Extensions
             //
 
             template<class ContainerType = Container>
-            std::unique_ptr<StringExtensions<T, ContainerType>> TrimStart() const
+            std::unique_ptr<StringExtensionsT<T, ContainerType>> TrimStart() const
             {
                 return TrimStart<ContainerType>(T(" \t\n\r\f"));
             }
@@ -184,7 +184,7 @@ namespace Extensions
             //
 
             template<typename ContainerType = Container>
-            std::unique_ptr<StringExtensions<T, ContainerType>> TrimStart(const T & stripChars) const
+            std::unique_ptr<StringExtensionsT<T, ContainerType>> TrimStart(const T & stripChars) const
             {
                 size_t firstPos;
                 T newString;
@@ -204,7 +204,7 @@ namespace Extensions
                     newString = m_contents.substr(firstPos);
                 }
 
-                return std::make_unique<StringExtensions<T, ContainerType>>(newString);
+                return std::make_unique<StringExtensionsT<T, ContainerType>>(newString);
             }
 
             //
@@ -214,7 +214,7 @@ namespace Extensions
             //
 
             template<class ContainerType = Container>
-            std::unique_ptr<StringExtensions<T, ContainerType>> TrimEnd() const
+            std::unique_ptr<StringExtensionsT<T, ContainerType>> TrimEnd() const
             {
                 return TrimEnd<ContainerType>(T(" \t\n\r\f"));
             }
@@ -226,7 +226,7 @@ namespace Extensions
             //
 
             template<typename ContainerType = Container>
-            std::unique_ptr<StringExtensions<T, ContainerType>> TrimEnd(const T & stripChars) const
+            std::unique_ptr<StringExtensionsT<T, ContainerType>> TrimEnd(const T & stripChars) const
             {
                 size_t lastPos;
                 T newString;
@@ -246,7 +246,7 @@ namespace Extensions
                     newString = m_contents.substr(0, lastPos + 1);
                 }
 
-                return std::make_unique<StringExtensions<T, ContainerType>>(newString);
+                return std::make_unique<StringExtensionsT<T, ContainerType>>(newString);
             }
 
             //
@@ -254,7 +254,7 @@ namespace Extensions
             //
 
             template<class ContainerType = Container>
-            std::unique_ptr<StringExtensions<T, ContainerType>> Trim() const
+            std::unique_ptr<StringExtensionsT<T, ContainerType>> Trim() const
             {
                 return Trim<ContainerType>(T(" \t\n\r\f"));
             }
@@ -266,7 +266,7 @@ namespace Extensions
             //
 
             template<typename ContainerType = Container>
-            std::unique_ptr<StringExtensions<T, ContainerType>> Trim(const T & stripChars) const
+            std::unique_ptr<StringExtensionsT<T, ContainerType>> Trim(const T & stripChars) const
             {
                 //
                 // Trim the start first.  If the returned string is empty,
@@ -325,6 +325,13 @@ namespace Extensions
         };
 
         //
+        // Create an alias to the StringExtensions template on std::string using the default
+        // container.
+        //
+
+        using StringExtensions = StringExtensionsT<std::string>;
+
+        //
         // Convert a std::string to a long.  Return true if the string was
         // successfully converted and false otherwise.
         //
@@ -348,7 +355,7 @@ namespace Extensions
             // Trim any characters from the string before converting it.
             //
 
-            std::unique_ptr<StringExtensions<T>> se = std::make_unique<StringExtensions<T>>(value);
+            std::unique_ptr<StringExtensionsT<T>> se = std::make_unique<StringExtensionsT<T>>(value);
             auto trimmed(se->Trim());
 
             try

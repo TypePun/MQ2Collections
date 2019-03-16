@@ -454,8 +454,8 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
     // the second as the value.
     //
 
-    auto argument = std::make_unique<StringExtensions<std::string>>(Arguments);
-    auto splits = argument->Split(std::string(","));
+    auto argument = std::make_unique<StringExtensions>(Arguments);
+    auto splits = argument->Split(StringExtensions::string_type(","));
 
     //
     // There must be two and only two arguments.
@@ -476,10 +476,10 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
         // Trim the key and value.
         //
 
-        auto arg = std::make_unique<StringExtensions<std::string>>((*splits)[0]);
+        auto arg = std::make_unique<StringExtensions>((*splits)[0]);
         auto key = arg->Trim();
 
-        arg = std::make_unique<StringExtensions<std::string>>((*splits)[1]);
+        arg = std::make_unique<StringExtensions>((*splits)[1]);
         auto value = arg->Trim();
 
 

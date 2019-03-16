@@ -32,8 +32,8 @@ namespace StringExtensionTest
 
         TEST_METHOD(SplitOnOneSpace)
         {
-            StringExtensions<std::string> extension("Hello, world!");
-            std::unique_ptr<StringExtensions<std::string>::container_type> container;
+            StringExtensions extension("Hello, world!");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
             // Split the string into a vector.
@@ -58,8 +58,8 @@ namespace StringExtensionTest
 
         TEST_METHOD(SplitOnMultipleSpaces)
         {
-            StringExtensions<std::string> extension("Hello, I said, to the damsel, or so I thought.");
-            std::unique_ptr<StringExtensions<std::string>::container_type> container;
+            StringExtensions extension("Hello, I said, to the damsel, or so I thought.");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
             // Split the string into a vectors.
@@ -84,8 +84,8 @@ namespace StringExtensionTest
 
         TEST_METHOD(SplitOnCommaAndSpaceRemoveEmpty)
         {
-            StringExtensions<std::string> extension("Hello, I said, to the damsel, or so I thought.");
-            std::unique_ptr<StringExtensions<std::string>::container_type> container;
+            StringExtensions extension("Hello, I said, to the damsel, or so I thought.");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
             // Split the string into a vectors where the separators are , and space and remove
@@ -112,8 +112,8 @@ namespace StringExtensionTest
 
         TEST_METHOD(SplitOnDelimiterOnly)
         {
-            StringExtensions<std::string> extension(",,,,,");
-            std::unique_ptr<StringExtensions<std::string>::container_type> container;
+            StringExtensions extension(",,,,,");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
             // Split the separators, removing empty strings.  An empty vector
@@ -138,8 +138,8 @@ namespace StringExtensionTest
         //
         TEST_METHOD(SplitOnEmptyString)
         {
-            StringExtensions<std::string> extension("");
-            std::unique_ptr<StringExtensions<std::string>::container_type> container;
+            StringExtensions extension("");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
             // Split the empty string - there should be a vector containing an empty string.
@@ -159,8 +159,8 @@ namespace StringExtensionTest
         //
         TEST_METHOD(SplitWithNoSeparator)
         {
-            StringExtensions<std::string> extension("This is a string with no separators.");
-            std::unique_ptr<StringExtensions<std::string>::container_type> container;
+            StringExtensions extension("This is a string with no separators.");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
             // Split the string using a comma - there should be one element returned.
@@ -194,8 +194,8 @@ namespace StringExtensionTest
 
         TEST_METHOD(SplitOnOneSpace)
         {
-            StringExtensions<std::string, std::list<std::string>> extension("Hello, world!");
-            std::unique_ptr<StringExtensions<std::string, std::list<std::string>>::container_type> container;
+            StringExtensionsT<std::string, std::list<std::string>> extension("Hello, world!");
+            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
 
             //
             // Split the string into a list.
@@ -220,8 +220,8 @@ namespace StringExtensionTest
 
         TEST_METHOD(SplitOnMultipleSpaces)
         {
-            StringExtensions<std::string, std::list<std::string>> extension("Hello, I said, to the damsel, or so I thought.");
-            std::unique_ptr<StringExtensions<std::string, std::list<std::string>>::container_type> container;
+            StringExtensionsT<std::string, std::list<std::string>> extension("Hello, I said, to the damsel, or so I thought.");
+            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
 
             //
             // Split the string into a list.
@@ -245,8 +245,8 @@ namespace StringExtensionTest
         //
         TEST_METHOD(SplitOnCommaAndSpaceRemoveEmpty)
         {
-            StringExtensions<std::string, std::list<std::string>> extension("Hello, I said, to the damsel, or so I thought.");
-            std::unique_ptr<StringExtensions<std::string, std::list<std::string>>::container_type> container;
+            StringExtensionsT<std::string, std::list<std::string>> extension("Hello, I said, to the damsel, or so I thought.");
+            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
 
             //
             // Split the string into a list where the separators are , and space and remove
@@ -272,8 +272,8 @@ namespace StringExtensionTest
         //
         TEST_METHOD(SplitOnDelimiterOnly)
         {
-            StringExtensions<std::string, std::list<std::string>> extension(",,,,,");
-            std::unique_ptr<StringExtensions<std::string, std::list<std::string>>::container_type> container;
+            StringExtensionsT<std::string, std::list<std::string>> extension(",,,,,");
+            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
 
             //
             // Split the separators, removing empty strings.  An empty list
@@ -298,8 +298,8 @@ namespace StringExtensionTest
         //
         TEST_METHOD(SplitOnEmptyString)
         {
-            StringExtensions<std::string, std::list<std::string>> extension("");
-            std::unique_ptr<StringExtensions<std::string, std::list<std::string>>::container_type> container;
+            StringExtensionsT<std::string, std::list<std::string>> extension("");
+            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
 
             //
             // Split the empty string - there should be a list containing only an empty string.
@@ -319,8 +319,8 @@ namespace StringExtensionTest
         //
         TEST_METHOD(SplitWithNoSeparator)
         {
-            StringExtensions<std::string, std::list<std::string>> extension("This is a string with no separators.");
-            std::unique_ptr<StringExtensions<std::string, std::list<std::string>>::container_type> container;
+            StringExtensionsT<std::string, std::list<std::string>> extension("This is a string with no separators.");
+            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
 
             //
             // Split the string using a comma - there should be a list with one element.
@@ -352,7 +352,7 @@ namespace StringExtensionTest
         //
         TEST_METHOD(TrimStartNoTrim)
         {
-            StringExtensions<std::string> extension("Hello, world!");
+            StringExtensions extension("Hello, world!");
 
             //
             // Trim the string and expect the result to be the same.
@@ -373,7 +373,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimStartBlanks)
         {
-            StringExtensions<std::string> extension("     Hello, world!");
+            StringExtensions extension("     Hello, world!");
 
             //
             // Trim the string and expect the results to be different.
@@ -394,7 +394,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimStartAlpha)
         {
-            StringExtensions<std::string> extension("ABCDEF1234567890");
+            StringExtensions extension("ABCDEF1234567890");
 
             //
             // Trim the string and expect the result to be the same.
@@ -415,7 +415,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimEndNoTrim)
         {
-            StringExtensions<std::string> extension("Hello, world!");
+            StringExtensions extension("Hello, world!");
 
             //
             // Trim the string and expect the result to be the same.
@@ -436,7 +436,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimEndBlanks)
         {
-            StringExtensions<std::string> extension("Hello, world!      ");
+            StringExtensions extension("Hello, world!      ");
 
             //
             // Trim the string and expect the results to be different.
@@ -457,7 +457,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimEndAlpha)
         {
-            StringExtensions<std::string> extension("1234567890ABCDEF");
+            StringExtensions extension("1234567890ABCDEF");
 
             //
             // Trim the string and expect the result to be the same.
@@ -480,7 +480,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimNoTrim)
         {
-            StringExtensions<std::string> extension("Hello, world!");
+            StringExtensions extension("Hello, world!");
 
             //
             // Trim the string and expect the result to be the same.
@@ -501,7 +501,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimBlanks)
         {
-            StringExtensions<std::string> extension("    Hello, world!    ");
+            StringExtensions extension("    Hello, world!    ");
 
             //
             // Trim the string and expect the result to be the same.
@@ -523,7 +523,7 @@ namespace StringExtensionTest
 
         TEST_METHOD(TrimAlpha)
         {
-            StringExtensions<std::string> extension("abcdeHello, world!abcdefghijklmnop");
+            StringExtensions extension("abcdeHello, world!abcdefghijklmnop");
 
             //
             // Trim the string and expect the result to be the same.

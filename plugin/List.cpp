@@ -1146,8 +1146,8 @@ bool List::Insert(const std::string & args)
     // to insert.
     //
 
-    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = arguments->Split(std::string(","));
+    auto arguments = std::make_unique<StringExtensions>(args);
+    auto coll = arguments->Split(StringExtensions::string_type(","));
 
     //
     // There must be at least two arguments.
@@ -1197,8 +1197,8 @@ void List::AppendItems(const std::string & args)
     // to insert.  An empty collection will append no strings.
     //
 
-    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = arguments->Split(std::string(","));
+    auto arguments = std::make_unique<StringExtensions>(args);
+    auto coll = arguments->Split(StringExtensions::string_type(","));
 
     std::for_each(coll->cbegin(),
                   coll->cend(),
@@ -1250,8 +1250,8 @@ bool List::Replace(const std::string & args, size_t * count)
     // Split the strings and ensure there are two arguments.
     //
 
-    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = arguments->Split(std::string(","));
+    auto arguments = std::make_unique<StringExtensions>(args);
+    auto coll = arguments->Split(StringExtensions::string_type(","));
 
     if (coll->size() != 2)
     {
@@ -1297,7 +1297,7 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     // strings from the output.
     //
 
-    auto arguments = std::make_unique<StringExtensions<std::string>>(args);
+    auto arguments = std::make_unique<StringExtensions>(args);
 
     //
     // Trim the string. Then if it is not empty, parse it into items.
@@ -1307,7 +1307,7 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     if (!trimmed_string->Contents().empty())
     {
 
-        auto coll = trimmed_string->Split(std::string(","));
+        auto coll = trimmed_string->Split(StringExtensions::string_type(","));
 
 
         //
