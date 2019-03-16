@@ -325,8 +325,7 @@ namespace Collections
             std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> GetNewIterator(
                                 const std::map<std::string, std::string> & refCollection) const
             {
-                return std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>>(
-                    new MapIterator(refCollection));
+                return std::make_unique<MapIterator>(refCollection);
             }
 
         private:

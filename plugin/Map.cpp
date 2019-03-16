@@ -441,11 +441,6 @@ bool Map::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 
 bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
 {
-    StringExtensions<std::string, std::vector<std::string>> * argument;
-    StringExtensions<std::string, std::vector<std::string>> * arg;
-    StringExtensions<std::string, std::vector<std::string>> * key;
-    StringExtensions<std::string, std::vector<std::string>> * value;
-    std::vector<std::string> * splits;
     bool fResult;
 
     //
@@ -459,8 +454,8 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
     // the second as the value.
     //
 
-    argument = new StringExtensions<std::string, std::vector<std::string>>(std::string(Arguments));
-    splits = argument->Split(std::string(","));
+    auto argument = std::make_unique<StringExtensions<std::string>>(Arguments);
+    auto splits = argument->Split(std::string(","));
 
     //
     // There must be two and only two arguments.
@@ -481,23 +476,12 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
         // Trim the key and value.
         //
 
-        arg = new StringExtensions<std::string, std::vector<std::string>>((*splits)[0]);
-        key = arg->Trim();
+        auto arg = std::make_unique<StringExtensions<std::string>>((*splits)[0]);
+        auto key = arg->Trim();
 
-        //
-        // Done with the string extension for the key.
-        //
+        arg = std::make_unique<StringExtensions<std::string>>((*splits)[1]);
+        auto value = arg->Trim();
 
-        delete arg;
-
-        arg = new StringExtensions<std::string, std::vector<std::string>>((*splits)[1]);
-        value = arg->Trim();
-
-        //
-        // Done with the string extension for the value.
-        //
-
-        delete arg;
 
         //
         // Neither the key nor the value can be empty.
@@ -511,21 +495,7 @@ bool Map::AddKeyAndValue(Map * pThis, PCHAR Arguments)
         {
             pThis->Add(key->Contents(), value->Contents());
         }
-
-        //
-        // Done with the key and value.
-        //
-
-        delete key;
-        delete value;
     }
-
-    //
-    // Done with the extension string and the splits.
-    //
-
-    delete argument;
-    delete splits;
 
     return fResult;
 }

@@ -39,7 +39,7 @@ namespace StringExtensionTest
             // Split the string into a vector.
             //
 
-            container.reset(extension.Split());
+            container.reset(extension.Split().release());
 
             //
             // There must only be two items in the returned vector.
@@ -65,7 +65,7 @@ namespace StringExtensionTest
             // Split the string into a vectors.
             //
 
-            container.reset(extension.Split());
+            container.reset(extension.Split().release());
 
             //
             // There must only be four items in the returned vector.
@@ -92,7 +92,7 @@ namespace StringExtensionTest
             // the empty strings -- there will be empty strings where a space follows a comma.
             //
 
-            container.reset(extension.Split(std::string(", "), true));
+            container.reset(extension.Split(std::string(", "), true).release());
 
             //
             // There should be ten items in the returned vector.
@@ -120,7 +120,7 @@ namespace StringExtensionTest
             // should be returned.
             //
 
-            container.reset(extension.Split(std::string(","), true));
+            container.reset(extension.Split(std::string(","), true).release());
 
             //
             // There should be no items in the returned vector.
@@ -145,7 +145,7 @@ namespace StringExtensionTest
             // Split the empty string - there should be a vector containing an empty string.
             //
 
-            container.reset(extension.Split());
+            container.reset(extension.Split().release());
 
             Assert::AreEqual(container->size(),
                              (size_t) 1,
@@ -166,7 +166,7 @@ namespace StringExtensionTest
             // Split the string using a comma - there should be one element returned.
             //
 
-            container.reset(extension.Split(std::string(",")));
+            container.reset(extension.Split(std::string(",")).release());
 
             Assert::AreEqual(container->size(),
                              (size_t) 1,
@@ -201,7 +201,7 @@ namespace StringExtensionTest
             // Split the string into a list.
             //
 
-            container.reset(extension.Split());
+            container.reset(extension.Split().release());
 
             //
             // There must only be two items in the returned list.
@@ -227,7 +227,7 @@ namespace StringExtensionTest
             // Split the string into a list.
             //
 
-            container.reset(extension.Split());
+            container.reset(extension.Split().release());
 
             //
             // There must only be four items in the returned list.
@@ -253,7 +253,7 @@ namespace StringExtensionTest
             // the empty strings -- there will be empty strings where a space follows a comma.
             //
 
-            container.reset(extension.Split(std::string(", "), true));
+            container.reset(extension.Split(std::string(", "), true).release());
 
             //
             // There should be ten items in the returned list.
@@ -280,7 +280,7 @@ namespace StringExtensionTest
             // should be returned.
             //
 
-            container.reset(extension.Split(std::string(","), true));
+            container.reset(extension.Split(std::string(","), true).release());
 
             //
             // There should be no items in the returned list.
@@ -305,7 +305,7 @@ namespace StringExtensionTest
             // Split the empty string - there should be a list containing only an empty string.
             //
 
-            container.reset(extension.Split());
+            container.reset(extension.Split().release());
 
             Assert::AreEqual(container->size(),
                              (size_t) 1,
@@ -326,7 +326,7 @@ namespace StringExtensionTest
             // Split the string using a comma - there should be a list with one element.
             //
 
-            container.reset(extension.Split(std::string(",")));
+            container.reset(extension.Split(std::string(",")).release());
 
             Assert::AreEqual(container->size(),
                              (size_t) 1,
@@ -353,13 +353,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimStartNoTrim)
         {
             StringExtensions<std::string> extension("Hello, world!");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.TrimStart());
+            auto newExtension = extension.TrimStart();
 
             Assert::AreEqual(extension.Contents(),
                              newExtension->Contents(),
@@ -375,13 +374,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimStartBlanks)
         {
             StringExtensions<std::string> extension("     Hello, world!");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the results to be different.
             //
 
-            newExtension.reset(extension.TrimStart());
+            auto newExtension = extension.TrimStart();
 
             Assert::AreNotEqual(extension.Contents(),
                                 newExtension->Contents(),
@@ -397,13 +395,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimStartAlpha)
         {
             StringExtensions<std::string> extension("ABCDEF1234567890");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.TrimStart(std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ")));
+            auto newExtension = extension.TrimStart(std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 
             Assert::AreEqual(std::string("1234567890"),
                              newExtension->Contents(),
@@ -419,13 +416,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimEndNoTrim)
         {
             StringExtensions<std::string> extension("Hello, world!");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.TrimEnd());
+            auto newExtension = extension.TrimEnd();
 
             Assert::AreEqual(extension.Contents(),
                              newExtension->Contents(),
@@ -441,13 +437,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimEndBlanks)
         {
             StringExtensions<std::string> extension("Hello, world!      ");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the results to be different.
             //
 
-            newExtension.reset(extension.TrimEnd());
+            auto newExtension = extension.TrimEnd();
 
             Assert::AreNotEqual(extension.Contents(),
                                 newExtension->Contents(),
@@ -463,13 +458,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimEndAlpha)
         {
             StringExtensions<std::string> extension("1234567890ABCDEF");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.TrimEnd(std::string("ABCDEF")));
+            auto newExtension = extension.TrimEnd(std::string("ABCDEF"));
 
             Assert::AreEqual(std::string("1234567890"),
                              newExtension->Contents(),
@@ -487,13 +481,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimNoTrim)
         {
             StringExtensions<std::string> extension("Hello, world!");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.Trim());
+            auto newExtension = extension.Trim();
 
             Assert::AreEqual(extension.Contents(),
                              newExtension->Contents(),
@@ -509,13 +502,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimBlanks)
         {
             StringExtensions<std::string> extension("    Hello, world!    ");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.Trim());
+            auto newExtension = extension.Trim();
 
             Assert::AreEqual(std::string("Hello, world!"),
                              newExtension->Contents(),
@@ -532,13 +524,12 @@ namespace StringExtensionTest
         TEST_METHOD(TrimAlpha)
         {
             StringExtensions<std::string> extension("abcdeHello, world!abcdefghijklmnop");
-            std::unique_ptr<StringExtensions<std::string>> newExtension;
 
             //
             // Trim the string and expect the result to be the same.
             //
 
-            newExtension.reset(extension.Trim(std::string("abcdefghijklmnopqrstuvwxyz")));
+            auto newExtension = extension.Trim(std::string("abcdefghijklmnopqrstuvwxyz"));
 
             Assert::AreEqual(std::string("Hello, world!"),
                              newExtension->Contents(),

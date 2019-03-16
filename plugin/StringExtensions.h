@@ -63,9 +63,9 @@ namespace Extensions
             // to the caller.
             //
 
-            Container * Split(const T & separators) const
+            std::unique_ptr<Container> Split(const T & separators) const
             {
-                std::unique_ptr<Container> results(new Container);
+                auto results = std::make_unique<Container>();
                 size_t sepPosition;
                 size_t currentPosition;
 
@@ -116,14 +116,14 @@ namespace Extensions
                     results->push_back(m_contents.substr(currentPosition));
                 }
 
-                return results.release();
+                return results;
             }
 
             //
             // Default separator is a space.
             //
 
-            Container * Split() const
+            std::unique_ptr<Container> Split() const
             {
                 static const T separator(" ");
 
@@ -134,16 +134,14 @@ namespace Extensions
             // Split the string, removing empty strings.
             //
 
-            Container * Split(const T & separators, bool removeEmpty) const
+            std::unique_ptr<Container> Split(const T & separators, bool removeEmpty) const
             {
-                Container * results;
-
                 //
                 // Split the string, then if a string is empty, remove it from
                 // the container.
                 //
 
-                results = Split(separators);
+                auto results = Split(separators);
                 RemoveEmptyStrings(*results);
 
                 return results;
@@ -154,16 +152,14 @@ namespace Extensions
             // empty strings.
             //
 
-            Container * Split(bool removeEmpty) const
+            std::unique_ptr<Container> Split(bool removeEmpty) const
             {
-                Container * results;
-
                 //
                 // Split the string, then if a string is empty, remove it from
                 // the container.
                 //
 
-                results = Split();
+                auto results = Split();
                 RemoveEmptyStrings(*results);
 
                 return results;
@@ -176,7 +172,7 @@ namespace Extensions
             //
 
             template<class ContainerType = Container>
-            StringExtensions<T, ContainerType> * TrimStart() const
+            std::unique_ptr<StringExtensions<T, ContainerType>> TrimStart() const
             {
                 return TrimStart<ContainerType>(T(" \t\n\r\f"));
             }
@@ -188,7 +184,7 @@ namespace Extensions
             //
 
             template<typename ContainerType = Container>
-            StringExtensions<T, ContainerType> * TrimStart(const T & stripChars) const
+            std::unique_ptr<StringExtensions<T, ContainerType>> TrimStart(const T & stripChars) const
             {
                 size_t firstPos;
                 T newString;
@@ -208,7 +204,7 @@ namespace Extensions
                     newString = m_contents.substr(firstPos);
                 }
 
-                return new StringExtensions<T, ContainerType>(newString);
+                return std::make_unique<StringExtensions<T, ContainerType>>(newString);
             }
 
             //
@@ -218,7 +214,7 @@ namespace Extensions
             //
 
             template<class ContainerType = Container>
-            StringExtensions<T, ContainerType> * TrimEnd() const
+            std::unique_ptr<StringExtensions<T, ContainerType>> TrimEnd() const
             {
                 return TrimEnd<ContainerType>(T(" \t\n\r\f"));
             }
@@ -230,7 +226,7 @@ namespace Extensions
             //
 
             template<typename ContainerType = Container>
-            StringExtensions<T, ContainerType> * TrimEnd(const T & stripChars) const
+            std::unique_ptr<StringExtensions<T, ContainerType>> TrimEnd(const T & stripChars) const
             {
                 size_t lastPos;
                 T newString;
@@ -250,7 +246,7 @@ namespace Extensions
                     newString = m_contents.substr(0, lastPos + 1);
                 }
 
-                return new StringExtensions<T, ContainerType>(newString);
+                return std::make_unique<StringExtensions<T, ContainerType>>(newString);
             }
 
             //
@@ -258,7 +254,7 @@ namespace Extensions
             //
 
             template<class ContainerType = Container>
-            StringExtensions<T, ContainerType> * Trim() const
+            std::unique_ptr<StringExtensions<T, ContainerType>> Trim() const
             {
                 return Trim<ContainerType>(T(" \t\n\r\f"));
             }
@@ -270,31 +266,20 @@ namespace Extensions
             //
 
             template<typename ContainerType = Container>
-            StringExtensions<T, ContainerType> * Trim(const T & stripChars) const
+            std::unique_ptr<StringExtensions<T, ContainerType>> Trim(const T & stripChars) const
             {
-                StringExtensions<T, ContainerType> * newExtension;
-                StringExtensions<T, ContainerType> * strippedEnd;
-
                 //
                 // Trim the start first.  If the returned string is empty,
                 // return it.  Otherwise, trim the end.
                 //
 
-                newExtension = TrimStart(stripChars);
+                auto newExtension = TrimStart(stripChars);
                 if (newExtension->Contents().length() == 0)
                 {
                     return newExtension;
                 }
 
-                strippedEnd = newExtension->TrimEnd(stripChars);
-
-                //
-                // Done with the start extension.  Delete it.
-                //
-
-                delete newExtension;
-
-                return strippedEnd;
+                return newExtension->TrimEnd(stripChars);
             }
 
         private:
@@ -363,8 +348,8 @@ namespace Extensions
             // Trim any characters from the string before converting it.
             //
 
-            std::unique_ptr<StringExtensions<T>> se(new StringExtensions<T>(value));
-            std::unique_ptr<StringExtensions<T>> trimmed(se->Trim());
+            std::unique_ptr<StringExtensions<T>> se = std::make_unique<StringExtensions<T>>(value);
+            auto trimmed(se->Trim());
 
             try
             {

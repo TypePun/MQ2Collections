@@ -1147,8 +1147,7 @@ bool List::Insert(const std::string & args)
     //
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-                                        arguments->Split(std::string(",")));
+    auto coll = arguments->Split(std::string(","));
 
     //
     // There must be at least two arguments.
@@ -1199,8 +1198,7 @@ void List::AppendItems(const std::string & args)
     //
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-                                    arguments->Split(std::string(",")));
+    auto coll = arguments->Split(std::string(","));
 
     std::for_each(coll->cbegin(),
                   coll->cend(),
@@ -1253,8 +1251,7 @@ bool List::Replace(const std::string & args, size_t * count)
     //
 
     auto arguments = std::make_unique<StringExtensions<std::string>>(args);
-    auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-                                    arguments->Split(std::string(",")));
+    auto coll = arguments->Split(std::string(","));
 
     if (coll->size() != 2)
     {
@@ -1310,8 +1307,7 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     if (!trimmed_string->Contents().empty())
     {
 
-        auto coll = std::unique_ptr<StringExtensions<std::string>::container_type>(
-                                    trimmed_string->Split(std::string(",")));
+        auto coll = trimmed_string->Split(std::string(","));
 
 
         //

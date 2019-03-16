@@ -303,7 +303,7 @@ namespace Collections
             std::unique_ptr<ValueIterator<std::set<std::string>>> GetNewIterator(
                                     const std::set<std::string> & refCollection) const
             {
-                return std::unique_ptr<ValueIterator<std::set<std::string>>>(new SetIterator(refCollection));
+                return std::make_unique<SetIterator>(refCollection);
             }
 
         private:
