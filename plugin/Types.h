@@ -54,7 +54,7 @@ namespace Types
         // One and only map of type names to type instances.
         //
 
-        static std::map<std::string, MQ2Type *> typeMap;
+        static std::map<std::string, std::unique_ptr<MQ2Type>> typeMap;
     };
 
     //

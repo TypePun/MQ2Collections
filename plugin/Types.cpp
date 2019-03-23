@@ -12,7 +12,7 @@ using namespace Types;
 // whether a variable is of that type.
 //
 
-std::map<std::string, MQ2Type *> TypeMap::typeMap;
+std::map<std::string, std::unique_ptr<MQ2Type>> TypeMap::typeMap;
 
 //
 // Add a new type name and type instance to the type map.  If the
@@ -29,7 +29,7 @@ bool TypeMap::AddType(const char *typeName, MQ2Type *typeInstance)
 
     if (typeMap.find(sTypeName) == typeMap.end())
     {
-        typeMap[sTypeName] = typeInstance;
+        typeMap[sTypeName] = std::unique_ptr<MQ2Type>(typeInstance);
         return true;
     }
 
@@ -68,7 +68,7 @@ MQ2Type * TypeMap::GetTypeInstanceForTypeName(const char *typeName)
         return 0;
     }
 
-    return itTypes->second;
+    return itTypes->second.get();
 }
 
 //
@@ -79,6 +79,7 @@ MQ2Type * TypeMap::GetTypeInstanceForTypeName(const char *typeName)
 bool TypeMap::RemoveType(const char *typeName)
 {
     std::string sTypeName(typeName);
+    bool fResult = true;
 
     //
     // See if the type name exists in the map.  If it does, remove
@@ -97,10 +98,12 @@ bool TypeMap::RemoveType(const char *typeName)
         // Remove the type from the map.
         //
 
-        delete it->second;
         typeMap.erase(it);
-        return true;
+    }
+    else
+    {
+        fResult = false;
     }
 
-    return false;
+    return fResult;
 }
