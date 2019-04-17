@@ -252,6 +252,12 @@ namespace Collections
             }
 
             //
+            // Add a sequence of items to the set.
+            //
+
+            void AddItems(const std::string &items);
+
+            //
             // Remove an element from the set.  Return false if the item was not
             // in the set.
             //

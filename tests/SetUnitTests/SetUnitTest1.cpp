@@ -249,6 +249,66 @@ namespace SetUnitTests
             Assert::AreEqual(s.Count(), (size_t) 1);
         }
 
+        //
+        // Create a set and add an empty string elements.
+        //
+        // Result: The cardinality of the set should be 0.
+        //
+
+        TEST_METHOD(TestAddItemsZero)
+        {
+            Set s;
+
+            s.AddItems("");
+
+            Assert::AreEqual(s.Count(), (size_t)1);
+        }
+
+        //
+        // Create a set and add one string elements.
+        //
+        // Result: The cardinality of the set should be 1.
+        //
+
+        TEST_METHOD(TestAddItemsOne)
+        {
+            Set s;
+
+            s.AddItems("A");
+
+            Assert::AreEqual(s.Count(), (size_t)1);
+        }
+
+        //
+        // Create a set and add two string elements.
+        //
+        // Result: The cardinality of the set should be 2.
+        //
+
+        TEST_METHOD(TestAddItemsTwo)
+        {
+            Set s;
+
+            s.AddItems("A,B");
+
+            Assert::AreEqual(s.Count(), (size_t)2);
+        }
+
+        //
+        // Create a set and add duplicate items.
+        //
+        // Result: The cardinality of the set should be 1.
+        //
+
+        TEST_METHOD(TestAddItemsDuplicate)
+        {
+            Set s;
+
+            s.AddItems("A,A");
+
+            Assert::AreEqual(s.Count(), (size_t)1);
+        }
+
     private:
         //
         // Insert three elements into a set.

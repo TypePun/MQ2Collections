@@ -6,8 +6,10 @@
 
 #include "Set.h"
 #include "Conversions.h"
+#include "StringExtensions.h"
 #include "Macros.h"
 
+using namespace Extensions::Strings;
 using namespace Collections::Containers;
 
 //
@@ -185,6 +187,29 @@ bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 }
 
 //
+// Add a sequence of items to the set.
+//
+
+void Set::AddItems(const std::string &items)
+{
+    //
+    // Split the string into extents.  Each extent represents an argument
+    // to insert.  An empty collection will append no strings.
+    //
+
+    auto arguments = std::make_unique<StringExtensions>(items);
+    auto coll = arguments->Split(StringExtensions::string_type(","));
+
+    std::for_each(coll->cbegin(),
+        coll->cend(),
+        [this](const std::string & item)
+        {
+            Add(item);
+        }
+    );
+}
+
+//
 // Return an iterator to a requested key or to the end of the set.
 //
 
@@ -293,7 +318,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
                 if (value.find_first_not_of(" \t\n\r\f") != std::string::npos)
                 {
-                    pThis->Add(value);
+                    pThis->AddItems(value);
                     Dest.Int = 1;
                 }
             }

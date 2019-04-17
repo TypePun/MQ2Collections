@@ -148,16 +148,8 @@ Sub SetTest
         /echo 'Set Add of B failed.'
         /endmacro
     }
-    /if (!${s.Add[C]}) {
-        /echo 'Set Add of C failed.'    
-        /endmacro
-    }
-    /if (!${s.Add[D]}) {
-        /echo 'Set Add of D failed.'
-        /endmacro
-    }
-    /if (!${s.Add[E]}) {
-        /echo 'Set Add of E failed.'    
+    /if (!${s.Add[C,D,E]}) {
+        /echo 'Set Add of C,D,E failed.'    
         /endmacro
     }
 
