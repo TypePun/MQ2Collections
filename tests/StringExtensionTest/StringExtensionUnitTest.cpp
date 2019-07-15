@@ -30,7 +30,7 @@ namespace StringExtensionTest
         // Result: two strings should be returned.
         //
 
-        TEST_METHOD(SplitOnOneSpace)
+        TEST_METHOD(SplitOnSpaceIntoOneString)
         {
             StringExtensions extension("Hello, world!");
             std::unique_ptr<StringExtensions::container_type> container;
@@ -45,9 +45,9 @@ namespace StringExtensionTest
             // There must only be two items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                            (size_t) 2,
-                             L"Expected Split() to return 2 elements.");
+            Assert::AreEqual((size_t)2, 
+                    container->size(),                            
+                    L"Expected Split() to return 2 elements.");
         }
 
         //
@@ -56,7 +56,7 @@ namespace StringExtensionTest
         // Result: ten strings should be returned.
         //
 
-        TEST_METHOD(SplitOnMultipleSpaces)
+        TEST_METHOD(SplitOnSpaceIntoTenStrings)
         {
             StringExtensions extension("Hello, I said, to the damsel, or so I thought.");
             std::unique_ptr<StringExtensions::container_type> container;
@@ -68,12 +68,12 @@ namespace StringExtensionTest
             container.reset(extension.Split().release());
 
             //
-            // There must only be four items in the returned vector.
+            // There must only be 10 items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 10,
-                             L"Expected Split() to return 10 elements.");
+            Assert::AreEqual((size_t)10, 
+                    container->size(),                             
+                    L"Expected Split() to return 10 elements.");
         }
 
         //
@@ -98,9 +98,9 @@ namespace StringExtensionTest
             // There should be ten items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 10,
-                             L"Expected Split() to return 10 elements.");
+            Assert::AreEqual((size_t)10, 
+                    container->size(),                             
+                    L"Expected Split() to return 10 elements.");
         }
 
         //
@@ -110,7 +110,7 @@ namespace StringExtensionTest
         // Result: an empty vector should be returned.
         //
 
-        TEST_METHOD(SplitOnDelimiterOnly)
+        TEST_METHOD(SplitOnCommaWithOnlyDelimiters)
         {
             StringExtensions extension(",,,,,");
             std::unique_ptr<StringExtensions::container_type> container;
@@ -126,9 +126,9 @@ namespace StringExtensionTest
             // There should be no items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 0,
-                             L"Expected Split() to return 0 elements.");
+            Assert::AreEqual((size_t)0,
+                    container->size(),                             
+                    L"Expected Split() to return 0 elements.");
         }
 
         //
@@ -136,6 +136,7 @@ namespace StringExtensionTest
         //
         // Result: an empty vector should be returned.
         //
+
         TEST_METHOD(SplitOnEmptyString)
         {
             StringExtensions extension("");
@@ -147,9 +148,9 @@ namespace StringExtensionTest
 
             container.reset(extension.Split().release());
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 1,
-                             L"Expected Split() to return 1 elements.");
+            Assert::AreEqual((size_t)1,
+                    container->size(),                             
+                    L"Expected Split() to return 1 elements.");
         }
 
         //
@@ -157,6 +158,7 @@ namespace StringExtensionTest
         //
         // Result: one element (the original string) should be returned.
         //
+
         TEST_METHOD(SplitWithNoSeparator)
         {
             StringExtensions extension("This is a string with no separators.");
@@ -168,10 +170,125 @@ namespace StringExtensionTest
 
             container.reset(extension.Split(std::string(",")).release());
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 1,
-                             L"Expected Split() to return 1 elements.",
-                             LINE_INFO());
+            Assert::AreEqual((size_t)1, 
+                    container->size(),                
+                    L"Expected Split() to return 1 elements.");
+        }
+
+        //
+        // Test a string with an included quoted (\) quote (\\) and verify that
+        // the quote is included in the output.
+        //
+        // Result: one quoted character should be found.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithQuotedCharacter)
+        {
+            //
+            // Note: Quote the quoted character to ensure it is included!
+            //
+
+            StringExtensions extension("This is a string with a \\\\quoted character.");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a comma - there should be one element returned.
+            //
+
+            container.reset(extension.Split(std::string(",")).release());
+
+            Assert::AreEqual((size_t)1,
+                container->size(),
+                L"Expected Split() to return 1 elements.");
+
+            //
+            // The input should contain a single quoted ('\').
+            //
+
+            Assert::AreEqual((int)1,
+                std::count(container->at(0).cbegin(),
+                        container->at(0).cend(),
+                        '\\'),
+                L"Expected to contain one quoted element.");
+        }
+
+        //
+        // Test a string enclosed in quotation marks. Ensure that the whole string is returned.
+        //
+        // Result: one string is returned.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithSpacesInAQuotedString)
+        {
+            StringExtensions extension("\"This is a string enclosed in double quotation marks.\"");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a space - there should be one element returned.
+            //
+
+            container.reset(extension.Split(std::string(" ")).release());
+
+            Assert::AreEqual((size_t)1,
+                container->size(),
+                L"Expected Split() to return 1 element.");
+        }
+
+        //
+        // Test a string with two embedded strings enclosed in quotation marks. Ensure that
+        // the quoted strings are returned as individual items.
+        //
+        // Result: three strings are returned.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithMixedQuotedAndUnquotedStrings)
+        {
+            StringExtensions extension("\"Quote One\" \"Quote Two\" Three");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a space - there should be three elements returned.
+            //
+
+            container.reset(extension.Split(std::string(" ")).release());
+
+            Assert::AreEqual((size_t)3,
+                container->size(),
+                L"Expected Split() to return 3 elements.");
+        }
+
+        //
+        // Test a string with an embedded strings enclosed in quotation marks containing a
+        // quoted quotation mark. Ensure that the quoted strings are returned as individual
+        // items.
+        //
+        // Result: two strings are returned.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithQuotedStringContainingQuotes)
+        {
+            StringExtensions extension("\"Quote \\\" One\" Two");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a space - there should be two elements returned.
+            //
+
+            container.reset(extension.Split(std::string(" ")).release());
+
+            Assert::AreEqual((size_t)2,
+                container->size(),
+                L"Expected Split() to return 2 elements.");
+
+            //
+            // The input should contain a single quoted ('\').
+            //
+
+            Assert::AreEqual((int)1,
+                std::count(container->at(0).cbegin(),
+                    container->at(0).cend(),
+                    '"'),
+                L"Expected to contain one quotation mark.");
         }
     };
 
@@ -186,30 +303,30 @@ namespace StringExtensionTest
             TEST_CLASS_ATTRIBUTE(L"StringExtentions", L"List Output")
         END_TEST_CLASS_ATTRIBUTE()
 
-        //
-        // Test the Split method on 'Hello, world!'. Delimiter is a space.
-        //
-        // Result: two strings should be returned.
-        //
+            //
+            // Test the Split method on 'Hello, world!'. Delimiter is a space.
+            //
+            // Result: two strings should be returned.
+            //
 
-        TEST_METHOD(SplitOnOneSpace)
+            TEST_METHOD(SplitOnSpaceIntoOneString)
         {
-            StringExtensionsT<std::string, std::list<std::string>> extension("Hello, world!");
-            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
+            StringExtensions extension("Hello, world!");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
-            // Split the string into a list.
+            // Split the string into a vector.
             //
 
             container.reset(extension.Split().release());
 
             //
-            // There must only be two items in the returned list.
+            // There must only be two items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 2,
-                             L"Expected Split() to return 2 elements.");
+            Assert::AreEqual((size_t)2,
+                container->size(),
+                L"Expected Split() to return 2 elements.");
         }
 
         //
@@ -218,24 +335,24 @@ namespace StringExtensionTest
         // Result: ten strings should be returned.
         //
 
-        TEST_METHOD(SplitOnMultipleSpaces)
+        TEST_METHOD(SplitOnSpaceIntoTenStrings)
         {
-            StringExtensionsT<std::string, std::list<std::string>> extension("Hello, I said, to the damsel, or so I thought.");
-            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
+            StringExtensions extension("Hello, I said, to the damsel, or so I thought.");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
-            // Split the string into a list.
+            // Split the string into a vectors.
             //
 
             container.reset(extension.Split().release());
 
             //
-            // There must only be four items in the returned list.
+            // There must only be 10 items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 10,
-                             L"Expected Split() to return 10 elements.");
+            Assert::AreEqual((size_t)10,
+                container->size(),
+                L"Expected Split() to return 10 elements.");
         }
 
         //
@@ -243,73 +360,76 @@ namespace StringExtensionTest
         //
         // Result: ten strings should be returned.
         //
+
         TEST_METHOD(SplitOnCommaAndSpaceRemoveEmpty)
         {
-            StringExtensionsT<std::string, std::list<std::string>> extension("Hello, I said, to the damsel, or so I thought.");
-            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
+            StringExtensions extension("Hello, I said, to the damsel, or so I thought.");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
-            // Split the string into a list where the separators are , and space and remove
+            // Split the string into a vectors where the separators are , and space and remove
             // the empty strings -- there will be empty strings where a space follows a comma.
             //
 
             container.reset(extension.Split(std::string(", "), true).release());
 
             //
-            // There should be ten items in the returned list.
+            // There should be ten items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                          (size_t) 10,
-                           L"Expected Split() to return 10 elements.");
+            Assert::AreEqual((size_t)10,
+                container->size(),
+                L"Expected Split() to return 10 elements.");
         }
 
         //
-        // Test that removing empty strings returns an empty list when
+        // Test that removing empty strings returns an empty vector when
         // the only delimiters are in the input.
         //
-        // Result: an empty list should be returned.
+        // Result: an empty vector should be returned.
         //
-        TEST_METHOD(SplitOnDelimiterOnly)
+
+        TEST_METHOD(SplitOnCommaWithOnlyDelimiters)
         {
-            StringExtensionsT<std::string, std::list<std::string>> extension(",,,,,");
-            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
+            StringExtensions extension(",,,,,");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
-            // Split the separators, removing empty strings.  An empty list
+            // Split the separators, removing empty strings.  An empty vector
             // should be returned.
             //
 
             container.reset(extension.Split(std::string(","), true).release());
 
             //
-            // There should be no items in the returned list.
+            // There should be no items in the returned vector.
             //
 
-            Assert::AreEqual(container->size(),
-                            (size_t) 0,
-                             L"Expected Split() to return 0 elements.");
+            Assert::AreEqual((size_t)0,
+                container->size(),
+                L"Expected Split() to return 0 elements.");
         }
 
         //
         // Test split on an empty string.
         //
-        // Result: an empty list should be returned.
+        // Result: an empty vector should be returned.
         //
+
         TEST_METHOD(SplitOnEmptyString)
         {
-            StringExtensionsT<std::string, std::list<std::string>> extension("");
-            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
+            StringExtensions extension("");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
-            // Split the empty string - there should be a list containing only an empty string.
+            // Split the empty string - there should be a vector containing an empty string.
             //
 
             container.reset(extension.Split().release());
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 1,
-                             L"Expected Split() to return 1 elements.");
+            Assert::AreEqual((size_t)1,
+                container->size(),
+                L"Expected Split() to return 1 elements.");
         }
 
         //
@@ -317,20 +437,137 @@ namespace StringExtensionTest
         //
         // Result: one element (the original string) should be returned.
         //
+
         TEST_METHOD(SplitWithNoSeparator)
         {
-            StringExtensionsT<std::string, std::list<std::string>> extension("This is a string with no separators.");
-            std::unique_ptr<StringExtensionsT<std::string, std::list<std::string>>::container_type> container;
+            StringExtensions extension("This is a string with no separators.");
+            std::unique_ptr<StringExtensions::container_type> container;
 
             //
-            // Split the string using a comma - there should be a list with one element.
+            // Split the string using a comma - there should be one element returned.
             //
 
             container.reset(extension.Split(std::string(",")).release());
 
-            Assert::AreEqual(container->size(),
-                             (size_t) 1,
-                             L"Expected Split() to return 1 elements.");
+            Assert::AreEqual((size_t)1,
+                container->size(),
+                L"Expected Split() to return 1 elements.");
+        }
+
+        //
+        // Test a string with an included quoted (\) quote (\\) and verify that
+        // the quote is included in the output.
+        //
+        // Result: one quoted character should be found.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithQuotedCharacter)
+        {
+            //
+            // Note: Quote the quoted character to ensure it is included!
+            //
+
+            StringExtensions extension("This is a string with a \\\\quoted character.");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a comma - there should be one element returned.
+            //
+
+            container.reset(extension.Split(std::string(",")).release());
+
+            Assert::AreEqual((size_t)1,
+                container->size(),
+                L"Expected Split() to return 1 elements.");
+
+            //
+            // The input should contain a single quoted ('\').
+            //
+
+            Assert::AreEqual((int)1,
+                std::count(container->at(0).cbegin(),
+                    container->at(0).cend(),
+                    '\\'),
+                L"Expected to contain one quoted element.");
+        }
+
+        //
+        // Test a string enclosed in quotation marks. Ensure that the whole string is returned.
+        //
+        // Result: one string is returned.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithSpacesInAQuotedString)
+        {
+            StringExtensions extension("\"This is a string enclosed in double quotation marks.\"");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a space - there should be one element returned.
+            //
+
+            container.reset(extension.Split(std::string(" ")).release());
+
+            Assert::AreEqual((size_t)1,
+                container->size(),
+                L"Expected Split() to return 1 element.");
+        }
+
+        //
+        // Test a string with two embedded strings enclosed in quotation marks. Ensure that
+        // the quoted strings are returned as individual items.
+        //
+        // Result: three strings are returned.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithMixedQuotedAndUnquotedStrings)
+        {
+            StringExtensions extension("\"Quote One\" \"Quote Two\" Three");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a space - there should be three elements returned.
+            //
+
+            container.reset(extension.Split(std::string(" ")).release());
+
+            Assert::AreEqual((size_t)3,
+                container->size(),
+                L"Expected Split() to return 3 elements.");
+        }
+
+        //
+        // Test a string with an embedded strings enclosed in quotation marks containing a
+        // quoted quotation mark. Ensure that the quoted strings are returned as individual
+        // items.
+        //
+        // Result: two strings are returned.
+        //
+
+        TEST_METHOD(SplitOnSpaceWithQuotedStringContainingQuotes)
+        {
+            StringExtensions extension("\"Quote \\\" One\" Two");
+            std::unique_ptr<StringExtensions::container_type> container;
+
+            //
+            // Split the string using a space - there should be two elements returned.
+            //
+
+            container.reset(extension.Split(std::string(" ")).release());
+
+            Assert::AreEqual((size_t)2,
+                container->size(),
+                L"Expected Split() to return 2 elements.");
+
+            //
+            // The input should contain a single quoted ('\"').
+            //
+
+            Assert::AreEqual((int)1,
+                std::count(container->at(0).cbegin(),
+                    container->at(0).cend(),
+                    '"'),
+                L"Expected to contain one quotation mark.");
         }
     };
 
@@ -350,6 +587,7 @@ namespace StringExtensionTest
         //
         // Result: the input string should be returned.
         //
+
         TEST_METHOD(TrimStartNoTrim)
         {
             StringExtensions extension("Hello, world!");
@@ -361,8 +599,8 @@ namespace StringExtensionTest
             auto newExtension = extension.TrimStart();
 
             Assert::AreEqual(extension.Contents(),
-                             newExtension->Contents(),
-                             L"Expected trimmed instance to be the same!");
+                    newExtension->Contents(),                                                 
+                    L"Expected trimmed instance to be the same!");
         }
 
         //
@@ -382,8 +620,8 @@ namespace StringExtensionTest
             auto newExtension = extension.TrimStart();
 
             Assert::AreNotEqual(extension.Contents(),
-                                newExtension->Contents(),
-                                L"Expected trimmed instance to not be the same!");
+                    newExtension->Contents(),                                    
+                    L"Expected trimmed instance to not be the same!");
         }
 
         //
@@ -403,8 +641,8 @@ namespace StringExtensionTest
             auto newExtension = extension.TrimStart(std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 
             Assert::AreEqual(std::string("1234567890"),
-                             newExtension->Contents(),
-                             L"Expected trimmed instance to be the same!");
+                    newExtension->Contents(),
+                    L"Expected trimmed instance to be the same!");
         }
 
         //
@@ -424,8 +662,8 @@ namespace StringExtensionTest
             auto newExtension = extension.TrimEnd();
 
             Assert::AreEqual(extension.Contents(),
-                             newExtension->Contents(),
-                             L"Expected trimmed instance to be the same!");
+                    newExtension->Contents(),
+                    L"Expected trimmed instance to be the same!");
         }
 
         //
@@ -445,8 +683,8 @@ namespace StringExtensionTest
             auto newExtension = extension.TrimEnd();
 
             Assert::AreNotEqual(extension.Contents(),
-                                newExtension->Contents(),
-                                L"Expected trimmed instance to not be the same!");
+                    newExtension->Contents(),
+                    L"Expected trimmed instance to not be the same!");
         }
 
         //
@@ -561,20 +799,20 @@ namespace StringExtensionTest
             lResult = -1;
 
             Assert::IsTrue(FromString(std::string("123"), &lResult));
-            Assert::AreEqual(lResult, 123L, L"Expected 123 returned");
+            Assert::AreEqual(123L, lResult, L"Expected 123 returned");
 
             Assert::IsTrue(FromString(std::string("     456"), &lResult));
-            Assert::AreEqual(lResult, 456L, L"Expected 456 returned");
+            Assert::AreEqual(456L, lResult, L"Expected 456 returned");
 
             Assert::IsTrue(FromString(std::string("789    "), &lResult));
-            Assert::AreEqual(lResult, 789L, L"Expected 789 returned");
+            Assert::AreEqual(789L, lResult, L"Expected 789 returned");
 
             Assert::IsTrue(FromString(std::string("   1010   "), &lResult));
-            Assert::AreEqual(lResult, 1010L, L"Expected 1010 returned");
+            Assert::AreEqual(1010L, lResult, L"Expected 1010 returned");
 
             lResult = -1;
             Assert::IsFalse(FromString(std::string("   78910a  "), &lResult));
-            Assert::AreEqual(lResult, -1L, L"Expected -1 returned");
+            Assert::AreEqual(-1L, lResult, L"Expected -1 returned");
         }
     };
 }

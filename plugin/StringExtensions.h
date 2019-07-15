@@ -66,8 +66,6 @@ namespace Extensions
             std::unique_ptr<Container> Split(const T & separators) const
             {
                 auto results = std::make_unique<Container>();
-                size_t sepPosition;
-                size_t currentPosition;
 
                 //
                 // If the separators are null, return the contents.
@@ -80,40 +78,98 @@ namespace Extensions
                 else
                 {
                     //
-                    // If there aren't any separators in the string, return
-                    // the entire string.
+                    // Span the input string. If the character is a quotation character
+                    // (either " or ') then skip forward until we find the terminating
+                    // quote. Note: if characters are quoted with a \, then simply
+                    // copy out the next character without regard to it being a quote.
+                    // For each span separated by a separator, add it to the output
+                    // containter.
                     //
 
-                    sepPosition = m_contents.find_first_of(separators);
-
-                    //
-                    // Copy each substring from the current position to
-                    // before the split to the output list.
-                    //
-
-                    currentPosition = 0;
-                    while (sepPosition != T::npos)
+                    T item;
+                    for (auto it = m_contents.cbegin(); it != m_contents.cend(); ++it)
                     {
-                        results->push_back(
-                                    m_contents.substr(
-                                        currentPosition,
-                                        sepPosition - currentPosition));
-
-                        currentPosition = sepPosition + 1;
-
                         //
-                        // Find the next separator.
+                        // Is the current character a quoted character (preceded by a '\'')?
+                        // Yes, add the quoted character.
                         //
 
-                        sepPosition = m_contents.find_first_of(separators, currentPosition);
+                        if (*it == '\\')
+                        {
+                            if (++it != m_contents.cend())
+                            {
+                                item += *it;
+                            }
+                        }
+                        else
+                        {
+                            //
+                            // Is the current character a string delimiter (" or ')? If it is,
+                            // copy all of the characters up to the enclosing delimiter. Note:
+                            // delimiters must match.
+                            //
+
+                            if ((*it == '\"') || (*it == '\''))
+                            {
+                                T::value_type const ch = *it;
+
+                                //
+                                // Span the input until we get a terminating quote or the end
+                                // of the string.
+                                // 
+
+                                while ((++it != m_contents.cend()) && (ch != *it))
+                                {
+                                    //
+                                    // Pick up quoted (characters following a '\').
+                                    //
+
+                                    if (*it == '\\')
+                                    {
+                                        if (++it == m_contents.cend())
+                                        {
+                                            //
+                                            // Premature end. Don't pick up the character.
+                                            //
+
+                                            break;
+                                        }
+                                    }
+
+                                    item += *it;
+                                }
+                            }
+                            else
+                            {
+                                //
+                                // Is the current character a delimiter?
+                                //
+
+                                if (separators.find_first_of(*it) != T::npos)
+                                {
+                                    //
+                                    // Yes. the input string is complete. Add it to the output.
+                                    //
+
+                                    item.shrink_to_fit();
+                                    results->push_back(item);;
+
+                                    item.clear();
+                                }
+                                else
+                                {
+                                    //
+                                    // No, add the character to the current item.
+                                    //
+
+                                    item += *it;
+                                }
+                            }
+                        }
                     }
 
-                    //
-                    // Copy the tail of the last split.  This is the
-                    // string from the current position to the end.
-                    //
-
-                    results->push_back(m_contents.substr(currentPosition));
+                    item.shrink_to_fit();
+                    results->push_back(item);
                 }
 
                 return results;
