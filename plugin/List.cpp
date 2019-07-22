@@ -649,7 +649,6 @@ std::unique_ptr<List> List::Splice(size_t startIndex, size_t length) const
         return std::make_unique<List>();
     }
 
-
     //
     // Return a splice from the range.
     //

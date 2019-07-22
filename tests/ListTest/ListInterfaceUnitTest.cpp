@@ -77,7 +77,7 @@ namespace ListUnitTests
 
             List l;
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"There must be zero elements in the list.");
         }
 
         //
@@ -96,7 +96,7 @@ namespace ListUnitTests
 
             l.Clear();
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"There must be zero elements in the list.");
         }
 
         //
@@ -116,7 +116,7 @@ namespace ListUnitTests
             AppendFive(l);
             l.Clear();
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"There must be zero elements in the list.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"There must be zero elements in the list.");
         }
 
         //
@@ -220,7 +220,7 @@ namespace ListUnitTests
             // Splice must have no elements.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must be empty.");
         }
 
         //
@@ -255,7 +255,7 @@ namespace ListUnitTests
             // Splice must be zero length.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have zero elements.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must have zero elements.");
         }
 
         //
@@ -284,7 +284,7 @@ namespace ListUnitTests
             // Splice must have no elements.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must be empty.");
         }
 
         //
@@ -391,7 +391,7 @@ namespace ListUnitTests
             // Splice must have no elements.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must be empty.");
         }
 
         //
@@ -420,7 +420,7 @@ namespace ListUnitTests
             // Splice must have no elements.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must be empty.");
         }
 
         //
@@ -449,7 +449,7 @@ namespace ListUnitTests
             // Splice must have no elements.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must be empty.");
         }
 
         //
@@ -478,7 +478,7 @@ namespace ListUnitTests
             // Splice must have no elements.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must be empty.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must be empty.");
         }
 
         //
@@ -594,7 +594,7 @@ namespace ListUnitTests
             // Splice must have a length of zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Returned splice must have a length of zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Returned splice must have a length of zero.");
         }
 
         //
@@ -629,7 +629,7 @@ namespace ListUnitTests
             // Splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(l, 0, splice, 0);
         }
@@ -666,7 +666,7 @@ namespace ListUnitTests
             // Splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(l, l.Count() - 1, splice, 0);
         }
@@ -703,7 +703,7 @@ namespace ListUnitTests
             // Splice must have a length of zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must have a length of zero.");
         }
 
         //
@@ -738,7 +738,7 @@ namespace ListUnitTests
             // Splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(l, l.Count() - 1, splice, 0);
         }
@@ -771,7 +771,7 @@ namespace ListUnitTests
             //
 
             Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice length is incorrect.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice length is incorrect.");
 
             CompareListAndSplice(l, splice_pos, splice, 0);
         }
@@ -804,7 +804,7 @@ namespace ListUnitTests
             //
 
             Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), (size_t)0, L"Splice must have a length of zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must have a length of zero.");
         }
 
         //
@@ -837,7 +837,7 @@ namespace ListUnitTests
             //
 
             Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), splice_length, L"Splice length is incorrect");
+            Assert::AreEqual(splice_length, splice->Count(), L"Splice length is incorrect");
 
             CompareListAndSplice(l, splice_pos, splice, 0);
         }
@@ -871,7 +871,7 @@ namespace ListUnitTests
             //
 
             Assert::IsNotNull(splice.get(), L"Splice must not be a nullptr.");
-            Assert::AreEqual(splice->Count(), splice_length, L"Splice length is incorrect.");
+            Assert::AreEqual(splice_length, splice->Count(), L"Splice length is incorrect.");
 
             CompareListAndSplice(l, splice_pos, splice, 0);
         }
@@ -895,7 +895,7 @@ namespace ListUnitTests
             // not in the list.
             //
 
-            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1.");
+            Assert::AreEqual((long) -1, l.Index(std::string("Zero")), L"Index of 'Zero' should be -1.");
         }
 
         //
@@ -934,7 +934,7 @@ namespace ListUnitTests
 
             for (long index = 0; index < sizeof(elements) / sizeof(elements[0]); ++index)
             {
-                Assert::AreEqual(l.Index(elements[index]), index, L"Index was incorrect for element.");
+                Assert::AreEqual(index, l.Index(elements[index]), L"Index was incorrect for element.");
             }
         }
 
@@ -963,7 +963,7 @@ namespace ListUnitTests
             // not in the list.
             //
 
-            Assert::AreEqual(l.Index(std::string("Zero")), (long) -1, L"Index of 'Zero' should be -1.");
+            Assert::AreEqual((long) -1, l.Index(std::string("Zero")), L"Index of 'Zero' should be -1.");
         }
 
         //
@@ -1083,7 +1083,7 @@ namespace ListUnitTests
             // l should be zero entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"Final list should be empty.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"Final list should be empty.");
         }
 
         //
@@ -1131,7 +1131,7 @@ namespace ListUnitTests
             // l should be 5 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
+            Assert::AreEqual((size_t) 5, l.Count(), L"Target list should be 5 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1188,7 +1188,7 @@ namespace ListUnitTests
             // l should be 5 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
+            Assert::AreEqual((size_t) 5, l.Count(), L"Target list should be 5 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1245,7 +1245,7 @@ namespace ListUnitTests
             // l should be 5 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
+            Assert::AreEqual((size_t) 5, l.Count(), L"Target list should be 5 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1310,7 +1310,7 @@ namespace ListUnitTests
             // l should be 8 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
+            Assert::AreEqual((size_t) 8, l.Count(), L"Target list should be 8 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1375,7 +1375,7 @@ namespace ListUnitTests
             // l should be 8 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
+            Assert::AreEqual((size_t) 8, l.Count(), L"Target list should be 8 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1441,7 +1441,7 @@ namespace ListUnitTests
             // l should be 8 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 8, L"Target list should be 8 entries long.");
+            Assert::AreEqual((size_t) 8, l.Count(), L"Target list should be 8 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1503,7 +1503,7 @@ namespace ListUnitTests
             // l should be 5 entries long (unmodified).
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Target list should be 5 entries long.");
+            Assert::AreEqual((size_t) 5, l.Count(), L"Target list should be 5 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1557,7 +1557,7 @@ namespace ListUnitTests
             // l should be 3 entries long.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 3, L"Target list should be 3 entries long.");
+            Assert::AreEqual((size_t) 3, l.Count(), L"Target list should be 3 entries long.");
 
             //
             // Verify the elements in the list.
@@ -1593,7 +1593,7 @@ namespace ListUnitTests
             // List should contain zero elements.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must have zero entries.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"List must have zero entries.");
         }
 
         //
@@ -1635,7 +1635,7 @@ namespace ListUnitTests
             // List must be five in length.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Sorted list must be same length.");
+            Assert::AreEqual((size_t) 5, l.Count(), L"Sorted list must be same length.");
 
             //
             // Verify the elements are sorted.
@@ -1671,7 +1671,7 @@ namespace ListUnitTests
             // List must contain zero elements.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"Reversed list must be empty.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"Reversed list must be empty.");
         }
 
         //
@@ -1713,7 +1713,7 @@ namespace ListUnitTests
             // List must be five in length.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 5, L"Reversed list must be same length.");
+            Assert::AreEqual((size_t) 5, l.Count(), L"Reversed list must be same length.");
 
             //
             // Verify the elements are reversed.
@@ -1754,7 +1754,7 @@ namespace ListUnitTests
             // Verify the list has one item.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 1, L"List length must be one.");
+            Assert::AreEqual((size_t) 1, l.Count(), L"List length must be one.");
 
             //
             // Verify the elements are correct.
@@ -1767,7 +1767,48 @@ namespace ListUnitTests
         }
 
         //
-        // Append an item to a populated list.
+        // Append a quoted item item to an empty list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendQuotedItemToEmptyList)
+        {
+            std::string appendedelements[] =
+            {
+                "\"One Item\""
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append an item to the list
+            //
+
+            l.Append("\"One Item\"");
+
+            //
+            // Verify the list has one item.
+            //
+
+            Assert::AreEqual((size_t) 1, l.Count(), L"List length must be one.");
+
+            //
+            // Verify the elements are correct.
+            //
+
+            CompareListToElements(
+                l,
+                appendedelements,
+                sizeof(appendedelements) / sizeof(appendedelements[0]));
+        }
+
+        //
+        // Append two items to a populated list.
         //
         // Result: new elements should be added to the list.
         //
@@ -1808,7 +1849,61 @@ namespace ListUnitTests
             // Verify the list has seven item.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 7, L"List length must be seven.");
+            Assert::AreEqual((size_t) 7, l.Count(), L"List length must be seven.");
+
+            //
+            // Verify the elements are correct.
+            //
+
+            CompareListToElements(
+                l,
+                appendedelements,
+                sizeof(appendedelements) / sizeof(appendedelements[0]));
+        }
+
+        //
+        // Append two quoted items to a populated list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendQuotedItemToList)
+        {
+            std::string appendedelements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five",
+                "\"One Item\"",
+                "\"Two Item\""
+            };
+
+            //
+            // Create a new list.
+            //
+
+            List l;
+
+            //
+            // Append five elements to the list.
+            //
+
+            AppendFive(l);
+
+            //
+            // Append an item to the list
+            //
+
+            l.Append("\"One Item\"");
+            l.Append("\"Two Item\"");
+
+            //
+            // Verify the list has seven item.
+            //
+
+            Assert::AreEqual((size_t)7, l.Count(), L"List length must be seven.");
 
             //
             // Verify the elements are correct.
@@ -1838,13 +1933,13 @@ namespace ListUnitTests
             // Remove an element from the empty list.
             //
 
-            Assert::AreEqual(l.Remove("Zero"), (size_t) 0, L"Can not remove item from empty list.");
+            Assert::AreEqual((size_t) 0, l.Remove("Zero"), L"Can not remove item from empty list.");
 
             //
             // Length of the list should be zero.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"List must be empty.");
         }
 
         //
@@ -1880,7 +1975,7 @@ namespace ListUnitTests
             // Remove an element not in the list.
             //
 
-            Assert::AreEqual(l.Remove(std::string("Zero")), (size_t) 0, L"No elements should be removed from the list");
+            Assert::AreEqual((size_t) 0, l.Remove(std::string("Zero")), L"No elements should be removed from the list");
 
             //
             // Verify no elements were removed.
@@ -1925,7 +2020,7 @@ namespace ListUnitTests
             // removed.
             //
 
-            Assert::AreEqual(l.Remove(std::string("One")), (size_t) 1, L"Only one element should be removed from the list");
+            Assert::AreEqual((size_t)1, l.Remove(std::string("One")), L"Only one element should be removed from the list");
 
             //
             // Verify the element was removed.
@@ -1970,7 +2065,7 @@ namespace ListUnitTests
             // removed.
             //
 
-            Assert::AreEqual(l.Remove(std::string("Five")), (size_t) 1, L"Only one element should be removed from the list");
+            Assert::AreEqual((size_t) 1, l.Remove(std::string("Five")), L"Only one element should be removed from the list");
 
             //
             // Verify the element was removed.
@@ -2015,7 +2110,7 @@ namespace ListUnitTests
             // removed.
             //
 
-            Assert::AreEqual(l.Remove(std::string("Three")), (size_t) 1, L"Only one element should be removed from the list");
+            Assert::AreEqual((size_t) 1, l.Remove(std::string("Three")), L"Only one element should be removed from the list");
 
             //
             // Verify the element was removed.
@@ -2082,7 +2177,7 @@ namespace ListUnitTests
             // removed.
             //
 
-            Assert::AreEqual(l.Remove(std::string("Three")), (size_t) 2, L"Two elements should be removed from the list.");
+            Assert::AreEqual((size_t) 2, l.Remove(std::string("Three")), L"Two elements should be removed from the list.");
 
             //
             // Verify the element was removed.
@@ -2310,7 +2405,7 @@ namespace ListUnitTests
             // Replace an element in the empty list.
             //
 
-            Assert::AreEqual(l.Replace("Zero", "Empty"), (size_t) 0, L"Empty list replace should fail.");
+            Assert::AreEqual((size_t) 0, l.Replace("Zero", "Empty"), L"Empty list replace should fail.");
         }
 
         //
@@ -2347,7 +2442,7 @@ namespace ListUnitTests
             // replaced.
             //
 
-            Assert::AreEqual(l.Replace("One", "Zero"), (size_t) 1, L"Only one element should be replaced in the list.");
+            Assert::AreEqual((size_t) 1, l.Replace("One", "Zero"), L"Only one element should be replaced in the list.");
 
             //
             // Verify the element was replaced.
@@ -2393,7 +2488,7 @@ namespace ListUnitTests
             // replaced.
             //
 
-            Assert::AreEqual(l.Replace("Five", "Last"), (size_t) 1, L"Only one element should be replaced in the list.");
+            Assert::AreEqual((size_t) 1, l.Replace("Five", "Last"), L"Only one element should be replaced in the list.");
 
             //
             // Verify the element was replaced.
@@ -2439,7 +2534,7 @@ namespace ListUnitTests
             // replaced.
             //
 
-            Assert::AreEqual(l.Replace("Three", "Middle"), (size_t) 1, L"Only one element should be replaced in the list.");
+            Assert::AreEqual((size_t) 1, l.Replace("Three", "Middle"), L"Only one element should be replaced in the list.");
 
             //
             // Verify the element was replaced.
@@ -2484,7 +2579,7 @@ namespace ListUnitTests
             // Replace an element not in the list element.
             //
 
-            Assert::AreEqual(l.Replace("Zero", "Empty"), (size_t) 0, L"No elements should be replaced in the list.");
+            Assert::AreEqual((size_t) 0, l.Replace("Zero", "Empty"), L"No elements should be replaced in the list.");
 
             //
             // Verify no elements were replaced.
@@ -2553,7 +2648,7 @@ namespace ListUnitTests
             // replaced.
             //
 
-            Assert::AreEqual(l.Replace("Three", "Zero"), (size_t) 2, L"Two elements should be replaced in the list.");
+            Assert::AreEqual((size_t) 2, l.Replace("Three", "Zero"), L"Two elements should be replaced in the list.");
 
             //
             // Verify the element was replaced.
@@ -2617,7 +2712,7 @@ namespace ListUnitTests
             std::unique_ptr<const std::string> pItem;
             Assert::IsTrue(l.Head(&pItem), L"Could not remove head of list.");
 
-            Assert::AreEqual(*pItem, element, L"Incorrect item popped from list.");
+            Assert::AreEqual(element, *pItem, L"Incorrect item popped from list.");
         }
 
         //
@@ -2661,7 +2756,7 @@ namespace ListUnitTests
             while (true)
             {
                 Assert::IsTrue(l.Head(&pitem), L"Could not retrieve item from head of list.");
-                Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
+                Assert::AreEqual(elements[nItem], *pitem, L"Item returned is incorrect.");
 
                 ++nItem;
 
@@ -2675,7 +2770,7 @@ namespace ListUnitTests
             // The list should be empty once all of the elements are removed.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty.");
+            Assert::AreEqual((size_t) 0, l.Count(), L"List must be empty.");
         }
 
         //
@@ -2730,7 +2825,7 @@ namespace ListUnitTests
             std::unique_ptr<const std::string> pItem;
             Assert::IsTrue(l.Tail(&pItem), L"Could not remove tail of list.");
 
-            Assert::AreEqual(*pItem, element, L"Incorrect item popped from list.");
+            Assert::AreEqual(element, *pItem, L"Incorrect item popped from list.");
         }
 
         //
@@ -2774,7 +2869,7 @@ namespace ListUnitTests
             while (true)
             {
                 Assert::IsTrue(l.Tail(&pitem), L"Could not retrieve item from tail of list.");
-                Assert::AreEqual(*pitem, elements[nItem], L"Item returned is incorrect.");
+                Assert::AreEqual(elements[nItem], *pitem, L"Item returned is incorrect.");
 
                 ++nItem;
 
@@ -2788,7 +2883,7 @@ namespace ListUnitTests
             // The list should be empty once all of the elements are removed.
             //
 
-            Assert::AreEqual(l.Count(), (size_t) 0, L"List must be empty");
+            Assert::AreEqual((size_t) 0, l.Count(), L"List must be empty");
         }
 
         //
@@ -2805,7 +2900,7 @@ namespace ListUnitTests
 
             List l;
 
-            Assert::AreEqual(l.CountOf("Zero"), (size_t) 0, L"CountOf should return zero.");
+            Assert::AreEqual((size_t) 0, l.CountOf("Zero"), L"CountOf should return zero.");
         }
 
         //
@@ -2828,7 +2923,7 @@ namespace ListUnitTests
 
             AppendFive(l);
 
-            Assert::AreEqual(l.CountOf("Zero"), (size_t) 0, L"CountOf should return zero.");
+            Assert::AreEqual((size_t) 0, l.CountOf("Zero"), L"CountOf should return zero.");
         }
         
         //
@@ -2866,7 +2961,7 @@ namespace ListUnitTests
 
             for (auto it : elements)
             {
-                Assert::AreEqual(l.CountOf(it), (size_t) 1, L"CountOf should return one.");
+                Assert::AreEqual((size_t) 1, l.CountOf(it), L"CountOf should return one.");
             }
         }
 
@@ -2884,19 +2979,19 @@ namespace ListUnitTests
             //
 
             l.Append(std::string("One"));
-            Assert::AreEqual(l.Count(), (size_t) 1, L"There must be one elements in the list");
+            Assert::AreEqual((size_t) 1, l.Count(), L"There must be one elements in the list");
 
             l.Append(std::string("Two"));
-            Assert::AreEqual(l.Count(), (size_t) 2, L"There must be two elements in the list");
+            Assert::AreEqual((size_t) 2, l.Count(), L"There must be two elements in the list");
 
             l.Append(std::string("Three"));
-            Assert::AreEqual(l.Count(), (size_t) 3, L"There must be three elements in the list");
+            Assert::AreEqual((size_t) 3, l.Count(), L"There must be three elements in the list");
 
             l.Append(std::string("Four"));
-            Assert::AreEqual(l.Count(), (size_t) 4, L"There must be four elements in the list");
+            Assert::AreEqual((size_t) 4, l.Count(), L"There must be four elements in the list");
 
             l.Append(std::string("Five"));
-            Assert::AreEqual(l.Count(), (size_t) 5, L"There must be five elements in the list");
+            Assert::AreEqual((size_t) 5, l.Count(), L"There must be five elements in the list");
         }
 
         //
@@ -2943,7 +3038,7 @@ namespace ListUnitTests
             {
                 Assert::IsTrue(l.Item(index, &pitem), L"Index was incorrect for element.");
 
-                Assert::AreEqual(*pitem, elements[index], L"Returned string does not match expected string");
+                Assert::AreEqual(elements[index], *pitem, L"Returned string does not match expected string");
             }
         }
     };
