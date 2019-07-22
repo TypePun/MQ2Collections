@@ -94,7 +94,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult, L"Count invocation failed.");
-            Assert::AreEqual(dest.Int, 0, L"Count should be zero.");
+            Assert::AreEqual(0, dest.Int, L"Count should be zero.");
         }
 
         //
@@ -127,7 +127,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult, L"Count invocation failed.");
-            Assert::AreEqual(dest.Int, 5, L"Count should be zero.");
+            Assert::AreEqual(5, dest.Int, L"Count should be zero.");
         }
 
         //
@@ -160,7 +160,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Clear", nullptr, dest);
             Assert::IsTrue(bResult, L"Clear invocation failed.");
-            Assert::AreEqual(dest.Int, 1, L"Clear should succeed.");
+            Assert::AreEqual(1, dest.Int, L"Clear should succeed.");
         }
 
         //
@@ -193,7 +193,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Clear", nullptr, dest);
             Assert::IsTrue(bResult, L"Clear invocation failed.");
-            Assert::AreEqual(dest.Int, 1, L"Clear should return true.");
+            Assert::AreEqual(1, dest.Int, L"Clear should return true.");
 
             //
             // Count should return 0.
@@ -201,7 +201,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult, L"Count invocation failed");
-            Assert::AreEqual(dest.Int, 0, L"Count should be zero");
+            Assert::AreEqual(0, dest.Int, L"Count should be zero");
         }
 
         //
@@ -234,7 +234,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Contains", "C", dest);
             Assert::IsTrue(bResult, L"Contains invocation failed.");
-            Assert::AreEqual(dest.Int, 1, L"Contains should return true.");
+            Assert::AreEqual(1, dest.Int, L"Contains should return true.");
         }
 
         //
@@ -267,7 +267,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Contains", "A", dest);
             Assert::IsTrue(bResult, L"Contains invocation failed.");
-            Assert::AreEqual(dest.Int, 0, L"Contains should return false.");
+            Assert::AreEqual(0, dest.Int, L"Contains should return false.");
         }
 
         //
@@ -300,7 +300,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Contains", "F", dest);
             Assert::IsTrue(bResult, L"Contains invocation failed.");
-            Assert::AreEqual(dest.Int, 0, L"Contains should return false.");
+            Assert::AreEqual(0, dest.Int, L"Contains should return false.");
         }
 
         //
@@ -341,7 +341,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
 
         //
@@ -383,7 +383,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
 
         //
@@ -425,7 +425,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
 
         //
@@ -555,7 +555,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
 
         //
@@ -597,7 +597,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
 
         //
@@ -638,7 +638,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
 
         //
@@ -679,7 +679,7 @@ namespace ListUnitTests
             // Length of returned list must be zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Length of returned splice must be zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Length of returned splice must be zero.");
         }
         //
         // Create a list and retrieve a splice from the start with a length
@@ -808,7 +808,7 @@ namespace ListUnitTests
             // Return splice must have a length of zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must have a length of zero.");
         }
 
         //
@@ -849,7 +849,7 @@ namespace ListUnitTests
             // Return splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(*pl, 0, splice, 0);
         }
@@ -892,7 +892,7 @@ namespace ListUnitTests
             // Return splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(*pl, 4, splice, 0);
         }
@@ -935,7 +935,7 @@ namespace ListUnitTests
             // Return splice must have a length of zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must have a length of zero.");
         }
 
         //
@@ -976,7 +976,7 @@ namespace ListUnitTests
             // Return splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(*pl, 4, splice, 0);
         }
@@ -1019,7 +1019,7 @@ namespace ListUnitTests
             // Return splice must have a length of one.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 1, L"Splice must have a length of one.");
+            Assert::AreEqual((size_t) 1, splice->Count(), L"Splice must have a length of one.");
 
             CompareListAndSplice(*pl, 2, splice, 0);
         }
@@ -1062,7 +1062,7 @@ namespace ListUnitTests
             // Return splice must have a length of zero.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 0, L"Splice must have a length of zero.");
+            Assert::AreEqual((size_t) 0, splice->Count(), L"Splice must have a length of zero.");
         }
 
         //
@@ -1104,7 +1104,7 @@ namespace ListUnitTests
             // Return splice must have a length of three.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 3, L"Splice must have a length of three.");
+            Assert::AreEqual((size_t) 3, splice->Count(),L"Splice must have a length of three.");
 
             CompareListAndSplice(*pl, 2, splice, 0);
         }
@@ -1147,7 +1147,7 @@ namespace ListUnitTests
             // Return splice must have a length of three.
             //
 
-            Assert::AreEqual(splice->Count(), (size_t) 3, L"Splice must have a length of three.");
+            Assert::AreEqual((size_t) 3, splice->Count(), L"Splice must have a length of three.");
 
             CompareListAndSplice(*pl, 2, splice, 0);
         }
@@ -1182,7 +1182,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Index", "Zero", dest);
             Assert::IsTrue(bResult, L"Index invocation failed.");
-            Assert::AreEqual(dest.Int, -1, L"Index of 'Zero' should be -1.");
+            Assert::AreEqual(-1, dest.Int, L"Index of 'Zero' should be -1.");
         }
 
         //
@@ -1227,7 +1227,7 @@ namespace ListUnitTests
             {
                 bResult = List::GetMemberInvoker(source, "Index", elements[index], dest);
                 Assert::IsTrue(bResult, L"Index invocation failed.");
-                Assert::AreEqual((long) dest.Int, index, L"Index is incorrect for element.");
+                Assert::AreEqual(index, (long) dest.Int, L"Index is incorrect for element.");
             }
         }
 
@@ -1261,7 +1261,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Index", "Zero", dest);
             Assert::IsTrue(bResult, L"Index invocation failed.");
-            Assert::AreEqual(dest.Int, -1, L"Index of 'Zero' should be -1.");
+            Assert::AreEqual(-1, dest.Int, L"Index of 'Zero' should be -1.");
         }
 
         //
@@ -1366,7 +1366,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Item", "100", dest);
             Assert::IsTrue(bResult, L"Item invocation failed.");
-            Assert::AreEqual(dest.Int, 0, L"Item method should return false.");
+            Assert::AreEqual(0, dest.Int,L"Item method should return false.");
         }
 
         //
@@ -3383,19 +3383,19 @@ namespace ListUnitTests
             //
 
             l.Append(std::string("One"));
-            Assert::AreEqual(l.Count(), (size_t) 1, L"There must be one elements in the list");
+            Assert::AreEqual((size_t) 1, l.Count(), L"There must be one elements in the list");
 
             l.Append(std::string("Two"));
-            Assert::AreEqual(l.Count(), (size_t) 2, L"There must be two elements in the list");
+            Assert::AreEqual((size_t) 2, l.Count(), L"There must be two elements in the list");
 
             l.Append(std::string("Three"));
-            Assert::AreEqual(l.Count(), (size_t) 3, L"There must be three elements in the list");
+            Assert::AreEqual((size_t) 3, l.Count(), L"There must be three elements in the list");
 
             l.Append(std::string("Four"));
-            Assert::AreEqual(l.Count(), (size_t) 4, L"There must be four elements in the list");
+            Assert::AreEqual((size_t) 4, l.Count(), L"There must be four elements in the list");
 
             l.Append(std::string("Five"));
-            Assert::AreEqual(l.Count(), (size_t) 5, L"There must be five elements in the list");
+            Assert::AreEqual((size_t) 5, l.Count(), L"There must be five elements in the list");
         }
 
         //
@@ -3452,7 +3452,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult, L"Count invocation failed.");
-            Assert::AreEqual(dest.Int, 0, L"Count should be zero.");
+            Assert::AreEqual(0, dest.Int, L"Count should be zero.");
 
             //
             // Append a single item to the list.
@@ -3460,7 +3460,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Append", "A", dest);
             Assert::IsTrue(bResult, L"Append invocation failed");
-            Assert::AreEqual(dest.Int, 1, L"Append should return True");
+            Assert::AreEqual(1, dest.Int, L"Append should return True");
 
             //
             // Append a sequence of items to the list.
@@ -3468,7 +3468,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Append", "B,C,D,E", dest);
             Assert::IsTrue(bResult, L"Append invocation failed.");
-            Assert::AreEqual(dest.Int, 1, L"Append should return True");
+            Assert::AreEqual(1, dest.Int, L"Append should return True");
 
             //
             // Count should return 5.
@@ -3476,7 +3476,7 @@ namespace ListUnitTests
 
             bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
             Assert::IsTrue(bResult, L"Count invocation failed");
-            Assert::AreEqual(dest.Int, 5, L"GetMember Count should be five");
+            Assert::AreEqual(5, dest.Int, L"GetMember Count should be five");
 
             return pl;
         }
@@ -3501,7 +3501,7 @@ namespace ListUnitTests
                 Assert::IsNotNull(dest.Ptr, L"Returned item is a null pointer.");
 
                 auto compare_result = strcmp((const char *) dest.Ptr, elements[index]);
-                Assert::AreEqual(compare_result, 0, L"Returned string does not match expected string.");
+                Assert::AreEqual(0, compare_result, L"Returned string does not match expected string.");
             }
         }
     };
