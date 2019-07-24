@@ -176,7 +176,10 @@ namespace Extensions
                 //
 
                 auto results = Split(separators);
-                RemoveEmptyStrings(*results);
+                if (removeEmpty)
+                {
+                    RemoveEmptyStrings(*results);
+                }
 
                 return results;
             }
@@ -194,7 +197,10 @@ namespace Extensions
                 //
 
                 auto results = Split();
-                RemoveEmptyStrings(*results);
+                if (removeEmpty)
+                {
+                    RemoveEmptyStrings(*results);
+                }
 
                 return results;
             }

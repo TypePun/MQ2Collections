@@ -52,6 +52,7 @@ const MQ2TYPEMEMBER List::ListMembers[] =
     { (DWORD) ListMembers::Head, "Head" },
     { (DWORD) ListMembers::Tail, "Tail" },
     { (DWORD) ListMembers::CountOf, "CountOf" },
+    { (DWORD) ListMembers::Delimiter, "Delimiter" },
     { 0, 0 }
 };
 
@@ -309,7 +310,8 @@ bool ListIterator::Find(const std::string & refKey)
 //
 
 List::List()
-    : ObjectType(ListMembers)
+    : ObjectType(ListMembers),
+      m_delimiter(",")
 {
     DebugSpew("List - %x", this);
 }
@@ -319,7 +321,8 @@ List::List()
 //
 
 List::List(const std::list<std::string> & source)
-    : ObjectType(ListMembers)
+    : ObjectType(ListMembers),
+      m_delimiter(",")
 {
     DebugSpew("List - %x", this);
 
@@ -986,6 +989,19 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             }
             break;
 
+        case ListMembers::Delimiter:
+            //
+            // Set the list delimiter, returning the old delimiter.
+            //
+
+            if (NOT_EMPTY(Index))
+            {
+                auto old_delimiter = pThis->Delimiter(std::string(Index));
+                Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(old_delimiter.c_str(), old_delimiter.size() + 1);
+                Dest.Type = pStringType;
+            }
+            break;
+
         default:
 
             //
@@ -1146,7 +1162,7 @@ bool List::Insert(const std::string & args)
     //
 
     auto arguments = std::make_unique<StringExtensions>(args);
-    auto coll = arguments->Split(StringExtensions::string_type(","));
+    auto coll = arguments->Split(StringExtensions::string_type(m_delimiter));
 
     //
     // There must be at least two arguments.
@@ -1197,7 +1213,7 @@ void List::AppendItems(const std::string & args)
     //
 
     auto arguments = std::make_unique<StringExtensions>(args);
-    auto coll = arguments->Split(StringExtensions::string_type(","));
+    auto coll = arguments->Split(StringExtensions::string_type(m_delimiter));
 
     std::for_each(coll->cbegin(),
                   coll->cend(),
@@ -1250,7 +1266,7 @@ bool List::Replace(const std::string & args, size_t * count)
     //
 
     auto arguments = std::make_unique<StringExtensions>(args);
-    auto coll = arguments->Split(StringExtensions::string_type(","));
+    auto coll = arguments->Split(StringExtensions::string_type(m_delimiter));
 
     if (coll->size() != 2)
     {
@@ -1305,9 +1321,7 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     auto trimmed_string = arguments->Trim();
     if (!trimmed_string->Contents().empty())
     {
-
-        auto coll = trimmed_string->Split(StringExtensions::string_type(","));
-
+        auto coll = trimmed_string->Split(StringExtensions::string_type(m_delimiter));
 
         //
         // Update the iterators if there are arguments.
