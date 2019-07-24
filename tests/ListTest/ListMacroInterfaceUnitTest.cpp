@@ -1186,6 +1186,39 @@ namespace ListUnitTests
         }
 
         //
+        // Test the list index method on an empty list for a quoted string.
+        //
+        // Result: -1 should be returned.
+        //
+
+        TEST_METHOD(IndexQuotedItemOnEmptyList)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Make a new List.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Index of 'Zero' should be -1, indicating it was not found.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Index", "\"Zero, Item\"", dest);
+            Assert::IsTrue(bResult, L"Index invocation failed.");
+            Assert::AreEqual(-1, dest.Int, L"Index of 'Zero, Item' should be -1.");
+        }
+
+        //
         // Test the list index method. An index is the zero-based position of
         // an item in the list.
         //
@@ -1228,6 +1261,52 @@ namespace ListUnitTests
                 bResult = List::GetMemberInvoker(source, "Index", elements[index], dest);
                 Assert::IsTrue(bResult, L"Index invocation failed.");
                 Assert::AreEqual(index, (long) dest.Int, L"Index is incorrect for element.");
+            }
+        }
+
+        //
+        // Test the list index method on quoted items. An index is the zero-based position of
+        // an item in the list.
+        //
+        // Result: return the index of an item in a list.
+        //
+
+        TEST_METHOD(IndexForKnownQuotedElements)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C, is an item",
+                "D",
+                "E has a quoted quote\" and comma (,)"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendQuotedItemsUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Index each element in the list.  It should succeed.
+            //
+
+            for (long index = 0; index < sizeof(elements) / sizeof(elements[0]); ++index)
+            {
+                bResult = List::GetMemberInvoker(source, "Index", elements[index], dest);
+                Assert::IsTrue(bResult, L"Index invocation failed.");
+                Assert::AreEqual(index, (long)dest.Int, L"Index is incorrect for element.");
             }
         }
 
@@ -1608,6 +1687,59 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list with quoted items at the start of another list.
+        //
+        // Result: new list is prepended to the old list.
+        //
+
+        TEST_METHOD(InsertListWithQuotedItemsAtStartOfAnotherList)
+        {
+            PCHAR elements[] =
+            {
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence at the start of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,One,\"Two, with a comma\",\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list at the end of another list.
         //
         // Result: new list is appended to the old list.
@@ -1652,6 +1784,59 @@ namespace ListUnitTests
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
             Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list with quoted items at the end of another list.
+        //
+        // Result: new list is appended to the old list.
+        //
+
+        TEST_METHOD(InsertListWithQuotedItemsAtEndOfAnotherList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence at the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "5,One,\"Two, with a comma\",\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
 
             //
             // Verify the elements in the list.
@@ -1715,6 +1900,60 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list with quoted items in the middle of another list.
+        //
+        // Result: the new list is composed of first list with second list
+        // inserted in the middle of the first list.
+        //
+
+        TEST_METHOD(InsertListWithQuotedItemsInMiddleOfAnotherList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence in the middle of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "3,One,\"Two, with a comma\",\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list at in invalid entry past the end of the list.
         //
         // Result: list should not be modified.
@@ -1765,6 +2004,56 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list with quoted elements at in invalid entry past the end of the list.
+        //
+        // Result: list should not be modified.
+        //
+
+        TEST_METHOD(InsertWithQuotedItemsPastEnd)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "6,One,\"Two, has a comma\",\"Three has a quote \\\"\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Insert should return false.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list into an empty list.
         //
         // Result: list should contain the inserted elements.
@@ -1806,6 +2095,56 @@ namespace ListUnitTests
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
             Assert::AreEqual((size_t) 5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list with quoted items into an empty list.
+        //
+        // Result: list should contain the inserted elements.
+        //
+
+        TEST_METHOD(InsertWithQuotedItemsIntoEmptyList)
+        {
+            PCHAR elements[] =
+            {
+                "A, 1, 2, 3, 4",
+                "B, \'\" quote! @",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\",\"B, \\\'\\\" quote! @\",C,D,E", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
 
             //
             // Verify the elements in the list.
@@ -2048,6 +2387,56 @@ namespace ListUnitTests
         }
 
         //
+        // Append quoted items to an empty list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendQuotedItemsToEmptyList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B \"",
+                "C with a single \' quote",
+                "D, has some commas, right",
+                "E has quotes \"and\" commas 1,2,3"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append a sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "\"A\",\"B \\\"\",\"C with a single \\\' quote\",\"D, has some commas, right\",\"E has quotes \\\"and\\\" commas 1,2,3\"", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Append an item to a populated list.
         //
         // Result: new elements should be added to the list.
@@ -2068,7 +2457,7 @@ namespace ListUnitTests
             };
 
             MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
+            MQ2TYPEVAR dest = { 0 };
             bool bResult;
 
             //
@@ -2091,7 +2480,60 @@ namespace ListUnitTests
             Assert::IsTrue(bResult, L"Append invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Append should return true.");
 
-            Assert::AreEqual((size_t) 8, pl->Count(), L"List must have eight elements.");
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Append quoted items to a populated list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendQuotedItemsToList)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append a sequence onto the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "\"One\",\"Two, with a comma\",\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
 
             //
             // Verify the elements in the list.
@@ -3372,33 +3814,6 @@ namespace ListUnitTests
     private:
 
         //
-        // Append five elements to a list.
-        //
-
-        void AppendFive(List & l) const
-        {
-            //
-            // Append five elements to the list, testing the length after
-            // each append.
-            //
-
-            l.Append(std::string("One"));
-            Assert::AreEqual((size_t) 1, l.Count(), L"There must be one elements in the list");
-
-            l.Append(std::string("Two"));
-            Assert::AreEqual((size_t) 2, l.Count(), L"There must be two elements in the list");
-
-            l.Append(std::string("Three"));
-            Assert::AreEqual((size_t) 3, l.Count(), L"There must be three elements in the list");
-
-            l.Append(std::string("Four"));
-            Assert::AreEqual((size_t) 4, l.Count(), L"There must be four elements in the list");
-
-            l.Append(std::string("Five"));
-            Assert::AreEqual((size_t) 5, l.Count(), L"There must be five elements in the list");
-        }
-
-        //
         // Compare a list and a splice starting at an origin in the list and splice.
         // A number of tests are performed on the original and splice indices and element
         // values.
@@ -3467,6 +3882,63 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Append", "B,C,D,E", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return True");
+
+            //
+            // Count should return 5.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
+            Assert::IsTrue(bResult, L"Count invocation failed");
+            Assert::AreEqual(5, dest.Int, L"GetMember Count should be five");
+
+            return pl;
+        }
+
+        //
+        // Create a list and append the quoted item elements using the GetMember interface.
+        //
+
+        std::unique_ptr<List> CreateAndAppendQuotedItemsUsingGetMember() const
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Initialize the source pointer for this member call.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Count should return 0.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Count", nullptr, dest);
+            Assert::IsTrue(bResult, L"Count invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Count should be zero.");
+
+            //
+            // Append a single item to the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "A", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed");
+            Assert::AreEqual(1, dest.Int, L"Append should return True");
+
+            //
+            // Append a sequence of items to the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "B,\"C, is an item\",D,\"E has a quoted quote\\\" and comma (,)\"", dest);
             Assert::IsTrue(bResult, L"Append invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Append should return True");
 

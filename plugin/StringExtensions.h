@@ -68,7 +68,7 @@ namespace Extensions
                 auto results = std::make_unique<Container>();
 
                 //
-                // If the separators are null, return the contents.
+                // If the separators are null, return the contents as a single element.
                 //
 
                 if (separators.length() == 0)
@@ -87,8 +87,14 @@ namespace Extensions
                     //
 
                     T item;
-                    for (auto it = m_contents.cbegin(); it != m_contents.cend(); ++it)
+                    auto it = m_contents.cbegin();
+                    for (;;)
                     {
+                        if (it == m_contents.cend())
+                        {
+                            break;
+                        }
+
                         //
                         // Is the current character a quoted character (preceded by a '\'')?
                         // Yes, add the quoted character.
@@ -101,70 +107,42 @@ namespace Extensions
                                 item += *it;
                             }
                         }
+                        else if (separators.find_first_of(*it) != T::npos)
+                        {
+                            //
+                            // Yes. the input string is complete. Add it to the output.
+                            //
+
+                            item.shrink_to_fit();
+                            results->push_back(item);;
+
+                            item.clear();
+                        }
+                        else if ((*it == '\"') || (*it == '\''))
+                        {
+                            //
+                            // Add all characters to the item until either the end
+                            // of the string or a matching quote is found.
+                            //
+
+                            SpanUntilQuote(*it, &it, &item);
+                        }
                         else
                         {
                             //
-                            // Is the current character a string delimiter (" or ')? If it is,
-                            // copy all of the characters up to the enclosing delimiter. Note:
-                            // delimiters must match.
+                            // Add the character to the current item.
                             //
 
-                            if ((*it == '\"') || (*it == '\''))
-                            {
-                                T::value_type const ch = *it;
+                            item += *it;
+                        }
 
-                                //
-                                // Span the input until we get a terminating quote or the end
-                                // of the string.
-                                // 
-
-                                while ((++it != m_contents.cend()) && (ch != *it))
-                                {
-                                    //
-                                    // Pick up quoted (characters following a '\').
-                                    //
-
-                                    if (*it == '\\')
-                                    {
-                                        if (++it == m_contents.cend())
-                                        {
-                                            //
-                                            // Premature end. Don't pick up the character.
-                                            //
-
-                                            break;
-                                        }
-                                    }
-
-                                    item += *it;
-                                }
-                            }
-                            else
-                            {
-                                //
-                                // Is the current character a delimiter?
-                                //
-
-                                if (separators.find_first_of(*it) != T::npos)
-                                {
-                                    //
-                                    // Yes. the input string is complete. Add it to the output.
-                                    //
-
-                                    item.shrink_to_fit();
-                                    results->push_back(item);;
-
-                                    item.clear();
-                                }
-                                else
-                                {
-                                    //
-                                    // No, add the character to the current item.
-                                    //
-
-                                    item += *it;
-                                }
-                            }
+                        //
+                        // Bump to the next character unless we are at the end.
+                        //
+                        
+                        if (it != m_contents.cend())
+                        {
+                            ++it;
                         }
                     }
 
@@ -370,6 +348,60 @@ namespace Extensions
                 if (newContainer.size() != container.size())
                 {
                     container = newContainer;
+                }
+            }
+            
+            //
+            // Add characters under the input iterator until a terminating quote matching
+            // 'quote' is found or the end of the string is found. Embedded quoted characters
+            // preceded by a \ character are copied to the output.
+            //
+
+            void SpanUntilQuote(typename T::value_type quote,
+                                typename T::const_iterator * it,
+                                T * item) const
+            {
+                //
+                // Skip the starting quote and span the remaining characters.
+                //
+
+                ++(*it);
+                while (true)
+                {
+                    if (*it == m_contents.cend())
+                    {
+                        //
+                        // End of the string. We're done.
+                        //
+
+                        return;
+                    }
+
+                    if (**it == quote)
+                    {
+                        //
+                        // Matched the quote. We're done.
+                        //
+
+                        return;
+                    }
+
+                    if (**it == '\\')
+                    {
+                        //
+                        // Next character is quoted. Append it to the output unless
+                        // the next character is the end of the string.
+                        //
+
+                        if (++(*it) == m_contents.cend())
+                        {
+                            return;
+                        }
+                    }
+
+                    (*item) += **it;
+
+                    ++(*it);
                 }
             }
 
