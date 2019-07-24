@@ -2387,6 +2387,64 @@ namespace ListUnitTests
         }
 
         //
+        // Append an item to an empty list with a non-default delimiter.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendToEmptyListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter for the list to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Append a sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "A|B|C|D|E", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Append quoted items to an empty list.
         //
         // Result: new elements should be added to the list.
@@ -2424,6 +2482,64 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Append", "\"A\",\"B \\\"\",\"C with a single \\\' quote\",\"D, has some commas, right\",\"E has quotes \\\"and\\\" commas 1,2,3\"", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Append quoted items to an empty list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendQuotedItemsToEmptyListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B \"",
+                "C with a single \' quote",
+                "D, has some commas, right",
+                "E has quotes \"and\" bars |||"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter for the list to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Append a sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "\"A\"|\"B \\\"\"|\"C with a single \\\' quote\"|\"D, has some commas, right\"|\"E has quotes \\\"and\\\" bars |||\"", dest);
             Assert::IsTrue(bResult, L"Append invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Append should return true.");
 
@@ -2490,6 +2606,67 @@ namespace ListUnitTests
         }
 
         //
+        // Append an item to a populated list with a custom delimiter.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendToListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two",
+                "Three"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter for the list to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Append a sequence onto the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "One|Two|Three", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Append quoted items to a populated list.
         //
         // Result: new elements should be added to the list.
@@ -2543,6 +2720,67 @@ namespace ListUnitTests
         }
 
         //
+        // Append quoted items to a populated list with a custom delimiter.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendQuotedItemsToListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter for the list to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Append a sequence onto the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "\"One\"|\"Two, with a comma\"|\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Append an empty sequence to an empty list.
         //
         // Result: no element should be added to the list.
@@ -2575,6 +2813,49 @@ namespace ListUnitTests
             Assert::AreEqual(0, dest.Int, L"Append should return false.");
 
             Assert::AreEqual((size_t) 0, pl->Count(), L"List must have zero elements.");
+        }
+
+        //
+        // Append an empty sequence to an empty list.
+        //
+        // Result: no element should be added to the list.
+        //
+
+        TEST_METHOD(AppendEmptySequenceToEmptyListWithCustomDelimiter)
+        {
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter for the list to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Append an empty sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Append should return false.");
+
+            Assert::AreEqual((size_t)0, pl->Count(), L"List must have zero elements.");
         }
 
         //

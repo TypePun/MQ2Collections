@@ -340,19 +340,6 @@ namespace Collections
             size_t CountOf(const std::string & item) const;
 
             //
-            // Set the delimiter for a list, returning the old value.
-            //
-
-            const std::string & Delimiter(const std::string & new_delimiter)
-            {
-                std::string & old_delimiter(m_delimiter);
-
-                m_delimiter = new_delimiter;
-
-                return old_delimiter;
-            }
-
-            //
             // When a member function is called on the type, this method is called.
             // It returns true if the method succeeded and false otherwise.
             //
@@ -454,6 +441,19 @@ namespace Collections
 
             bool IndexValueFromString(const std::string & stringIndex,
                                       size_t * longIndex) const;
+
+            //
+            // Set the delimiter for a list, returning the old value.
+            //
+
+            const std::string & Delimiter(const std::string & new_delimiter)
+            {
+                std::string & old_delimiter(m_delimiter);
+
+                m_delimiter = new_delimiter;
+
+                return old_delimiter;
+            }
 
             //
             // Delimiter used to separate items in a sequence.
