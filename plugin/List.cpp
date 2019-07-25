@@ -1152,51 +1152,48 @@ bool List::Insert(const std::string & args)
     size_t lIndex;
 
     //
-    // Split the arguments.  There must be at least two of them -- an index
-    // and a tail, which is the sequence of items to insert.
+    // args must be of the form Integer , Sequence.
+    //
+    // Find the , and then parse out the integer sequence.
     //
 
-    //
-    // Split the string into extents.  Each extent represents an argument
-    // to insert.
-    //
-
-    auto arguments = std::make_unique<StringExtensions>(args);
-    auto coll = arguments->Split(StringExtensions::string_type(m_delimiter));
-
-    //
-    // There must be at least two arguments.
-    //
-
-    if (coll->size() < 2)
+    auto comma_pos = args.find_first_of(',');
+    if ((comma_pos == std::string::npos) || (comma_pos == 0))
     {
+        //
+        // No comma or no comma is at the start of the string.
+        //
+
         return false;
-    }
-    else if ((coll->size() == 2) && coll->at(1).empty())
-    {
-        //
-        // If there is only one element to insert and it is empty, ignore the
-        // insertion. The input was a list of the form: "index,".
-        //
-
-        return true;
     }
 
     //
     // Acquire the index value.
     //
 
-    if (!IndexValueFromString(coll->at(0), &lIndex))
+    if (!IndexValueFromString(args.substr(0, comma_pos), &lIndex))
     {
         return false;
     }
 
+    if ((comma_pos + 1) == args.size())
+    {
+        //
+        // There aren't any strings to insert. This is a call of the form
+        // Integer , Sequence where Sequence is empty, which inserts
+        // nothing.
+        //
+
+        return true;
+    }
+
     //
-    // Remove the Index from the returned sequence and insert it in the
-    // list.
+    // Split the string into extents.  Each extent represents an argument
+    // to insert.
     //
 
-    coll->erase(coll->cbegin());
+    auto arguments = std::make_unique<StringExtensions>(args.substr(comma_pos + 1));
+    auto coll = arguments->Split(StringExtensions::string_type(m_delimiter));
 
     return Insert(lIndex, *coll);
 }
@@ -1266,7 +1263,7 @@ bool List::Replace(const std::string & args, size_t * count)
     //
 
     auto arguments = std::make_unique<StringExtensions>(args);
-    auto coll = arguments->Split(StringExtensions::string_type(m_delimiter));
+    auto coll = arguments->Split(StringExtensions::string_type(","));
 
     if (coll->size() != 2)
     {
@@ -1321,7 +1318,7 @@ std::unique_ptr<List> List::CreateSplice(const std::string & args) const
     auto trimmed_string = arguments->Trim();
     if (!trimmed_string->Contents().empty())
     {
-        auto coll = trimmed_string->Split(StringExtensions::string_type(m_delimiter));
+        auto coll = trimmed_string->Split(StringExtensions::string_type(","));
 
         //
         // Update the iterators if there are arguments.

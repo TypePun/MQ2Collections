@@ -1654,7 +1654,7 @@ namespace ListUnitTests
             };
 
             MQ2VARPTR source;
-            MQ2TYPEVAR dest = {0};
+            MQ2TYPEVAR dest = { 0 };
             bool bResult;
 
             //
@@ -1674,6 +1674,67 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Insert", "0,One,Two,Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list at the start of another list.
+        //
+        // Result: new list is prepended to the old list.
+        //
+
+        TEST_METHOD(InsertListAtStartOfAnotherListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "One",
+                "Two",
+                "Three",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = {0};
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence at the start of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,One|Two|Three", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
@@ -1740,6 +1801,67 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list with quoted items at the start of another list with a custom delimiter.
+        //
+        // Result: new list is prepended to the old list.
+        //
+
+        TEST_METHOD(InsertListWithQuotedItemsAtStartOfAnotherListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence at the start of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,One|\"Two, with a comma\"|\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list at the end of another list.
         //
         // Result: new list is appended to the old list.
@@ -1793,6 +1915,67 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list at the end of another list with a custom delimiter.
+        //
+        // Result: new list is appended to the old list.
+        //
+
+        TEST_METHOD(InsertListAtEndOfAnotherListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two",
+                "Three"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence at the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "5,One|Two|Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list with quoted items at the end of another list.
         //
         // Result: new list is appended to the old list.
@@ -1833,6 +2016,67 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Insert", "5,One,\"Two, with a comma\",\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list with quoted items at the end of another list with a custom delimiter.
+        //
+        // Result: new list is appended to the old list.
+        //
+
+        TEST_METHOD(InsertListWithQuotedItemsAtEndOfAnotherListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence at the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "5,One|\"Two, with a comma\"|\"Three with a \\\" quote!\"", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
@@ -1900,6 +2144,68 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list in the middle of another list with a custom delimiter.
+        //
+        // Result: the new list is composed of first list with second list
+        // inserted in the middle of the first list.
+        //
+
+        TEST_METHOD(InsertListInMiddleOfAnotherListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "One",
+                "Two",
+                "Three",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence in the middle of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "3,One|Two|Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list with quoted items in the middle of another list.
         //
         // Result: the new list is composed of first list with second list
@@ -1941,6 +2247,68 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Insert", "3,One,\"Two, with a comma\",\"Three with a \\\" quote!\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)8, pl->Count(), L"List must have eight elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list with quoted items in the middle of another list with a custom delimiter
+        //
+        // Result: the new list is composed of first list with second list
+        // inserted in the middle of the first list.
+        //
+
+        TEST_METHOD(InsertListWithQuotedItemsInMiddleOfAnotherListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "One",
+                "Two, with a comma",
+                "Three with a \" quote!",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence in the middle of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "3,One|\"Two, with a comma\"|\"Three with a \\\" quote!\"", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
@@ -2004,6 +2372,64 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list at in invalid entry past the end of the list with a custom delimiter.
+        //
+        // Result: list should not be modified.
+        //
+
+        TEST_METHOD(InsertPastEndWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "6,One|Two|Three", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Insert should return false.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list with quoted elements at in invalid entry past the end of the list.
         //
         // Result: list should not be modified.
@@ -2041,6 +2467,65 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Insert", "6,One,\"Two, has a comma\",\"Three has a quote \\\"\"", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(0, dest.Int, L"Insert should return false.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list with quoted elements at in invalid entry past the end of the list
+        // with a custom delimiter.
+        //
+        // Result: list should not be modified.
+        //
+
+        TEST_METHOD(InsertWithQuotedItemsPastEndWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = CreateAndAppendUsingGetMember();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "6,One|\"Two, has a comma\"|\"Three has a quote \\\"\"", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(0, dest.Int, L"Insert should return false.");
 
@@ -2104,6 +2589,64 @@ namespace ListUnitTests
         }
 
         //
+        // Insert a list into an empty list with a custom delimiter.
+        //
+        // Result: list should contain the inserted elements.
+        //
+
+        TEST_METHOD(InsertIntoEmptyListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,A|B|C|D|E", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Insert a list with quoted items into an empty list.
         //
         // Result: list should contain the inserted elements.
@@ -2141,6 +2684,64 @@ namespace ListUnitTests
             //
 
             bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\",\"B, \\\'\\\" quote! @\",C,D,E", dest);
+            Assert::IsTrue(bResult, L"Insert invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Insert should return true.");
+
+            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
+        // Insert a list with quoted items into an empty list with a custom delimiter.
+        //
+        // Result: list should contain the inserted elements.
+        //
+
+        TEST_METHOD(InsertWithQuotedItemsIntoEmptyListWithCustomDelimiter)
+        {
+            PCHAR elements[] =
+            {
+                "A, 1, 2, 3, 4",
+                "B, \'\" quote! @",
+                "C",
+                "D",
+                "E"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            MQ2TYPEVAR old_delim = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Change the delimiter to a "|".
+            //
+
+            bResult = List::GetMemberInvoker(source, "Delimiter", "|", old_delim);
+            Assert::IsTrue(bResult, L"Delimiter invocation failed.");
+
+            //
+            // Insert a sequence past the end of the list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\"|\"B, \\\'\\\" quote! @\"|C|D|E", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 

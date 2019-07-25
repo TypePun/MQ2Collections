@@ -104,7 +104,7 @@ namespace Extensions
                         {
                             if (++it != m_contents.cend())
                             {
-                                item += *it;
+                                item.push_back(*it);
                             }
                         }
                         else if (separators.find_first_of(*it) != T::npos)
@@ -133,7 +133,7 @@ namespace Extensions
                             // Add the character to the current item.
                             //
 
-                            item += *it;
+                            item.push_back(*it);
                         }
 
                         //
@@ -405,7 +405,7 @@ namespace Extensions
                         }
                     }
 
-                    (*item) += **it;
+                    item->push_back(**it);
 
                     ++(*it);
                 }
@@ -426,8 +426,8 @@ namespace Extensions
         using StringExtensions = StringExtensionsT<std::string>;
 
         //
-        // Convert a std::string to a long.  Return true if the string was
-        // successfully converted and false otherwise.
+        // Convert a std::string to a specified integral type.  Return true if
+        // the string was successfully converted and false otherwise.
         //
 
         template <class T, typename U>
