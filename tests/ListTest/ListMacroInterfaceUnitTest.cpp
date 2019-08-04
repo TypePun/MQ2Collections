@@ -3096,6 +3096,52 @@ namespace ListUnitTests
         }
 
         //
+        // Append item with embedded quotes to an empty list.
+        //
+        // Result: new elements should be added to the list.
+        //
+
+        TEST_METHOD(AppendEmbeddedQuotedItemToEmptyList)
+        {
+            PCHAR elements[] =
+            {
+                "Macro's C'omm'a Issue's"
+            };
+
+            MQ2VARPTR source;
+            MQ2TYPEVAR dest = { 0 };
+            bool bResult;
+
+            //
+            // Create a new list.
+            //
+
+            auto pl = std::make_unique<List>();
+
+            //
+            // Set the source pointer to the new instance.
+            //
+
+            source.Ptr = pl.get();
+
+            //
+            // Append a sequence onto an empty list.
+            //
+
+            bResult = List::GetMemberInvoker(source, "Append", "\"Macro's C'omm'a Issue's\"", dest);
+            Assert::IsTrue(bResult, L"Append invocation failed.");
+            Assert::AreEqual(1, dest.Int, L"Append should return true.");
+
+            Assert::AreEqual((size_t)1, pl->Count(), L"List must have one element.");
+
+            //
+            // Verify the elements in the list.
+            //
+
+            CompareListToElements(source, elements, sizeof(elements) / sizeof(elements[0]));
+        }
+
+        //
         // Append quoted items to an empty list.
         //
         // Result: new elements should be added to the list.

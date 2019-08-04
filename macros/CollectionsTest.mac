@@ -12,6 +12,10 @@ Sub Main
     /call ListIteratorTest
     /call MapIteratorTest
 
+    | Extended string tests. Changes were made in strings to support
+    | embedded quotes and for list items.
+    /call ListExtendedTest
+
     /echo 'Ending Collections Test'
     /return
 
@@ -896,5 +900,41 @@ Sub ListIteratorTest
     }
 
     /echo 'Ending List Iterator Test'
+    
+    /return
+
+Sub ListExtendedTest
+    /declare l list
+
+    /echo 'Starting List Extended Test'
+    /echo 'Count of entries in List: ${l.Count}'
+
+    | Add entries to the list
+    /echo 'Adding items to the list.
+
+    /if (${l.Append["Macro\'s C\'omm\'a Issue\'s"]}) {
+        /echo 'List Append of quoted item succeeded.'
+    } else {
+        /echo 'List Append of quoted item failed.'
+        /endmacro
+    }
+
+    /declare count int
+    /varset count ${l.Count}
+    /if (${count} != 1) {
+        /echo 'List count is: ${count} and should be 1.'
+        /endmacro
+    }
+
+    /declare s string
+    /varset s ${l.Item[0]}
+    /echo 'Appended item is ${s}.'
+
+    /varset s "Macro's C'omm'a Issue's"
+    /if (${s.Compare["Macro's C'omm'a Issue's"]} == 0) {
+    	/echo 'Strings are equal.'
+    }
+    
+    /echo 'Ending List Extended Test'
     
     /return
