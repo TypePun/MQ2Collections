@@ -2658,6 +2658,7 @@ namespace ListUnitTests
             {
                 "A, 1, 2, 3, 4",
                 "B, \'\" quote! @",
+                "B, '\" quote! @",
                 "C",
                 "D",
                 "E"
@@ -2683,11 +2684,11 @@ namespace ListUnitTests
             // Insert a sequence past the end of the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\",\"B, \\\'\\\" quote! @\",C,D,E", dest);
+            bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\",\"B, \\\'\\\" quote! @\",\"B, '\\\" quote! @\",C,D,E", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
-            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+            Assert::AreEqual((size_t)6, pl->Count(), L"List must have six elements.");
 
             //
             // Verify the elements in the list.
@@ -2708,6 +2709,7 @@ namespace ListUnitTests
             {
                 "A, 1, 2, 3, 4",
                 "B, \'\" quote! @",
+                "B, '\" quote! @",
                 "C",
                 "D",
                 "E"
@@ -2741,11 +2743,11 @@ namespace ListUnitTests
             // Insert a sequence past the end of the list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\"|\"B, \\\'\\\" quote! @\"|C|D|E", dest);
+            bResult = List::GetMemberInvoker(source, "Insert", "0,\"A, 1, 2, 3, 4\"|\"B, \\\'\\\" quote! @\"|\"B, '\\\" quote! @\"|C|D|E", dest);
             Assert::IsTrue(bResult, L"Insert invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Insert should return true.");
 
-            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+            Assert::AreEqual((size_t)6, pl->Count(), L"List must have six elements.");
 
             //
             // Verify the elements in the list.
@@ -3058,6 +3060,7 @@ namespace ListUnitTests
                 "A",
                 "B \"",
                 "C with a single \' quote",
+                "C with a single ' quote",
                 "D, has some commas, right",
                 "E has quotes \"and\" commas 1,2,3"
             };
@@ -3082,11 +3085,11 @@ namespace ListUnitTests
             // Append a sequence onto an empty list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Append", "\"A\",\"B \\\"\",\"C with a single \\\' quote\",\"D, has some commas, right\",\"E has quotes \\\"and\\\" commas 1,2,3\"", dest);
+            bResult = List::GetMemberInvoker(source, "Append", "\"A\",\"B \\\"\",\"C with a single \\\' quote\",\"C with a single ' quote\",\"D, has some commas, right\",\"E has quotes \\\"and\\\" commas 1,2,3\"", dest);
             Assert::IsTrue(bResult, L"Append invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Append should return true.");
 
-            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+            Assert::AreEqual((size_t)6, pl->Count(), L"List must have six elements.");
 
             //
             // Verify the elements in the list.
@@ -3154,6 +3157,7 @@ namespace ListUnitTests
                 "A",
                 "B \"",
                 "C with a single \' quote",
+                "C with a single ' quote",
                 "D, has some commas, right",
                 "E has quotes \"and\" bars |||"
             };
@@ -3186,11 +3190,11 @@ namespace ListUnitTests
             // Append a sequence onto an empty list.
             //
 
-            bResult = List::GetMemberInvoker(source, "Append", "\"A\"|\"B \\\"\"|\"C with a single \\\' quote\"|\"D, has some commas, right\"|\"E has quotes \\\"and\\\" bars |||\"", dest);
+            bResult = List::GetMemberInvoker(source, "Append", "\"A\"|\"B \\\"\"|\"C with a single \\\' quote\"|\"C with a single ' quote\"|\"D, has some commas, right\"|\"E has quotes \\\"and\\\" bars |||\"", dest);
             Assert::IsTrue(bResult, L"Append invocation failed.");
             Assert::AreEqual(1, dest.Int, L"Append should return true.");
 
-            Assert::AreEqual((size_t)5, pl->Count(), L"List must have five elements.");
+            Assert::AreEqual((size_t)6, pl->Count(), L"List must have six elements.");
 
             //
             // Verify the elements in the list.

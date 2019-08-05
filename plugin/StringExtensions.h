@@ -118,7 +118,7 @@ namespace Extensions
 
                             item.clear();
                         }
-                        else if ((*it == '\"') || (*it == '\''))
+                        else if (*it == '\"')
                         {
                             //
                             // Add all characters to the item until either the end
