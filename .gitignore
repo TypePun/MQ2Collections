@@ -10,8 +10,8 @@
 *.dll
 *.exe
 bin/*
-*/Debug/*
-*/Release/*
+**/Debug/*
+**/Release/*
 
 #
 # Configuration files
