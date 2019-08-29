@@ -174,7 +174,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TYPEMEMBER StackMembers[];
+            static const MQ2TypeMember StackMembers[];
         };
     }  // namespace Containers
 }  // namespace Collections

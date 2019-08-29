@@ -75,10 +75,10 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        BaseType(const MQ2TYPEMEMBER aMembers[])
+        BaseType(const MQ2TypeMember aMembers[])
             : MQ2Type(const_cast<char *>(ObjectClass::GetTypeName()))
         {
-            InitializeMembers(const_cast<PMQ2TYPEMEMBER>(aMembers));
+            InitializeMembers(const_cast<MQ2TypeMember*>(aMembers));
         }
 
         //
@@ -230,7 +230,7 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        ReferenceType(const MQ2TYPEMEMBER aMembers[])
+        ReferenceType(const MQ2TypeMember aMembers[])
             : BaseType<ObjectClass>(aMembers)
         {
         }
@@ -269,7 +269,7 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        ObjectType(const MQ2TYPEMEMBER aMembers[])
+        ObjectType(const MQ2TypeMember aMembers[])
             : BaseType<ObjectClass>(aMembers)
         {
         }

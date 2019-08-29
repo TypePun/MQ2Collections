@@ -13,7 +13,7 @@ using namespace Collections::Containers;
 // pointer.
 //
 
-const MQ2TYPEMEMBER Queue::QueueMembers[] =
+const MQ2TypeMember Queue::QueueMembers[] =
 {
     { (DWORD) QueueMembers::Count, "Count" },
     { (DWORD) QueueMembers::Push, "Push" },
@@ -47,7 +47,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Queue::FindMember(Member);
+    auto pMember = Queue::FindMember(Member);
     if (pMember == nullptr)
     {
         //

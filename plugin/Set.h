@@ -165,7 +165,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TYPEMEMBER SetIteratorMembers[];
+            static const MQ2TypeMember SetIteratorMembers[];
         };
 
         //
@@ -318,7 +318,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TYPEMEMBER SetMembers[];
+            static const MQ2TypeMember SetMembers[];
         };
     }  // namespace Containers
 }  // namespace Collections

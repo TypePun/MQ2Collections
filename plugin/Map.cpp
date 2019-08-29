@@ -16,7 +16,7 @@ using namespace Extensions::Strings;
 // contain a null string pointer.
 //
 
-const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
+const MQ2TypeMember MapIterator::MapIteratorMembers[] =
 {
     { (DWORD) MapIteratorMembers::Reset, "Reset" },
     { (DWORD) MapIteratorMembers::Advance, "Advance" },
@@ -31,7 +31,7 @@ const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TYPEMEMBER Map::MapMembers[] =
+const MQ2TypeMember Map::MapMembers[] =
 {
     { (DWORD) MapMembers::Count, "Count" },
     { (DWORD) MapMembers::Clear, "Clear" },
@@ -70,7 +70,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = MapIterator::FindMember(Member);
+    auto pMember = MapIterator::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -268,7 +268,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Map::FindMember(Member);
+    auto pMember = Map::FindMember(Member);
     if (pMember == nullptr)
     {
         //

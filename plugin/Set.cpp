@@ -17,7 +17,7 @@ using namespace Collections::Containers;
 // contain a null string pointer.
 //
 
-const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
+const MQ2TypeMember SetIterator::SetIteratorMembers[] =
 {
     { (DWORD) SetIteratorMembers::Reset, "Reset" },
     { (DWORD) SetIteratorMembers::Advance, "Advance" },
@@ -31,7 +31,7 @@ const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TYPEMEMBER Set::SetMembers[] =
+const MQ2TypeMember Set::SetMembers[] =
 {
     { (DWORD) SetMembers::Count, "Count" },
     { (DWORD) SetMembers::Clear, "Clear" },
@@ -70,7 +70,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = SetIterator::FindMember(Member);
+    auto pMember = SetIterator::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -242,7 +242,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Set::FindMember(Member);
+    auto pMember = Set::FindMember(Member);
     if (pMember == nullptr)
     {
         //

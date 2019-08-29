@@ -18,7 +18,7 @@ using namespace Conversions;
 // contain a null string pointer.
 //
 
-const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
+const MQ2TypeMember ListIterator::ListIteratorMembers[] =
 {
     { (DWORD) ListIteratorMembers::Reset, "Reset" },
     { (DWORD) ListIteratorMembers::Advance, "Advance" },
@@ -32,7 +32,7 @@ const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TYPEMEMBER List::ListMembers[] =
+const MQ2TypeMember List::ListMembers[] =
 {
     { (DWORD) ListMembers::Count, "Count" },
     { (DWORD) ListMembers::Clear, "Clear" },
@@ -152,7 +152,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = ListIterator::FindMember(Member);
+	auto pMember = ListIterator::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -688,7 +688,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = List::FindMember(Member);
+    auto pMember = List::FindMember(Member);
     if (pMember == nullptr)
     {
         //

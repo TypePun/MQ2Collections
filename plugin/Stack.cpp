@@ -13,7 +13,7 @@ using namespace Collections::Containers;
 // pointer.
 //
 
-const MQ2TYPEMEMBER Stack::StackMembers[] =
+const MQ2TypeMember Stack::StackMembers[] =
 {
     { (DWORD) StackMembers::Count, "Count" },
     { (DWORD) StackMembers::Push, "Push" },
@@ -47,7 +47,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Stack::FindMember(Member);
+	auto pMember = Stack::FindMember(Member);
     if (pMember == nullptr)
     {
         //
