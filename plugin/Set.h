@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "DebugMemory.h"
 
 #include <string>
 #include <set>

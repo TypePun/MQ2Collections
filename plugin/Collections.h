@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "DebugMemory.h"
+
 #include <memory>
 
 namespace Collections

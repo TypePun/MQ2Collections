@@ -20,8 +20,10 @@
 // defines a common set of methods that the collection must implement.
 //
 
+
 #include <MQ2Plugin.h>
 
+#include "DebugMemory.h"
 #include "MQ2CollectionsImpl.h"
 
 PreSetup("MQ2Collections");
@@ -46,4 +48,6 @@ PLUGIN_API VOID ShutdownPlugin(VOID)
     DebugSpewAlways("Shutting down MQ2Collections");
 
     UnregisterTypes();
+
+    _CrtDumpMemoryLeaks();
 }
