@@ -93,6 +93,17 @@ ListIterator::ListIterator(
 }
 
 //
+// Copy constructor for a list iterator.
+//
+
+ListIterator::ListIterator(const ListIterator & original)
+    : ValueIterator<std::list<std::string>>(original),
+      ReferenceType(ListIteratorMembers)
+{
+    DebugSpew("ListIterator copy ctor - %x", this);
+}
+
+//
 // Destructor.
 //
 
@@ -108,6 +119,15 @@ ListIterator::~ListIterator()
 const char *ListIterator::GetTypeName()
 {
     return "listiterator";
+}
+
+//
+// Cloned iterators can be deleted.
+//
+
+const bool ListIterator::CanDelete() const
+{
+    return Cloned();
 }
 
 //
@@ -137,6 +157,7 @@ bool ListIterator::Value(const std::string ** const item) const
 bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
 {
     ListIterator * pThis;
+    MQ2TYPEVAR typeVar;
     const std::string * pItem;
 
     DebugSpew("ListIterator::GetMember %s", Member);
@@ -215,6 +236,21 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
+            break;
+
+        case ListIteratorMembers::Clone:
+            //
+            //Invoke teh copy constructor on the list iterarator.
+            //
+
+            Dest.Ptr = (PVOID)std::unique_ptr<ListIterator>(pThis).release();
+
+            //
+            // Get the ListIterator type and return it.
+            //
+
+            ListIterator::TypeDescriptor(0, typeVar);
+            Dest.Type = typeVar.Type;
             break;
 
         default:
@@ -915,7 +951,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             // Return an iterator on the first element.
             //
 
-            Dest.Ptr = (PVOID) pThis->First().release();
+            Dest.Ptr = (PVOID) pThis->First();
 
             //
             // Get the ListIterator type and return it.

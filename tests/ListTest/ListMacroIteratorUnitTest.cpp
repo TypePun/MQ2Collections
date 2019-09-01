@@ -324,7 +324,7 @@ namespace ListUnitTests
         TEST_METHOD(WalkIteratorUsingAdvance)
         {
             auto iterator = _l.First();
-            WalkIteratorOverList(_l, reinterpret_cast<ListIterator *>(iterator.get()));
+            WalkIteratorOverList(_l, reinterpret_cast<ListIterator *>(iterator));
         }
 
         //
@@ -341,9 +341,9 @@ namespace ListUnitTests
             bool bResult;
             auto iterator = _l.First();
 
-            WalkIteratorOverList(_l, reinterpret_cast<ListIterator *>(iterator.get()));
+            WalkIteratorOverList(_l, reinterpret_cast<ListIterator *>(iterator));
 
-            itersource.Ptr = iterator.get();
+            itersource.Ptr = iterator;
 
             //
             // Reset the iterator using the GetMember interface.
@@ -361,7 +361,7 @@ namespace ListUnitTests
             // And walk over the list again.
             //
 
-            WalkIteratorOverList(_l, reinterpret_cast<ListIterator *>(iterator.get()));
+            WalkIteratorOverList(_l, reinterpret_cast<ListIterator *>(iterator));
         }
 
         //
@@ -390,7 +390,7 @@ namespace ListUnitTests
             // Set the iterator as the source interface.
             //
 
-            itersource.Ptr = iterator.get();
+            itersource.Ptr = iterator;
 
             //
             // Retrieve each element under the iterator and ensure that we can fetch it

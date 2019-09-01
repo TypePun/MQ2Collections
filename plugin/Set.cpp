@@ -345,7 +345,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // Return an iterator on the first element.
             //
 
-            Dest.Ptr = (PVOID) pThis->First().release();
+            Dest.Ptr = (PVOID) pThis->First();
 
             //
             // Get the SetIterator type and return it.

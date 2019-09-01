@@ -84,7 +84,7 @@ namespace MapUnitTests
         {
             auto iterator = _m.First();
 
-            Assert::IsNotNull(iterator.get());
+            Assert::IsNotNull(iterator);
         }
 
         //
@@ -136,7 +136,7 @@ namespace MapUnitTests
         {
             auto iterator = _m.First();
 
-            Assert::IsNotNull(iterator.get());
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
         }
 
@@ -230,12 +230,12 @@ namespace MapUnitTests
         //
 
         void WalkIteratorOverMap(const Map & m,
-            std::unique_ptr<Collections::KeyValueIterator<std::map<std::string, std::string>,
+            Collections::KeyValueIterator<std::map<std::string, std::string>,
                                                           std::string,
-                                                          std::string>> & iterator
+                                                          std::string> * iterator
         ) const
         {
-            Assert::IsNotNull(iterator.get());
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
 
             for (size_t i = 1; i < m.Count(); ++i)

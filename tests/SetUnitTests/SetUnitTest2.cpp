@@ -84,7 +84,7 @@ namespace SetUnitTests
         {
             auto iterator = _s.First();
 
-            Assert::IsNotNull(iterator.get());
+            Assert::IsNotNull(iterator);
         }
 
         //
@@ -136,7 +136,7 @@ namespace SetUnitTests
         {
             auto iterator = _s.First();
 
-            Assert::IsNotNull(iterator.get());
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
         }
 
@@ -204,10 +204,10 @@ namespace SetUnitTests
         //
 
         void WalkIteratorOverSet(const Set & s,
-            std::unique_ptr<Collections::ValueIterator<std::set<std::string>>> & iterator
+            Collections::ValueIterator<std::set<std::string>> * iterator
         ) const
         {
-            Assert::IsNotNull(iterator.get());
+            Assert::IsNotNull(iterator);
             Assert::IsFalse(iterator->IsEnd());
 
             for (size_t i = 1; i < s.Count(); ++i)

@@ -88,7 +88,7 @@ namespace ListUnitTests
 
             auto iterator = l.First();
 
-            Assert::IsNotNull(iterator.get(), L"List iterator must not be null.");
+            Assert::IsNotNull(iterator, L"List iterator must not be null.");
             Assert::IsTrue(iterator->IsEnd(), L"List iterator must not be at end.");
         }
 
@@ -102,7 +102,7 @@ namespace ListUnitTests
         {
             auto iterator = _l.First();
 
-            Assert::IsNotNull(iterator.get(), L"List iterator must not be null.");
+            Assert::IsNotNull(iterator, L"List iterator must not be null.");
             Assert::IsFalse(iterator->IsEnd(), L"List iterator must be at end.");
         }
 
@@ -228,9 +228,9 @@ namespace ListUnitTests
         //
 
         void WalkIteratorOverList(const List & l,
-                std::unique_ptr<Collections::ValueIterator<std::list<std::string>>> & iterator) const
+                Collections::ValueIterator<std::list<std::string>> * iterator) const
         {
-            Assert::IsNotNull(iterator.get(), L"Iterator should not be null.");
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
             Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
 
             for (size_t i = 1; i < l.Count(); ++i)

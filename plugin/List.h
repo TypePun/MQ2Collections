@@ -37,7 +37,8 @@ namespace Collections
                 Reset = 1,
                 Advance,
                 IsEnd,
-                Value
+                Value,
+                Clone
             };
 
             //
@@ -56,6 +57,12 @@ namespace Collections
                             const std::string & refKey);
 
             //
+            // Copy Constructor from an existing iterator.
+            //
+
+            explicit ListIterator(const ListIterator & original);
+
+            //
             // Destructor.
             //
 
@@ -66,7 +73,6 @@ namespace Collections
             // implement them.
             //
 
-            ListIterator(const ListIterator &) = delete;
             const ListIterator &operator=(const ListIterator &) = delete;
 
             //
@@ -74,6 +80,12 @@ namespace Collections
             //
 
             static const char *GetTypeName();
+
+            //
+            // Cloned iterators can be deleted.
+            //
+
+            const bool CanDelete() const;
 
             //
             // Return the value in the list under the current iterator.

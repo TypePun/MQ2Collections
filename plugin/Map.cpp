@@ -48,6 +48,114 @@ const MQ2TYPEMEMBER Map::MapMembers[] =
 //
 
 //
+// Constructor.
+//
+
+MapIterator::MapIterator(const std::map<std::string, std::string> & refCollection)
+    : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
+      ReferenceType(MapIteratorMembers)
+{
+    DebugSpew("MapIterator - %x", this);
+}
+
+//
+// Constructor - find a particular element, position to the end
+// if the element does not exist.
+//
+
+MapIterator::MapIterator(
+                    const std::map<std::string, std::string> & refCollection,
+                    const std::string & refKey)
+    : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
+      ReferenceType(MapIteratorMembers)
+{
+    DebugSpew("MapIterator - %x", this);
+
+    //
+    // Position the iterator to the item or to the end of the
+    // set.
+    //
+
+    Find(refKey);
+}
+
+//
+// Copy Constructor from an existing iterator.
+//
+
+MapIterator::MapIterator(const MapIterator & original)
+    : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(original),
+      ReferenceType(MapIteratorMembers)
+{
+        DebugSpew("MapIterator copy ctor - %x", this);
+}
+
+//
+// Destructor.
+//
+
+MapIterator::~MapIterator()
+{
+    DebugSpew("~MapIterator - %x", this);
+}
+
+//
+// Return the name of this type - mapiterator.
+//
+
+const char *MapIterator::GetTypeName()
+{
+    return "mapiterator";
+}
+
+//
+// Cloned iterators can be deleted.
+//
+
+const bool MapIterator::CanDelete() const
+{
+    return Cloned();
+}
+
+//
+// Return the value in the map under the current iterator.  
+//
+
+bool MapIterator::Value(const std::string ** const item) const
+{
+    //
+    // Return false if we are after the end of the set.
+    //
+
+    if (IsEnd())
+    {
+        return false;
+    }
+
+    *item = &m_iterator->second;
+    return true;
+}
+
+//
+// Return the key in the map under the current iterator.  
+//
+
+bool MapIterator::Key(const std::string ** const key) const
+{
+    //
+    // Return false if we are after the end of the set.
+    //
+
+    if (IsEnd())
+    {
+        return false;
+    }
+
+    *key = &m_iterator->first;
+    return true;
+}
+
+//
 // When a member function is called on the type, this method is called.
 // It returns true if the method succeeded and false otherwise.
 //
@@ -233,6 +341,21 @@ bool MapIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 {
     return false;
 }
+//
+// Return an iterator on the map for a particular key.  Return
+// false if the key is not found.
+//
+
+bool MapIterator::Find(const std::string & refKey)
+{
+    m_iterator = m_refCollection.find(refKey);
+
+    //
+    // Key was not in the collection.
+    //
+
+    return m_iterator != m_refCollection.end();
+}
 
 //
 // Return an iterator to a requested key or to the end of the set.
@@ -361,7 +484,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             // Return an iterator on the first element.
             //
 
-            Dest.Ptr = (PVOID) pThis->First().release();
+            Dest.Ptr = (PVOID) pThis->First();
 
             //
             // Get the MapIterator type and return it.

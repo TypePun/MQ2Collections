@@ -33,9 +33,21 @@ namespace Collections
         //
 
         explicit IteratorBase(const coll & collection)
-            : m_refCollection(collection)
+            : m_refCollection(collection),
+              m_cloned(false)
         {
             Reset();
+        }
+
+        //
+        // Copy the iterator. The copy is cloned and can/must be deleted.
+        //
+
+        explicit IteratorBase(const IteratorBase & original)
+            : m_refCollection(original.m_refCollection),
+              m_iterator(original.m_iterator),
+              m_cloned(true)
+        {
         }
 
         //
@@ -83,6 +95,15 @@ namespace Collections
     protected:
 
         //
+        // Was this iterator cloned?
+        //
+
+        const bool Cloned() const
+        {
+            return m_cloned;
+        }
+
+        //
         // Iterator on m_refCollection.
         //
 
@@ -93,6 +114,12 @@ namespace Collections
         //
 
         const coll & m_refCollection;
+
+        //
+        // Was this iterator cloned?
+        //
+
+        const bool m_cloned;
     };
 
     //
@@ -115,6 +142,15 @@ namespace Collections
 
         explicit ValueIterator(const coll & collection)
             : IteratorBase(collection)
+        {
+        }
+
+        //
+        // Copy the iterator.
+        //
+
+        explicit ValueIterator(const ValueIterator & iter)
+            : IteratorBase(iter)
         {
         }
 
@@ -155,6 +191,15 @@ namespace Collections
 
         explicit KeyValueIterator(const coll & collection)
             : ValueIterator(collection)
+        {
+        }
+
+        //
+        // Copy the iterator.
+        //
+
+        explicit KeyValueIterator(const KeyValueIterator & iter)
+            : ValueIterator(iter)
         {
         }
 
@@ -238,9 +283,11 @@ namespace Collections
         // collection or an iterator for which IsEnd is true.
         //
 
-        virtual std::unique_ptr<IteratorType> First() const
+        virtual IteratorType * First()
         {
-            return GetNewIterator(m_coll);
+            m_iter = std::move(GetNewIterator(m_coll));
+
+            return m_iter.get();
         }
 
     protected:
@@ -257,5 +304,11 @@ namespace Collections
         //
 
         coll m_coll;
+
+        //
+        // Iterator on the collection returned by First.
+        //
+
+        std::unique_ptr<IteratorType> m_iter;
     };
 }  // namespace Collections

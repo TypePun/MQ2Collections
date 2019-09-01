@@ -99,6 +99,15 @@ namespace Collections
             }
 
             //
+            // Cloned iterators can be deleted.
+            //
+
+            const bool CanDelete() const
+            {
+                return Cloned();
+            }
+
+            //
             // Return the value in the set under the current iterator.
             //
 

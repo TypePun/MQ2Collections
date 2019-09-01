@@ -38,19 +38,15 @@ namespace Collections
                 Advance,
                 IsEnd,
                 Value,
-                Key
+                Key,
+                Clone
             };
 
             //
             // Constructor.
             //
 
-            explicit MapIterator(const std::map<std::string, std::string> & refCollection)
-                : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                  ReferenceType(MapIteratorMembers)
-            {
-                DebugSpew("MapIterator - %x", this);
-            }
+            explicit MapIterator(const std::map<std::string, std::string> & refCollection);
 
             //
             // Constructor - find a particular element, position to the end
@@ -59,83 +55,50 @@ namespace Collections
 
             explicit MapIterator(
                             const std::map<std::string, std::string> & refCollection,
-                            const std::string & refKey)
-                : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                  ReferenceType(MapIteratorMembers)
-            {
-                DebugSpew("MapIterator - %x", this);
+                            const std::string & refKey);
 
-                //
-                // Position the iterator to the item or to the end of the
-                // set.
-                //
+            //
+            // Copy Constructor from an existing iterator.
+            //
 
-                Find(refKey);
-            }
+            explicit MapIterator(const MapIterator & original);
 
             //
             // Destructor.
             //
 
-            ~MapIterator()
-            {
-                DebugSpew("~MapIterator - %x", this);
-            }
+            ~MapIterator();
 
             //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
+            // Don't permit assignment since the MQ2Type does
+            // implement it.
             //
 
-            MapIterator(const MapIterator &) = delete;
             const MapIterator &operator=(const MapIterator &) = delete;
 
             //
             // Return the name of this type - mapiterator.
             //
 
-            static const char *GetTypeName()
-            {
-                return "mapiterator";
-            }
+            static const char *GetTypeName();
+
+            //
+            // Cloned iterators can be deleted.
+            //
+
+            const bool CanDelete() const;
 
             //
             // Return the value in the map under the current iterator.  
             //
 
-            bool Value(const std::string ** const item) const
-            {
-                //
-                // Return false if we are after the end of the set.
-                //
-
-                if (IsEnd())
-                {
-                    return false;
-                }
-
-                *item = &m_iterator->second;
-                return true;
-            }
+            bool Value(const std::string ** const item) const;
 
             //
             // Return the key in the map under the current iterator.  
             //
 
-            bool Key(const std::string ** const key) const
-            {
-                //
-                // Return false if we are after the end of the set.
-                //
-
-                if (IsEnd())
-                {
-                    return false;
-                }
-
-                *key = &m_iterator->first;
-                return true;
-            }
+            bool Key(const std::string ** const key) const;
 
             //
             // When a member function is called on the type, this method is called.
@@ -163,16 +126,7 @@ namespace Collections
             // false if the key is not found.
             //
 
-            bool Find(const std::string & refKey)
-            {
-                m_iterator = m_refCollection.find(refKey);
-
-                //
-                // Key was not in the collection.
-                //
-
-                return m_iterator != m_refCollection.end();
-            }
+            bool Find(const std::string & refKey);
 
         private:
 
