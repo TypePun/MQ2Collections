@@ -177,20 +177,13 @@ namespace Collections
             // Constructor.
             //
 
-            Map()
-                : ObjectType(MapMembers)
-            {
-                DebugSpew("Map - %x", this);
-            }
+            Map();
 
             //
             // Destructor.
             //
 
-            ~Map()
-            {
-                DebugSpew("~Map - %x", this);
-            }
+            ~Map();
 
             //
             // Don't permit copy construction and assignment since the MQ2Type does
@@ -204,45 +197,27 @@ namespace Collections
             // Return the name of this type - map.
             //
 
-            static const char *GetTypeName()
-            {
-                return "map";
-            }
+            static const char *GetTypeName();
 
             //
             // Return true if a key is in the collection.
             //
 
-            bool Contains(const std::string &key) const
-            {
-                return m_coll.find(key) != m_coll.end();
-            }
+            bool Contains(const std::string &key) const;
 
             //
             // Add a new element to the map.  If he key already exists, the
             // value is overwritten.
             //
 
-            void Add(const std::string &key, const std::string &item)
-            {
-                m_coll[key] = item;
-            }
+            void Add(const std::string &key, const std::string &item);
 
             //
             // Remove an element from the map.  Return false if the item was not
             // in the map.
             //
 
-            bool Remove(const std::string &item)
-            {
-                if (!Contains(item))
-                {
-                    return false;
-                }
-
-                m_coll.erase(item);
-                return true;
-            }
+            bool Remove(const std::string &item);
 
             //
             // Return an iterator to a requested key or to the end of the map.
@@ -278,10 +253,7 @@ namespace Collections
             //
 
             std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> GetNewIterator(
-                                const std::map<std::string, std::string> & refCollection) const
-            {
-                return std::make_unique<MapIterator>(refCollection);
-            }
+                    const std::map<std::string, std::string> & refCollection) const;
 
         private:
 

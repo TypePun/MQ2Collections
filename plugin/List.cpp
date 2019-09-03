@@ -24,6 +24,7 @@ const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
     { (DWORD) ListIteratorMembers::Advance, "Advance" },
     { (DWORD) ListIteratorMembers::IsEnd, "IsEnd" },
     { (DWORD) ListIteratorMembers::Value, "Value" },
+    { (DWORD) ListIteratorMembers::Clone, "Clone" },
     { 0, 0 }
 };
 
@@ -240,7 +241,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
 
         case ListIteratorMembers::Clone:
             //
-            //Invoke teh copy constructor on the list iterarator.
+            //Invoke the copy constructor on the list iterarator.
             //
 
             Dest.Ptr = (PVOID)std::unique_ptr<ListIterator>(pThis).release();

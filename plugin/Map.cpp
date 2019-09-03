@@ -23,6 +23,7 @@ const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
     { (DWORD) MapIteratorMembers::IsEnd, "IsEnd" },
     { (DWORD) MapIteratorMembers::Value, "Value" },
     { (DWORD) MapIteratorMembers::Key, "Key" },
+    { (DWORD) MapIteratorMembers::Clone, "Clone" },
     { 0, 0 }
 };
 
@@ -87,7 +88,7 @@ MapIterator::MapIterator(const MapIterator & original)
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(original),
       ReferenceType(MapIteratorMembers)
 {
-        DebugSpew("MapIterator copy ctor - %x", this);
+    DebugSpew("MapIterator copy ctor - %x", this);
 }
 
 //
@@ -163,6 +164,7 @@ bool MapIterator::Key(const std::string ** const key) const
 bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
 {
     MapIterator *pThis;
+    MQ2TYPEVAR typeVar;
     const std::string *pItem;
 
     DebugSpew("MapIterator::GetMember %s", Member);
@@ -254,6 +256,21 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
+            break;
+
+        case MapIteratorMembers::Clone:
+            //
+            //Invoke the copy constructor on the map iterarator.
+            //
+
+            Dest.Ptr = (PVOID)std::unique_ptr<MapIterator>(pThis).release();
+
+            //
+            // Get the MapIterator type and return it.
+            //
+
+            MapIterator::TypeDescriptor(0, typeVar);
+            Dest.Type = typeVar.Type;
             break;
 
         default:
@@ -355,6 +372,69 @@ bool MapIterator::Find(const std::string & refKey)
     //
 
     return m_iterator != m_refCollection.end();
+}
+
+//
+// Constructor.
+//
+
+Map::Map()
+    : ObjectType(MapMembers)
+{
+    DebugSpew("Map - %x", this);
+}
+
+//
+// Destructor.
+//
+
+Map::~Map()
+{
+    DebugSpew("~Map - %x", this);
+}
+
+//
+// Return the name of this type - map.
+//
+
+const char *Map::GetTypeName()
+{
+    return "map";
+}
+
+//
+// Return true if a key is in the collection.
+//
+
+bool Map::Contains(const std::string &key) const
+{
+    return m_coll.find(key) != m_coll.end();
+}
+
+//
+// Add a new element to the map.  If he key already exists, the
+// value is overwritten.
+//
+
+void Map::Add(const std::string &key, const std::string &item)
+{
+    m_coll[key] = item;
+}
+
+//
+// Remove an element from the map.  Return false if the item was not
+// in the map.
+//
+
+bool Map::Remove(const std::string &item)
+{
+    if (!Contains(item))
+    {
+        return false;
+    }
+
+    m_coll.erase(item);
+    return true;
 }
 
 //
@@ -545,6 +625,16 @@ bool Map::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
     errno_t rc;
     rc = Conversions::ToString(pThis->Count(), Destination, BUFFER_SIZE);
     return rc == 0;
+}
+
+//
+// Return an iterator on the map.
+//
+
+std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> Map::GetNewIterator(
+    const std::map<std::string, std::string> & refCollection) const
+{
+    return std::make_unique<MapIterator>(refCollection);
 }
 
 //

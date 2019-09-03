@@ -23,6 +23,7 @@ const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
     { (DWORD) SetIteratorMembers::Advance, "Advance" },
     { (DWORD) SetIteratorMembers::IsEnd, "IsEnd" },
     { (DWORD) SetIteratorMembers::Value, "Value" },
+    { (DWORD) SetIteratorMembers::Clone, "Clone" },
     { 0, 0 }
 };
 
@@ -46,6 +47,94 @@ const MQ2TYPEMEMBER Set::SetMembers[] =
 //
 // SetIterator methods.
 //
+            //
+            // Constructor.
+            //
+
+SetIterator::SetIterator(const std::set<std::string> & refCollection)
+        : ValueIterator<std::set<std::string>>(refCollection),
+          ReferenceType(SetIteratorMembers)
+{
+    DebugSpew("SetIterator - %x", this);
+}
+
+//
+// Constructor - find a particular element, position to the end
+// if the element does not exist.
+//
+
+SetIterator::SetIterator(
+                const std::set<std::string> & refCollection,
+                const std::string & refKey)
+        : ValueIterator<std::set<std::string>>(refCollection),
+          ReferenceType(SetIteratorMembers)
+{
+    DebugSpew("SetIterator - %x", this);
+
+    //
+    // Position the iterator to the item or to the end of the
+    // set.
+    //
+
+    Find(refKey);
+}
+
+//
+// Copy constructor for an existing set iterator.
+//
+
+SetIterator::SetIterator(const SetIterator & original)
+        : ValueIterator<std::set<std::string>>(original),
+          ReferenceType(SetIteratorMembers)
+{
+    DebugSpew("SetIterator copy ctor - %x", this);
+}
+
+//
+// Destructor.
+//
+
+SetIterator::~SetIterator()
+{
+    DebugSpew("~SetIterator - %x", this);
+}
+
+//
+// Return the name of this type - setiterator.
+//
+
+const char *SetIterator::GetTypeName()
+{
+    return "setiterator";
+}
+
+//
+// Cloned iterators can be deleted.
+//
+
+const bool SetIterator::CanDelete() const
+{
+    return Cloned();
+}
+
+//
+// Return the value in the set under the current iterator.
+//
+
+bool SetIterator::Value(const std::string ** const item) const
+{
+    //
+    // Return false if we are after the end of the set.
+    //
+
+    if (IsEnd())
+    {
+        return false;
+    }
+
+    *item = &(*m_iterator);
+    return true;
+}
 
 //
 // When a member function is called on the type, this method is called.
@@ -55,6 +144,7 @@ const MQ2TYPEMEMBER Set::SetMembers[] =
 bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
 {
     SetIterator *pThis;
+    MQ2TYPEVAR typeVar;
     const std::string *pItem;
 
     DebugSpew("SetIterator::GetMember %s", Member);
@@ -135,6 +225,21 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             }
             break;
 
+        case SetIteratorMembers::Clone:
+            //
+            //Invoke the copy constructor on the set iterarator.
+            //
+
+            Dest.Ptr = (PVOID)std::unique_ptr<SetIterator>(pThis).release();
+
+            //
+            // Get the SetIterator type and return it.
+            //
+
+            SetIterator::TypeDescriptor(0, typeVar);
+            Dest.Type = typeVar.Type;
+            break;
+
         default:
 
             //
@@ -184,6 +289,22 @@ bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 {
     return false;
+}
+
+//
+// Return an iterator on the set for a particular key.  Return
+// false if the key is not found.
+//
+
+bool SetIterator::Find(const std::string & refKey)
+{
+    m_iterator = m_refCollection.find(refKey);
+
+    //
+    // Key was not in the collection.
+    //
+
+    return m_iterator != m_refCollection.end();
 }
 
 //

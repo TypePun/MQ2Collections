@@ -37,19 +37,15 @@ namespace Collections
                 Reset = 1,
                 Advance,
                 IsEnd,
-                Value
+                Value,
+                Clone
             };
 
             //
             // Constructor.
             //
 
-            explicit SetIterator(const std::set<std::string> & refCollection)
-                : ValueIterator<std::set<std::string>>(refCollection),
-                  ReferenceType(SetIteratorMembers)
-            {
-                DebugSpew("SetIterator - %x", this);
-            }
+            explicit SetIterator(const std::set<std::string> & refCollection);
 
             //
             // Constructor - find a particular element, position to the end
@@ -57,74 +53,45 @@ namespace Collections
             //
 
             explicit SetIterator(
-                            const std::set<std::string> & refCollection,
-                            const std::string & refKey)
-                : ValueIterator<std::set<std::string>>(refCollection),
-                  ReferenceType(SetIteratorMembers)
-            {
-                DebugSpew("SetIterator - %x", this);
+                        const std::set<std::string> & refCollection,
+                        const std::string & refKey);
 
-                //
-                // Position the iterator to the item or to the end of the
-                // set.
-                //
+            //
+            // Copy constructor for an existing set iterator.
+            //
 
-                Find(refKey);
-            }
+            explicit SetIterator(const SetIterator & original);
 
             //
             // Destructor.
             //
 
-            ~SetIterator()
-            {
-                DebugSpew("~SetIterator - %x", this);
-            }
+            ~SetIterator();
 
             //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
+            // Don't permit assignment since the MQ2Type does
+            // implement it.
             //
 
-            SetIterator(const SetIterator &) = delete;
             const SetIterator &operator=(const SetIterator &) = delete;
 
             //
             // Return the name of this type - setiterator.
             //
 
-            static const char *GetTypeName()
-            {
-                return "setiterator";
-            }
+            static const char *GetTypeName();
 
             //
             // Cloned iterators can be deleted.
             //
 
-            const bool CanDelete() const
-            {
-                return Cloned();
-            }
+            const bool CanDelete() const;
 
             //
             // Return the value in the set under the current iterator.
             //
 
-            bool Value(const std::string ** const item) const
-            {
-                //
-                // Return false if we are after the end of the set.
-                //
-
-                if (IsEnd())
-                {
-                    return false;
-                }
-
-                *item = &(*m_iterator);
-                return true;
-            }
+            bool Value(const std::string ** const item) const;
 
             //
             // When a member function is called on the type, this method is called.
@@ -152,16 +119,7 @@ namespace Collections
             // false if the key is not found.
             //
 
-            bool Find(const std::string & refKey)
-            {
-                m_iterator = m_refCollection.find(refKey);
-
-                //
-                // Key was not in the collection.
-                //
-
-                return m_iterator != m_refCollection.end();
-            }
+            bool Find(const std::string & refKey);
 
         private:
 
