@@ -308,6 +308,68 @@ bool SetIterator::Find(const std::string & refKey)
 }
 
 //
+// Constructor.
+//
+
+Set::Set()
+    :ObjectType(SetMembers)
+{
+    DebugSpew("Set - %x", this);
+}
+
+//
+// Destructor.
+//
+
+Set::~Set()
+{
+    DebugSpew("~Set - %x", this);
+}
+
+//
+// Return the name of this type - set.
+//
+
+const char *Set::GetTypeName()
+{
+    return "set";
+}
+
+//
+// Return true if a key is in the collection.
+//
+
+bool Set::Contains(const std::string &key) const
+{
+    return m_coll.find(key) != m_coll.end();
+}
+
+//
+// Add a new element to the set.
+//
+
+void Set::Add(const std::string &item)
+{
+    m_coll.insert(item);
+}
+
+//
+// Remove an element from the set.  Return false if the item was not
+// in the set.
+//
+
+bool Set::Remove(const std::string &item)
+{
+    if (!Contains(item))
+    {
+        return false;
+    }
+
+    m_coll.erase(item);
+    return true;
+}
+
+//
 // Add a sequence of items to the set.
 //
 
@@ -549,3 +611,14 @@ bool Set::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
 
     return true;
 }
+
+//
+// Return an iterator on the set.
+//
+
+std::unique_ptr<ValueIterator<std::set<std::string>>> Set::GetNewIterator(
+    const std::set<std::string> & refCollection) const
+{
+    return std::make_unique<SetIterator>(refCollection);
+}
+

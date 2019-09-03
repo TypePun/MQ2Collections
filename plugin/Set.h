@@ -169,20 +169,13 @@ namespace Collections
             // Constructor.
             //
 
-            Set()
-                :ObjectType(SetMembers)
-            {
-                DebugSpew("Set - %x", this);
-            }
+            Set();
 
             //
             // Destructor.
             //
 
-            ~Set()
-            {
-                DebugSpew("~Set - %x", this);
-            }
+            ~Set();
 
             //
             // Don't permit copy construction and assignment since the MQ2Type does
@@ -196,28 +189,19 @@ namespace Collections
             // Return the name of this type - set.
             //
 
-            static const char *GetTypeName()
-            {
-                return "set";
-            }
+            static const char *GetTypeName();
 
             //
             // Return true if a key is in the collection.
             //
 
-            bool Contains(const std::string &key) const
-            {
-                return m_coll.find(key) != m_coll.end();
-            }
+            bool Contains(const std::string &key) const;
 
             //
             // Add a new element to the set.
             //
 
-            void Add(const std::string &item)
-            {
-                m_coll.insert(item);
-            }
+            void Add(const std::string &item);
 
             //
             // Add a sequence of items to the set.
@@ -230,16 +214,7 @@ namespace Collections
             // in the set.
             //
 
-            bool Remove(const std::string &item)
-            {
-                if (!Contains(item))
-                {
-                    return false;
-                }
-
-                m_coll.erase(item);
-                return true;
-            }
+            bool Remove(const std::string &item);
 
             //
             // Return an iterator to a requested key or to the end of the set.
@@ -275,10 +250,7 @@ namespace Collections
             //
 
             std::unique_ptr<ValueIterator<std::set<std::string>>> GetNewIterator(
-                                    const std::set<std::string> & refCollection) const
-            {
-                return std::make_unique<SetIterator>(refCollection);
-            }
+                        const std::set<std::string> & refCollection) const;
 
         private:
 
