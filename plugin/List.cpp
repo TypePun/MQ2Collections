@@ -132,6 +132,15 @@ const bool ListIterator::CanDelete() const
 }
 
 //
+// Clone this iterator, creating a new one.
+//
+
+std::unique_ptr<ListIterator> ListIterator::Clone() const
+{
+    return std::make_unique<ListIterator>(*this);
+}
+
+//
 // Return the value in the list under the current iterator.
 //
 
@@ -567,12 +576,16 @@ size_t List::Replace(const std::string & item, const std::string & newItem)
 }
 
 //
-// Return an iterator to a requested key or to the end of the set.
+// Return a new iterator positioned at the first instance of refKey or at the
+// end.
 //
 
-std::unique_ptr<ValueIterator<std::list<std::string>>> List::Find(const std::string & refKey) const
+ValueIterator<std::list<std::string>> * List::Find(
+        const std::string & refKey)
 {
-    return std::make_unique<ListIterator>(m_coll, refKey);
+    m_findIter = std::make_unique<ListIterator>(m_coll, refKey);
+
+    return m_findIter.get();
 }
 
 //
@@ -973,7 +986,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 
             if (NOT_EMPTY(Index))
             {
-                Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
                 //
                 // Get the ListIterator type and return it.
@@ -1464,4 +1477,17 @@ bool List::IndexValueFromString(const std::string & stringIndex, size_t * longIn
     }
 
     return true;
+}
+
+//
+// Set the delimiter for a list, returning the old value.
+//
+
+const std::string & List::Delimiter(const std::string & new_delimiter)
+{
+    std::string & old_delimiter(m_delimiter);
+
+    m_delimiter = new_delimiter;
+
+    return old_delimiter;
 }

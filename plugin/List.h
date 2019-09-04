@@ -88,6 +88,12 @@ namespace Collections
             const bool CanDelete() const;
 
             //
+            // Clone this iterator, creating a new one.
+            //
+
+            std::unique_ptr<ListIterator> Clone() const;
+
+            //
             // Return the value in the list under the current iterator.
             //
 
@@ -329,8 +335,7 @@ namespace Collections
             // Return an iterator to a requested key or to the end of the list.
             //
 
-            std::unique_ptr<ValueIterator<std::list<std::string>>> Find(
-                            const std::string & refKey) const;
+            ValueIterator<std::list<std::string>> * Find(const std::string & refKey);
 
             //
             // Remove and return the head of the list.  Return true if there
@@ -459,14 +464,7 @@ namespace Collections
             // Set the delimiter for a list, returning the old value.
             //
 
-            const std::string & Delimiter(const std::string & new_delimiter)
-            {
-                std::string & old_delimiter(m_delimiter);
-
-                m_delimiter = new_delimiter;
-
-                return old_delimiter;
-            }
+            const std::string & Delimiter(const std::string & new_delimiter);
 
             //
             // Delimiter used to separate items in a sequence.
@@ -479,6 +477,12 @@ namespace Collections
             //
 
             BufferManager<char> m_Buffer;
+
+            //
+            // Iterator returned by Find operations.
+            //
+
+            std::unique_ptr<ListIterator> m_findIter;
 
             //
             // Map from member ids onto names.
