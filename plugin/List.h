@@ -85,26 +85,26 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
 
             //
             // Convert the list to a string -- output the current item.
             //
 
-            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQVarPtr VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  
             //
 
-            bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
+            bool FromString(MQVarPtr& VarPtr, PCHAR Source);
 
             //
             // Used by the testing framework to call GetMember through the
             // source variable.
             //
 
-            static bool GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+            static bool GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
 
         protected:
 
@@ -127,7 +127,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TypeMember ListIteratorMembers[];
+            static const MQTypeMember ListIteratorMembers[];
         };
 
         //
@@ -344,27 +344,27 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
 
             //
             // Convert the list to a string -- output the count of items.
             //
 
-            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQVarPtr VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  Treat
             // this as a list Append call.
             //
 
-            bool FromString(MQ2VARPTR & VarPtr, PCHAR Source);
+            bool FromString(MQVarPtr& VarPtr, PCHAR Source);
 
             //
             // Used by the testing framework to call GetMember through the
             // source variable.
             //
 
-            static bool GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest);
+            static bool GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
 
         protected:
 
@@ -471,7 +471,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TypeMember ListMembers[];
+            static const MQTypeMember ListMembers[];
         };
     }  // namespace Containers
 }  // namespace Collections

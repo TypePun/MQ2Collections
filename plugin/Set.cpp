@@ -17,7 +17,7 @@ using namespace Collections::Containers;
 // contain a null string pointer.
 //
 
-const MQ2TypeMember SetIterator::SetIteratorMembers[] =
+const MQTypeMember SetIterator::SetIteratorMembers[] =
 {
     { (DWORD) SetIteratorMembers::Reset, "Reset" },
     { (DWORD) SetIteratorMembers::Advance, "Advance" },
@@ -31,7 +31,7 @@ const MQ2TypeMember SetIterator::SetIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TypeMember Set::SetMembers[] =
+const MQTypeMember Set::SetMembers[] =
 {
     { (DWORD) SetMembers::Count, "Count" },
     { (DWORD) SetMembers::Clear, "Clear" },
@@ -52,7 +52,7 @@ const MQ2TypeMember Set::SetMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool SetIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     SetIterator *pThis;
     const std::string *pItem;
@@ -152,7 +152,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 // isn't one.
 //
 
-bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool SetIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     SetIterator *pThis;
     const std::string *item;
@@ -181,7 +181,7 @@ bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool SetIterator::FromString(MQVarPtr&VarPtr, PCHAR Source)
 {
     return false;
 }
@@ -223,10 +223,10 @@ std::unique_ptr<ValueIterator<std::set<std::string>>> Set::Find(const std::strin
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Set::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     Set *pThis;
-    MQ2TYPEVAR iteratorTypeVar;
+    MQTypeVar iteratorTypeVar;
     std::string value;
 
     DebugSpew("Set::GetMember %s", Member);
@@ -393,7 +393,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 // Convert the set to a string -- output the count of items.
 //
 
-bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Set::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Set *pThis;
 
@@ -411,7 +411,7 @@ bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a set Add call.
 //
 
-bool Set::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Set::FromString(MQVarPtr &VarPtr, PCHAR Source)
 {
     Set *pDest;
 

@@ -141,19 +141,19 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest);
+            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest);
 
             //
             // Convert the map to a string -- output the current item.
             //
 
-            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQVarPtr VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  
             //
 
-            bool FromString(MQ2VARPTR &VarPtr, PCHAR Source);
+            bool FromString(MQVarPtr &VarPtr, PCHAR Source);
 
         protected:
 
@@ -185,7 +185,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TypeMember MapIteratorMembers[];
+            static const MQTypeMember MapIteratorMembers[];
 
         };
 
@@ -301,20 +301,20 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest);
+            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
 
             //
             // Convert the map to a string -- output the count of items.
             //
 
-            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQVarPtr VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.
             // Ignore the call.
             //
 
-            bool FromString(MQ2VARPTR &VarPtr, PCHAR Source);
+            bool FromString(MQVarPtr& VarPtr, PCHAR Source);
 
         protected:
 
@@ -341,7 +341,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TypeMember MapMembers[];
+            static const MQTypeMember MapMembers[];
         };
     }  // namespace Containers
 }  // namespace Collections

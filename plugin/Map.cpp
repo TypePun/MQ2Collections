@@ -16,7 +16,7 @@ using namespace Extensions::Strings;
 // contain a null string pointer.
 //
 
-const MQ2TypeMember MapIterator::MapIteratorMembers[] =
+const MQTypeMember MapIterator::MapIteratorMembers[] =
 {
     { (DWORD) MapIteratorMembers::Reset, "Reset" },
     { (DWORD) MapIteratorMembers::Advance, "Advance" },
@@ -31,7 +31,7 @@ const MQ2TypeMember MapIterator::MapIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TypeMember Map::MapMembers[] =
+const MQTypeMember Map::MapMembers[] =
 {
     { (DWORD) MapMembers::Count, "Count" },
     { (DWORD) MapMembers::Clear, "Clear" },
@@ -52,7 +52,7 @@ const MQ2TypeMember Map::MapMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool MapIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
 {
     MapIterator *pThis;
     const std::string *pItem;
@@ -165,7 +165,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 // FALSE if there isn't one.
 //
 
-bool MapIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool MapIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     MapIterator *pThis;
     const std::string *item;
@@ -229,7 +229,7 @@ bool MapIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool MapIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool MapIterator::FromString(MQVarPtr &VarPtr, PCHAR Source)
 {
     return false;
 }
@@ -249,10 +249,10 @@ std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Map::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
 {
     Map *pThis;
-    MQ2TYPEVAR iteratorTypeVar;
+    MQTypeVar iteratorTypeVar;
     std::string value;
 
     DebugSpew("Map::GetMember %s", Member);
@@ -409,7 +409,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 // Convert the map to a string -- output the count of items.
 //
 
-bool Map::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Map::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Map *pThis;
 
@@ -429,7 +429,7 @@ bool Map::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this call.
 //
 
-bool Map::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Map::FromString(MQVarPtr &VarPtr, PCHAR Source)
 {
     return false;
 }

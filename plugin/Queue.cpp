@@ -13,7 +13,7 @@ using namespace Collections::Containers;
 // pointer.
 //
 
-const MQ2TypeMember Queue::QueueMembers[] =
+const MQTypeMember Queue::QueueMembers[] =
 {
     { (DWORD) QueueMembers::Count, "Count" },
     { (DWORD) QueueMembers::Push, "Push" },
@@ -28,7 +28,7 @@ const MQ2TypeMember Queue::QueueMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Queue::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
 {
     Queue *pThis;
     std::string value;
@@ -155,7 +155,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 // Convert the queue to a string -- output the count of items.
 //
 
-bool Queue::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Queue::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Queue *pThis;
 
@@ -173,7 +173,7 @@ bool Queue::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a queue Push call.
 //
 
-bool Queue::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Queue::FromString(MQVarPtr &VarPtr, PCHAR Source)
 {
     Queue *pDest;
 

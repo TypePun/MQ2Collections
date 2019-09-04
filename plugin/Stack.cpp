@@ -13,7 +13,7 @@ using namespace Collections::Containers;
 // pointer.
 //
 
-const MQ2TypeMember Stack::StackMembers[] =
+const MQTypeMember Stack::StackMembers[] =
 {
     { (DWORD) StackMembers::Count, "Count" },
     { (DWORD) StackMembers::Push, "Push" },
@@ -28,7 +28,7 @@ const MQ2TypeMember Stack::StackMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     Stack *pThis;
     std::string value;
@@ -151,7 +151,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 // Convert the stack to a string -- output the count of items.
 //
 
-bool Stack::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Stack::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Stack *pThis;
 
@@ -169,7 +169,7 @@ bool Stack::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a stack Push call.
 //
 
-bool Stack::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Stack::FromString(MQVarPtr& VarPtr, PCHAR Source)
 {
     Stack *pDest;
 

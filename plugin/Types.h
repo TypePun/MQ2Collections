@@ -8,7 +8,7 @@
 #include <map>
 #include <typeinfo>
 
-#include <MQ2Main/MQ2Main.h>
+#include <MQ2Plugin.h>
 
 #include "Macros.h"
 
@@ -75,10 +75,10 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        BaseType(const MQ2TypeMember aMembers[])
+        BaseType(const MQTypeMember aMembers[])
             : MQ2Type(const_cast<char *>(ObjectClass::GetTypeName()))
         {
-            InitializeMembers(const_cast<MQ2TypeMember*>(aMembers));
+            InitializeMembers(const_cast<MQTypeMember*>(aMembers));
         }
 
         //
@@ -95,7 +95,7 @@ namespace Types
         // instance to it.
         //
 
-        virtual bool FromData(MQ2VARPTR & VarPtr, MQ2TYPEVAR & Source)
+        virtual bool FromData(MQVarPtr& VarPtr, MQTypeVar& Source)
         {
             ObjectClass * pDest;
 
@@ -125,7 +125,7 @@ namespace Types
         // Default implementation of from string does nothing.
         //
 
-        virtual bool FromString(MQ2VARPTR & VarPtr, PCHAR Source)
+        virtual bool FromString(MQVarPtr& VarPtr, PCHAR Source)
         {
             return true;
         }
@@ -134,7 +134,7 @@ namespace Types
         // Delete an instance of ObjectClass.
         //
 
-        virtual void FreeVariable(MQ2VARPTR & VarPtr)
+        virtual void FreeVariable(MQVarPtr& VarPtr)
         {
             DebugSpew("BaseType::FreeVariable:  %x", VarPtr.Ptr);
 
@@ -147,7 +147,7 @@ namespace Types
         // aren't any members on the type.
         //
 
-        virtual bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+        virtual bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
         {
             return false;
         }
@@ -205,7 +205,7 @@ namespace Types
         // Return the MQ2 Type.
         //
 
-        static BOOL TypeDescriptor(PCHAR szName, MQ2TYPEVAR &Dest)
+        static bool TypeDescriptor(const char* szName, MQTypeVar& Dest)
         {
             Dest.DWord = 1;
             Dest.Type = TypeMap::GetTypeInstanceForTypeName(ObjectClass::GetTypeName());
@@ -230,7 +230,7 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        ReferenceType(const MQ2TypeMember aMembers[])
+        ReferenceType(const MQTypeMember aMembers[])
             : BaseType<ObjectClass>(aMembers)
         {
         }
@@ -269,7 +269,7 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        ObjectType(const MQ2TypeMember aMembers[])
+        ObjectType(const MQTypeMember aMembers[])
             : BaseType<ObjectClass>(aMembers)
         {
         }
@@ -286,7 +286,7 @@ namespace Types
         // Allocate a new instance of this ObjectType.
         //
 
-        virtual void InitVariable(MQ2VARPTR & VarPtr)
+        virtual void InitVariable(MQVarPtr& VarPtr)
         {
             DebugSpew("ObjectType::InitVariable");
 

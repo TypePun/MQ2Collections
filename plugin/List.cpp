@@ -18,7 +18,7 @@ using namespace Conversions;
 // contain a null string pointer.
 //
 
-const MQ2TypeMember ListIterator::ListIteratorMembers[] =
+const MQTypeMember ListIterator::ListIteratorMembers[] =
 {
     { (DWORD) ListIteratorMembers::Reset, "Reset" },
     { (DWORD) ListIteratorMembers::Advance, "Advance" },
@@ -32,7 +32,7 @@ const MQ2TypeMember ListIterator::ListIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TypeMember List::ListMembers[] =
+const MQTypeMember List::ListMembers[] =
 {
     { (DWORD) ListMembers::Count, "Count" },
     { (DWORD) ListMembers::Clear, "Clear" },
@@ -134,7 +134,7 @@ bool ListIterator::Value(const std::string ** const item) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool ListIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
     const std::string * pItem;
@@ -234,7 +234,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
 // source variable.
 //
 
-bool ListIterator::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool ListIterator::GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
 
@@ -255,7 +255,7 @@ bool ListIterator::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index,
 // isn't one.
 //
 
-bool ListIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool ListIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     ListIterator * pThis;
     const std::string * item;
@@ -284,7 +284,7 @@ bool ListIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool ListIterator::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
+bool ListIterator::FromString(MQVarPtr& VarPtr, PCHAR Source)
 {
     return false;
 }
@@ -668,10 +668,10 @@ std::unique_ptr<List> List::Splice(size_t startIndex, size_t length) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool List::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     List * pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     std::unique_ptr<const std::string> pItem;
     size_t replacedItems;
 
@@ -1019,7 +1019,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 // source variable.
 //
 
-bool List::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool List::GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     List * pThis;
 
@@ -1039,7 +1039,7 @@ bool List::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 // Convert the list to a string -- output the count of items.
 //
 
-bool List::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool List::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     List * pThis;
 
@@ -1059,7 +1059,7 @@ bool List::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a list Append call.
 //
 
-bool List::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
+bool List::FromString(MQVarPtr& VarPtr, PCHAR Source)
 {
     List * pDest;
 
