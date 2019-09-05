@@ -63,15 +63,14 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\Plugin.Debug.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\Plugin.Release.props" />
   </ImportGroup>
-  <PropertyGroup>
-    <MQ2 Condition="'$(MQ2)' == ''">..\..\..</MQ2>
-  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Plugin.props))\Plugin.props"
+            Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Plugin.props))' != '' " />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -131,10 +130,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(SolutionName)'=='MQ2Collections'">
     <CustomBuildStep>
-      <Command>copy $(MQ2)\$(Configuration)\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
+      <Command>copy $(MQ2SolutionDir)build\bin\$(Configuration)\MQ2Main\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying $(MQ2)\$(Configuration)\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
+      <Message>Copying $(MQ2SolutionDir)build\bin\$(Configuration)\MQ2Main\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
