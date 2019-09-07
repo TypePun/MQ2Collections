@@ -250,10 +250,10 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
 
         case ListIteratorMembers::Clone:
             //
-            //Invoke the copy constructor on the list iterarator.
+            // Clone the iterator.
             //
 
-            Dest.Ptr = (PVOID)std::unique_ptr<ListIterator>(pThis).release();
+            Dest.Ptr = (PVOID) pThis->Clone().release();
 
             //
             // Get the ListIterator type and return it.
