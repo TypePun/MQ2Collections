@@ -119,6 +119,15 @@ const bool MapIterator::CanDelete() const
 }
 
 //
+// Clone this iterator, creating a new one.
+//
+
+std::unique_ptr<MapIterator> MapIterator::Clone() const
+{
+    return std::make_unique<MapIterator>(*this);
+}
+
+//
 // Return the value in the map under the current iterator.  
 //
 
@@ -260,10 +269,10 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 
         case MapIteratorMembers::Clone:
             //
-            //Invoke the copy constructor on the map iterarator.
+            // Clone the iterator.
             //
 
-            Dest.Ptr = (PVOID)std::unique_ptr<MapIterator>(pThis).release();
+            Dest.Ptr = (PVOID)pThis->Clone().release();
 
             //
             // Get the MapIterator type and return it.
@@ -441,10 +450,12 @@ bool Map::Remove(const std::string &item)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> Map::Find(
-                                const std::string & refKey) const
+KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> * Map::Find(
+                                const std::string & refKey)
 {
-    return std::make_unique<MapIterator>(m_coll, refKey);
+    m_findIter = std::make_unique<MapIterator>(m_coll, refKey);
+
+    return m_findIter.get();
 }
 
 //
@@ -585,7 +596,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
             if (NOT_EMPTY(Index))
             {
-                Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
                 //
                 // Get the MapIterator type and return it.

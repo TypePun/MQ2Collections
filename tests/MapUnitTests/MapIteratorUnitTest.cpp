@@ -28,7 +28,7 @@ namespace MapUnitTests
     // Map iterators are acquired by calling Find or First on a Set.
     //
 
-    TEST_CLASS(MapIteratorUnitTest)
+    TEST_CLASS(MapIteratorUnitTests)
     {
     public:
 
@@ -67,7 +67,7 @@ namespace MapUnitTests
         // Populate the map used by the iterator tests.
         //
 
-        MapIteratorUnitTest()
+        MapIteratorUnitTests()
         {
             _m.Add("A", "Value1");
             _m.Add("B", "Value2");
@@ -80,11 +80,11 @@ namespace MapUnitTests
         // Result: A non-null iterator should be returned.
         //
 
-        TEST_METHOD(TestIteratorFromFirst)
+        TEST_METHOD(AcquireIteratorFromFirst)
         {
             auto iterator = _m.First();
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
         }
 
         //
@@ -94,22 +94,22 @@ namespace MapUnitTests
         // Result: Non-null iterators should be returned where IsEnd is false.
         //
 
-        TEST_METHOD(TestIteratorFromFind)
+        TEST_METHOD(AcquireIteratorFromFind)
         {
             auto iterator = _m.Find("A");
 
-            Assert::IsNotNull(iterator.get());
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator must not be at end.");
 
             iterator = _m.Find("B");
 
-            Assert::IsNotNull(iterator.get());
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator must not be at end.");
 
             iterator = _m.Find("C");
 
-            Assert::IsNotNull(iterator.get());
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator must not be at end.");
         }
 
         //
@@ -118,12 +118,12 @@ namespace MapUnitTests
         // Result: An iterator should be returned where IsEnd is true.
         //
 
-        TEST_METHOD(TestIteratorForNonexistantElement)
+        TEST_METHOD(AcquireIteratorForNonexistantElement)
         {
             auto iterator = _m.Find("D");
 
-            Assert::IsNotNull(iterator.get());
-            Assert::IsTrue(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
+            Assert::IsTrue(iterator->IsEnd(), L"Iterator must be at end.");
         }
 
         //
@@ -132,12 +132,12 @@ namespace MapUnitTests
         // Result: IsEnd should be false.
         //
 
-        TEST_METHOD(TestIteratorIsNotAtEnd)
+        TEST_METHOD(FirstIteratorIsNotAtEnd)
         {
             auto iterator = _m.First();
 
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator must not be at end.");
         }
 
         //
@@ -147,7 +147,7 @@ namespace MapUnitTests
         // it should return False and IsEnd should be true.
         //
 
-        TEST_METHOD(TestIteratorAdvance)
+        TEST_METHOD(IteratorAdvance)
         {
             auto iterator = _m.First();
             WalkIteratorOverMap(_m, iterator);
@@ -160,7 +160,7 @@ namespace MapUnitTests
         // Result: Reset should permit multiple traverals through the map.
         //
 
-        TEST_METHOD(TestIteratorReset)
+        TEST_METHOD(IteratorReset)
         {
             auto iterator = _m.First();
             WalkIteratorOverMap(_m, iterator);
@@ -177,24 +177,24 @@ namespace MapUnitTests
         // Result: The value method should return each element in the map.
         //
 
-        TEST_METHOD(TestValueUnderIterator)
+        TEST_METHOD(ValueUnderIterator)
         {
             auto iterator = _m.First();
             std::string const * value = nullptr;
 
-            Assert::IsTrue(iterator->Value(&value));
-            Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("Value1"));
+            Assert::IsTrue(iterator->Value(&value), L"Iterator->Value returned false.");
+            Assert::IsNotNull(value, L"Value returned is null.");
+            Assert::AreEqual(std::string("Value1"), *value, L"Expected 'Value1' to be returned.");
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->Value(&value));
-            Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("Value2"));
+            Assert::IsTrue(iterator->Advance(), L"Iterator->Advance returned false.");
+            Assert::IsTrue(iterator->Value(&value), L"Iterator->Value returned false.");
+            Assert::IsNotNull(value, L"Value returned is null.");
+            Assert::AreEqual(std::string("Value2"), *value, L"Expected 'Value2' to be returned.");
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->Value(&value));
-            Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("Value3"));
+            Assert::IsTrue(iterator->Advance(), L"Iterator->Advance returned false.");
+            Assert::IsTrue(iterator->Value(&value), L"Iterator->Value returned false.");
+            Assert::IsNotNull(value, L"Value returned is null.");
+            Assert::AreEqual(std::string("Value3"), *value, L"Expected 'Value3' to be returned.");
         }
 
         //
@@ -203,24 +203,24 @@ namespace MapUnitTests
         // Result: The key method should return each element in the map.
         //
 
-        TEST_METHOD(TestKeyUnderIterator)
+        TEST_METHOD(KeyUnderIterator)
         {
             auto iterator = _m.First();
             std::string const * key = nullptr;
 
-            Assert::IsTrue(iterator->Key(&key));
-            Assert::IsNotNull(key);
-            Assert::AreEqual(*key, std::string("A"));
+            Assert::IsTrue(iterator->Key(&key), L"Iterator->Key returned false.");
+            Assert::IsNotNull(key, L"Key returned is null.");
+            Assert::AreEqual(std::string("A"), *key, L"Expected 'A' to be returned.");
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->Key(&key));
-            Assert::IsNotNull(key);
-            Assert::AreEqual(*key, std::string("B"));
+            Assert::IsTrue(iterator->Advance(), L"Iterator->Advance returned false.");
+            Assert::IsTrue(iterator->Key(&key), L"Iterator->Key returned false.");
+            Assert::IsNotNull(key, L"Key returned is null.");
+            Assert::AreEqual(std::string("B"), *key, L"Expected 'B' to be returned.");
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->Key(&key));
-            Assert::IsNotNull(key);
-            Assert::AreEqual(*key, std::string("C"));
+            Assert::IsTrue(iterator->Advance(), L"Iterator->Advance returned false.");
+            Assert::IsTrue(iterator->Key(&key), L"Iterator->Key returned false.");
+            Assert::IsNotNull(key, L"Key returned is null.");
+            Assert::AreEqual(std::string("C"), *key, L"Expected 'C' to be returned.");
         }
 
     private:
@@ -235,16 +235,16 @@ namespace MapUnitTests
                                                           std::string> * iterator
         ) const
         {
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator must not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
 
             for (size_t i = 1; i < m.Count(); ++i)
             {
-                Assert::IsTrue(iterator->Advance());
+                Assert::IsTrue(iterator->Advance(), L"Iterator->Advance returned false.");
             }
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->IsEnd());
+            Assert::IsTrue(iterator->Advance(), L"Iterator Advance returned false.");
+            Assert::IsTrue(iterator->IsEnd(), L"Iterator should be at the end.");
         }
 
         Map _m;

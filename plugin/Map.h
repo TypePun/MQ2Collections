@@ -101,6 +101,12 @@ namespace Collections
             bool Key(const std::string ** const key) const;
 
             //
+            // Clone this iterator, creating a new one.
+            //
+
+            std::unique_ptr<MapIterator> Clone() const;
+
+            //
             // When a member function is called on the type, this method is called.
             // It returns true if the method succeeded and false otherwise.
             //
@@ -141,7 +147,6 @@ namespace Collections
             //
 
             static const MQ2TYPEMEMBER MapIteratorMembers[];
-
         };
 
         //
@@ -223,8 +228,8 @@ namespace Collections
             // Return an iterator to a requested key or to the end of the map.
             //
 
-            std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> Find(
-                                const std::string & refKey) const;
+            KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> * Find(
+                                const std::string & refKey);
 
             //
             // When a member function is called on the type, this method is called.
@@ -263,6 +268,12 @@ namespace Collections
             //
 
             bool AddKeyAndValue(Map * pThis, PCHAR Arguments);
+
+            //
+            // Iterator returned by Find operations.
+            //
+
+            std::unique_ptr<MapIterator> m_findIter;
 
             //
             // Map from member ids onto names.

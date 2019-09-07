@@ -27,7 +27,7 @@ namespace MapUnitTests
     // Test Map Operations (Creation, Count, Clear, Contains, Add and Remove)
     //
 
-    TEST_CLASS(MapUnitTest1)
+    TEST_CLASS(MapInterfaceUnitTests)
     {
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
@@ -70,7 +70,7 @@ namespace MapUnitTests
         {
             Map m;
 
-            Assert::AreEqual(m.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, m.Count(), L"Map should have size of zero.");
         }
 
         //
@@ -85,7 +85,7 @@ namespace MapUnitTests
 
             m.Add("A", "Value1");
 
-            Assert::AreEqual(m.Count(), (size_t) 1);
+            Assert::AreEqual((size_t) 1, m.Count(), L"Map should have a size of 1.");
         }
 
         //
@@ -100,7 +100,7 @@ namespace MapUnitTests
 
             InsertElements(&m);
 
-            Assert::AreEqual(m.Count(), (size_t) 3);
+            Assert::AreEqual((size_t) 3, m.Count(), L"Map should have a size of 3.");
         }
 
         //
@@ -109,13 +109,13 @@ namespace MapUnitTests
         // Result: the map should contain the element.
         //
 
-        TEST_METHOD(TestMapContainsOneElement)
+        TEST_METHOD(ContainsOneElement)
         {
             Map m;
 
             m.Add("A", "Value1");
 
-            Assert::IsTrue(m.Contains("A"));
+            Assert::IsTrue(m.Contains("A"), L"Expected map to contain element 'A'.");
         }
 
         //
@@ -125,15 +125,15 @@ namespace MapUnitTests
         // Result: the map should contain all three elements.
         //
 
-        TEST_METHOD(TestMapContainsThreeElements)
+        TEST_METHOD(ContainsThreeElements)
         {
             Map m;
 
             InsertElements(&m);
 
-            Assert::IsTrue(m.Contains("A"));
-            Assert::IsTrue(m.Contains("B"));
-            Assert::IsTrue(m.Contains("C"));
+            Assert::IsTrue(m.Contains("A"), L"Expected map to contain element 'A'.");
+            Assert::IsTrue(m.Contains("B"), L"Expected map to contain element 'B'.");
+            Assert::IsTrue(m.Contains("C"), L"Expected map to contain element 'C'.");
         }
 
         //
@@ -142,13 +142,13 @@ namespace MapUnitTests
         // Result: the map should not contain the element.
         //
 
-        TEST_METHOD(TestMapDoesNotContainsAnElement)
+        TEST_METHOD(DoesNotContainsAnElement)
         {
             Map m;
 
             m.Add("A", "Value1");
 
-            Assert::IsFalse(m.Contains("B"));
+            Assert::IsFalse(m.Contains("B"), L"Map should not contain 'B'.");
         }
 
         //
@@ -157,13 +157,13 @@ namespace MapUnitTests
         // Result: the map should contain zero elements.
         //
 
-        TEST_METHOD(TestClearedEmptyMapContainsNoElements)
+        TEST_METHOD(ClearedEmptyMapContainsNoElements)
         {
             Map m;
 
             m.Clear();
 
-            Assert::AreEqual(m.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, m.Count(), L"Map should have a size of zero.");
         }
 
         //
@@ -172,14 +172,14 @@ namespace MapUnitTests
         // Result: the map should contain zero elements.
         //
 
-        TEST_METHOD(TestClearedMapContainsNoElements)
+        TEST_METHOD(ClearedMapContainsNoElements)
         {
             Map m;
 
             InsertElements(&m);
             m.Clear();
 
-            Assert::AreEqual(m.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, m.Count(), L"Map should have a size of zero.");
         }
 
         //
@@ -188,14 +188,14 @@ namespace MapUnitTests
         // Result: the map should permit the removal and contain no elements.
         //
 
-        TEST_METHOD(TestRemovalOfOneElementLeavesAnEmptyMap)
+        TEST_METHOD(RemovalOfOneElementLeavesAnEmptyMap)
         {
             Map m;
 
             m.Add("A", "Value1");
 
             Assert::IsTrue(m.Remove("A"));
-            Assert::AreEqual(m.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, m.Count(), L"Map should have a size of zero.");
         }
 
         //
@@ -204,7 +204,7 @@ namespace MapUnitTests
         // Result: The removals should succeed and the map should be empty.
         //
 
-        TEST_METHOD(TestRemovalOfAllElementsLeavesAnEmptyMap)
+        TEST_METHOD(RemovalOfAllElementsLeavesAnEmptyMap)
         {
             Map m;
 
@@ -213,7 +213,7 @@ namespace MapUnitTests
             Assert::IsTrue(m.Remove("A"));
             Assert::IsTrue(m.Remove("B"));
             Assert::IsTrue(m.Remove("C"));
-            Assert::AreEqual(m.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, m.Count(), L"Map should have a size of zero.");
         }
 
         //
@@ -223,14 +223,14 @@ namespace MapUnitTests
         // the map.
         //
 
-        TEST_METHOD(TestRemovalOfNonExistantElementFails)
+        TEST_METHOD(RemovalOfNonExistantElementFails)
         {
             Map m;
 
             m.Add("A", "Value1");
 
-            Assert::IsFalse(m.Remove("B"));
-            Assert::AreEqual(m.Count(), (size_t) 1);
+            Assert::IsFalse(m.Remove("B"), L"Failed to remove element 'B'.");
+            Assert::AreEqual((size_t) 1, m.Count(), L"Map should have a size of one.");
         }
 
         //
@@ -239,14 +239,14 @@ namespace MapUnitTests
         // Result: The cardinality of the map should be 1.
         //
 
-        TEST_METHOD(TestAddDuplicate)
+        TEST_METHOD(AddDuplicateKeys)
         {
             Map m;
 
             m.Add("A", "Value1");
             m.Add("A", "Value2");
 
-            Assert::AreEqual(m.Count(), (size_t) 1);
+            Assert::AreEqual((size_t) 1, m.Count(), L"Map should have a size of one.");
         }
 
     private:
