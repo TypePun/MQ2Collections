@@ -94,6 +94,13 @@ namespace Collections
             bool Value(const std::string ** const item) const;
 
             //
+            // Clone this iterator, creating a new one.
+            //
+
+            std::unique_ptr<SetIterator> Clone() const;
+
+
+            //
             // When a member function is called on the type, this method is called.
             // It returns true if the method succeeded and false otherwise.
             //
@@ -220,8 +227,7 @@ namespace Collections
             // Return an iterator to a requested key or to the end of the set.
             //
 
-            std::unique_ptr<ValueIterator<std::set<std::string>>> Find(
-                            const std::string & refKey) const;
+            ValueIterator<std::set<std::string>> * Find(const std::string & refKey);
 
             //
             // When a member function is called on the type, this method is called.
@@ -253,6 +259,12 @@ namespace Collections
                         const std::set<std::string> & refCollection) const;
 
         private:
+
+            //
+            // Iterator returned by Find operations.
+            //
+
+            std::unique_ptr<SetIterator> m_findIter;
 
             //
             // Map from member ids onto names.

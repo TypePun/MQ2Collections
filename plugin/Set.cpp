@@ -118,6 +118,15 @@ const bool SetIterator::CanDelete() const
 }
 
 //
+// Clone this iterator, creating a new one.
+//
+
+std::unique_ptr<SetIterator> SetIterator::Clone() const
+{
+    return std::make_unique<SetIterator>(*this);
+}
+
+//
 // Return the value in the set under the current iterator.
 //
 
@@ -227,10 +236,10 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 
         case SetIteratorMembers::Clone:
             //
-            //Invoke the copy constructor on the set iterarator.
+            // Clone the iterator.
             //
 
-            Dest.Ptr = (PVOID)std::unique_ptr<SetIterator>(pThis).release();
+            Dest.Ptr = (PVOID)pThis->Clone().release();
 
             //
             // Get the SetIterator type and return it.
@@ -396,9 +405,11 @@ void Set::AddItems(const std::string &items)
 // Return an iterator to a requested key or to the end of the set.
 //
 
-std::unique_ptr<ValueIterator<std::set<std::string>>> Set::Find(const std::string & refKey) const
+ValueIterator<std::set<std::string>> * Set::Find(const std::string & refKey)
 {
-    return std::make_unique<SetIterator>(m_coll, refKey);
+    m_findIter = std::make_unique<SetIterator>(m_coll, refKey);
+
+    return m_findIter.get();
 }
 
 //
@@ -549,7 +560,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 
             if (NOT_EMPTY(Index))
             {
-                Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
                 //
                 // Get the SetIterator type and return it.
