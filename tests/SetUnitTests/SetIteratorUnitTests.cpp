@@ -28,7 +28,7 @@ namespace SetUnitTests
     // Set iterators are acquired by calling Find or First on a Set.
     //
 
-    TEST_CLASS(SetIteratorUnitTest)
+    TEST_CLASS(SetIteratorUnitTests)
     {
     public:
 
@@ -67,7 +67,7 @@ namespace SetUnitTests
         // Populate the set used by the iterator tests.
         //
 
-        SetIteratorUnitTest()
+        SetIteratorUnitTests()
         {
             _s.Add("A");
             _s.Add("B");
@@ -80,11 +80,11 @@ namespace SetUnitTests
         // Result: A non-null iterator should be returned.
         //
 
-        TEST_METHOD(TestIteratorFromFirst)
+        TEST_METHOD(AcqurieIteratorFromFirst)
         {
             auto iterator = _s.First();
 
-            Assert::IsNotNull(iterator);
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
         }
 
         //
@@ -94,22 +94,22 @@ namespace SetUnitTests
         // Result: Non-null iterators should be returned where IsEnd is false.
         //
 
-        TEST_METHOD(TestIteratorFromFind)
+        TEST_METHOD(AcquireIteratorFromFind)
         {
             auto iterator = _s.Find("A");
 
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
 
             iterator = _s.Find("B");
 
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
 
             iterator = _s.Find("C");
 
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
         }
 
         //
@@ -118,12 +118,12 @@ namespace SetUnitTests
         // Result: An iterator should be returned where IsEnd is true.
         //
 
-        TEST_METHOD(TestIteratorForNonexistantElement)
+        TEST_METHOD(AcquireIteratorForNonexistantElement)
         {
             auto iterator = _s.Find("D");
 
-            Assert::IsNotNull(iterator);
-            Assert::IsTrue(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
+            Assert::IsTrue(iterator->IsEnd(), L"Iterator should be at end.");
         }
 
         //
@@ -132,12 +132,12 @@ namespace SetUnitTests
         // Result: IsEnd should be false.
         //
 
-        TEST_METHOD(TestIteratorIsNotAtEnd)
+        TEST_METHOD(AcquireIteratorIsNotAtEnd)
         {
             auto iterator = _s.First();
 
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
         }
 
         //
@@ -147,7 +147,7 @@ namespace SetUnitTests
         // it should return False and IsEnd should be true.
         //
 
-        TEST_METHOD(TestIteratorAdvance)
+        TEST_METHOD(AcquireIteratorAdvance)
         {
             auto iterator = _s.First();
             WalkIteratorOverSet(_s, iterator);
@@ -160,14 +160,14 @@ namespace SetUnitTests
         // Result: Reset should permit multiple traverals through the set.
         //
 
-        TEST_METHOD(TestIteratorReset)
+        TEST_METHOD(IteratorReset)
         {
             auto iterator = _s.First();
             WalkIteratorOverSet(_s, iterator);
 
             iterator->Reset();
 
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
             WalkIteratorOverSet(_s, iterator);
         }
 
@@ -177,24 +177,24 @@ namespace SetUnitTests
         // Result: The value method should return each element in the set.
         //
 
-        TEST_METHOD(TestValueUnderIterator)
+        TEST_METHOD(ValueUnderIterator)
         {
             auto iterator = _s.First();
             std::string const * value = nullptr;
 
-            Assert::IsTrue(iterator->Value(&value));
-            Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("A"));
+            Assert::IsTrue(iterator->Value(&value), L"Iterator Value should not fail.");
+            Assert::IsNotNull(value, L"Iterator Value should not be null.");
+            Assert::AreEqual(*value, std::string("A"), L"Iterator Value should be 'A'.");
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->Value(&value));
-            Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("B"));
+            Assert::IsTrue(iterator->Advance(), L"Iterator Advance should not fail.");
+            Assert::IsTrue(iterator->Value(&value), L"Iterator Value should not fail.");
+            Assert::IsNotNull(value, L"Iterator Value should not be null.");
+            Assert::AreEqual(*value, std::string("B"), L"Iterator Value should be 'B'.");
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->Value(&value));
-            Assert::IsNotNull(value);
-            Assert::AreEqual(*value, std::string("C"));
+            Assert::IsTrue(iterator->Advance(), L"Iterator Advance should not fail.");
+            Assert::IsTrue(iterator->Value(&value), L"Iterator Value should not fail.");
+            Assert::IsNotNull(value, L"Iterator Value should not be null.");
+            Assert::AreEqual(*value, std::string("C"), L"Iterator Value should be 'C'.");
         }
 
     private:
@@ -207,16 +207,16 @@ namespace SetUnitTests
             Collections::ValueIterator<std::set<std::string>> * iterator
         ) const
         {
-            Assert::IsNotNull(iterator);
-            Assert::IsFalse(iterator->IsEnd());
+            Assert::IsNotNull(iterator, L"Iterator should not be null.");
+            Assert::IsFalse(iterator->IsEnd(), L"Iterator should not be at end.");
 
             for (size_t i = 1; i < s.Count(); ++i)
             {
-                Assert::IsTrue(iterator->Advance());
+                Assert::IsTrue(iterator->Advance(), L"Iterator Advance should not fail.");
             }
 
-            Assert::IsTrue(iterator->Advance());
-            Assert::IsTrue(iterator->IsEnd());
+            Assert::IsTrue(iterator->Advance(), L"Iterator Advance should not fail.");
+            Assert::IsTrue(iterator->IsEnd(), L"Iterator Advance should be at end.");
         }
 
         Set _s;

@@ -27,7 +27,7 @@ namespace SetUnitTests
     // Test Set Operations (Creation, Count, Clear, Contains, Add and Remove)
     //
 
-    TEST_CLASS(SetUnitTest1)
+    TEST_CLASS(SetInterfaceUnitTests)
     {
     public:
         BEGIN_TEST_CLASS_ATTRIBUTE()
@@ -70,7 +70,7 @@ namespace SetUnitTests
         {
             Set s;
 
-            Assert::AreEqual(s.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, s.Count(), L"Expected set to be empty.");
         }
 
         //
@@ -85,7 +85,7 @@ namespace SetUnitTests
 
             s.Add("A");
 
-            Assert::AreEqual(s.Count(), (size_t) 1);
+            Assert::AreEqual((size_t) 1, s.Count(), L"Expected set to contain element.");
         }
 
         //
@@ -100,7 +100,7 @@ namespace SetUnitTests
 
             InsertElements(&s);
 
-            Assert::AreEqual(s.Count(), (size_t) 3);
+            Assert::AreEqual((size_t) 3, s.Count(), L"Expected set to contain three elements.");
         }
 
         //
@@ -109,13 +109,13 @@ namespace SetUnitTests
         // Result: the set should contain the element.
         //
 
-        TEST_METHOD(TestSetContainsOneElement)
+        TEST_METHOD(ContainsOneElement)
         {
             Set s;
 
             s.Add("A");
 
-            Assert::IsTrue(s.Contains("A"));
+            Assert::IsTrue(s.Contains("A"), L"Expected set to contain 'A'.");
         }
 
         //
@@ -125,15 +125,15 @@ namespace SetUnitTests
         // Result: the set should contain all three elements.
         //
 
-        TEST_METHOD(TestSetContainsThreeElements)
+        TEST_METHOD(ContainsThreeElements)
         {
             Set s;
 
             InsertElements(&s);
 
-            Assert::IsTrue(s.Contains("A"));
-            Assert::IsTrue(s.Contains("B"));
-            Assert::IsTrue(s.Contains("C"));
+            Assert::IsTrue(s.Contains("A"), L"Expected set to contain 'A'.");
+            Assert::IsTrue(s.Contains("B"), L"Expected set to contain 'B'.");
+            Assert::IsTrue(s.Contains("C"), L"Expected set to contain 'C'.");
         }
 
         //
@@ -142,13 +142,13 @@ namespace SetUnitTests
         // Result: the set should not contain the element.
         //
 
-        TEST_METHOD(TestSetDoesNotContainsAnElement)
+        TEST_METHOD(DoesNotContainsAnElement)
         {
             Set s;
 
             s.Add("A");
 
-            Assert::IsFalse(s.Contains("B"));
+            Assert::IsFalse(s.Contains("B"), L"Set should not contain 'Z'.");
         }
 
         //
@@ -157,13 +157,13 @@ namespace SetUnitTests
         // Result: the set should contain zero elements.
         //
 
-        TEST_METHOD(TestClearedEmptySetContainsNoElements)
+        TEST_METHOD(ClearedEmptySetContainsNoElements)
         {
             Set s;
 
             s.Clear();
 
-            Assert::AreEqual(s.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, s.Count(), L"Set should have a size of zero.");
         }
 
         //
@@ -172,14 +172,14 @@ namespace SetUnitTests
         // Result: the set should contain zero elements.
         //
 
-        TEST_METHOD(TestClearedSetContainsNoElements)
+        TEST_METHOD(ClearedSetContainsNoElements)
         {
             Set s;
 
             InsertElements(&s);
             s.Clear();
 
-            Assert::AreEqual(s.Count(), (size_t) 0);
+            Assert::AreEqual((size_t) 0, s.Count(), L"Set should have a size of zero.");
         }
 
         //
@@ -188,14 +188,14 @@ namespace SetUnitTests
         // Result: the set should permit the removal and contain no elements.
         //
 
-        TEST_METHOD(TestRemovalOfOneElementLeavesAnEmptySet)
+        TEST_METHOD(RemovalOfOneElementLeavesAnEmptySet)
         {
             Set s;
 
             s.Add("A");
 
-            Assert::IsTrue(s.Remove("A"));
-            Assert::AreEqual(s.Count(), (size_t) 0);
+            Assert::IsTrue(s.Remove("A"), L"Remove of 'A' failed.");
+            Assert::AreEqual((size_t) 0, s.Count(), L"Set should have a size of zero.");
         }
 
         //
@@ -204,16 +204,16 @@ namespace SetUnitTests
         // Result: The removals should succeed and the set should be empty.
         //
 
-        TEST_METHOD(TestRemovalOfAllElementsLeavesAnEmptySet)
+        TEST_METHOD(RemovalOfAllElementsLeavesAnEmptySet)
         {
             Set s;
 
             InsertElements(&s);
 
-            Assert::IsTrue(s.Remove("A"));
-            Assert::IsTrue(s.Remove("B"));
-            Assert::IsTrue(s.Remove("C"));
-            Assert::AreEqual(s.Count(), (size_t) 0);
+            Assert::IsTrue(s.Remove("A"), L"Remove of 'A' failed.");
+            Assert::IsTrue(s.Remove("B"), L"Remove of 'B' failed.");
+            Assert::IsTrue(s.Remove("C"), L"Remove of 'C' failed.");
+            Assert::AreEqual((size_t) 0, s.Count(), L"Set should have a size of zero.");
         }
 
         //
@@ -223,14 +223,14 @@ namespace SetUnitTests
         // the set.
         //
 
-        TEST_METHOD(TestRemovalOfNonExistantElementFails)
+        TEST_METHOD(RemovalOfNonExistantElementFails)
         {
             Set s;
 
             s.Add("A");
 
-            Assert::IsFalse(s.Remove("B"));
-            Assert::AreEqual(s.Count(), (size_t) 1);
+            Assert::IsFalse(s.Remove("B"), L"Remove of 'B' should not have succeeded.");
+            Assert::AreEqual((size_t) 1, s.Count(), L"Set should have a size of one.");
         }
 
         //
@@ -239,14 +239,14 @@ namespace SetUnitTests
         // Result: The cardinality of the set should be 1.
         //
 
-        TEST_METHOD(TestAddDuplicate)
+        TEST_METHOD(AddDuplicate)
         {
             Set s;
 
             s.Add("A");
             s.Add("A");
 
-            Assert::AreEqual(s.Count(), (size_t) 1);
+            Assert::AreEqual((size_t) 1, s.Count(), L"Set should have a size of one.");
         }
 
         //
@@ -255,13 +255,13 @@ namespace SetUnitTests
         // Result: The cardinality of the set should be 0.
         //
 
-        TEST_METHOD(TestAddItemsZero)
+        TEST_METHOD(AddItemsZero)
         {
             Set s;
 
             s.AddItems("");
 
-            Assert::AreEqual(s.Count(), (size_t)1);
+            Assert::AreEqual((size_t) 1, s.Count(), L"Set should have a size of one.");
         }
 
         //
@@ -270,13 +270,13 @@ namespace SetUnitTests
         // Result: The cardinality of the set should be 1.
         //
 
-        TEST_METHOD(TestAddItemsOne)
+        TEST_METHOD(AddItemsOne)
         {
             Set s;
 
             s.AddItems("A");
 
-            Assert::AreEqual(s.Count(), (size_t)1);
+            Assert::AreEqual((size_t) 1, s.Count(), L"Set should have a size of one.");
         }
 
         //
@@ -285,13 +285,13 @@ namespace SetUnitTests
         // Result: The cardinality of the set should be 2.
         //
 
-        TEST_METHOD(TestAddItemsTwo)
+        TEST_METHOD(AddItemsTwo)
         {
             Set s;
 
             s.AddItems("A,B");
 
-            Assert::AreEqual(s.Count(), (size_t)2);
+            Assert::AreEqual((size_t) 2, s.Count(), L"Set should have a size of two.");
         }
 
         //
@@ -300,13 +300,13 @@ namespace SetUnitTests
         // Result: The cardinality of the set should be 1.
         //
 
-        TEST_METHOD(TestAddItemsDuplicate)
+        TEST_METHOD(AddItemsDuplicate)
         {
             Set s;
 
             s.AddItems("A,A");
 
-            Assert::AreEqual(s.Count(), (size_t)1);
+            Assert::AreEqual((size_t) 1, s.Count(), L"Set should have a size of one.");
         }
 
     private:
