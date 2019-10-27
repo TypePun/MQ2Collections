@@ -20,7 +20,7 @@
 // defines a common set of methods that the collection must implement.
 //
 
-#include <MQ2Plugin.h>
+#include <mq/Plugin.h>
 
 #include "MQ2CollectionsImpl.h"
 

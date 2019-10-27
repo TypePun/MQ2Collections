@@ -8,7 +8,7 @@
 #include <map>
 #include <typeinfo>
 
-#include <MQ2Plugin.h>
+#include <mq/Plugin.h>
 
 #include "Macros.h"
 
