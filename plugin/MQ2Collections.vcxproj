@@ -27,6 +27,7 @@
     <ClInclude Include="BufferManager.h" />
     <ClInclude Include="Collections.h" />
     <ClInclude Include="Conversions.h" />
+    <ClInclude Include="DebugMemory.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Map.h" />
@@ -98,6 +99,7 @@
       </RuntimeTypeInfo>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -120,6 +122,7 @@
       </RuntimeTypeInfo>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "DebugMemory.h"
 
 #include <string>
 #include <map>
@@ -37,19 +38,15 @@ namespace Collections
                 Advance,
                 IsEnd,
                 Value,
-                Key
+                Key,
+                Clone
             };
 
             //
             // Constructor.
             //
 
-            explicit MapIterator(const std::map<std::string, std::string> & refCollection)
-                : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                  ReferenceType(MapIteratorMembers)
-            {
-                DebugSpew("MapIterator - %x", this);
-            }
+            explicit MapIterator(const std::map<std::string, std::string> & refCollection);
 
             //
             // Constructor - find a particular element, position to the end
@@ -58,83 +55,56 @@ namespace Collections
 
             explicit MapIterator(
                             const std::map<std::string, std::string> & refCollection,
-                            const std::string & refKey)
-                : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
-                  ReferenceType(MapIteratorMembers)
-            {
-                DebugSpew("MapIterator - %x", this);
+                            const std::string & refKey);
 
-                //
-                // Position the iterator to the item or to the end of the
-                // set.
-                //
+            //
+            // Copy Constructor from an existing iterator.
+            //
 
-                Find(refKey);
-            }
+            explicit MapIterator(const MapIterator & original);
 
             //
             // Destructor.
             //
 
-            ~MapIterator()
-            {
-                DebugSpew("~MapIterator - %x", this);
-            }
+            ~MapIterator();
 
             //
-            // Don't permit copy construction and assignment since the MQ2Type does
-            // implement them.
+            // Don't permit assignment since the MQ2Type does
+            // implement it.
             //
 
-            MapIterator(const MapIterator &) = delete;
             const MapIterator &operator=(const MapIterator &) = delete;
 
             //
             // Return the name of this type - mapiterator.
             //
 
-            static const char *GetTypeName()
-            {
-                return "mapiterator";
-            }
+            static const char *GetTypeName();
+
+            //
+            // Cloned iterators can be deleted.
+            //
+
+            const bool CanDelete() const;
 
             //
             // Return the value in the map under the current iterator.  
             //
 
-            bool Value(const std::string ** const item) const
-            {
-                //
-                // Return false if we are after the end of the set.
-                //
-
-                if (IsEnd())
-                {
-                    return false;
-                }
-
-                *item = &m_iterator->second;
-                return true;
-            }
+            bool Value(const std::string ** const item) const;
 
             //
             // Return the key in the map under the current iterator.  
             //
 
-            bool Key(const std::string ** const key) const
-            {
-                //
-                // Return false if we are after the end of the set.
-                //
+            bool Key(const std::string ** const key) const;
 
-                if (IsEnd())
-                {
-                    return false;
-                }
+            //
+            // Clone this iterator, creating a new one.
+            //
 
-                *key = &m_iterator->first;
-                return true;
-            }
+            std::unique_ptr<MapIterator> Clone() const;
 
             //
             // When a member function is called on the type, this method is called.
@@ -162,16 +132,7 @@ namespace Collections
             // false if the key is not found.
             //
 
-            bool Find(const std::string & refKey)
-            {
-                m_iterator = m_refCollection.find(refKey);
-
-                //
-                // Key was not in the collection.
-                //
-
-                return m_iterator != m_refCollection.end();
-            }
+            bool Find(const std::string & refKey);
 
         private:
 
@@ -222,20 +183,13 @@ namespace Collections
             // Constructor.
             //
 
-            Map()
-                : ObjectType(MapMembers)
-            {
-                DebugSpew("Map - %x", this);
-            }
+            Map();
 
             //
             // Destructor.
             //
 
-            ~Map()
-            {
-                DebugSpew("~Map - %x", this);
-            }
+            ~Map();
 
             //
             // Don't permit copy construction and assignment since the MQ2Type does
@@ -249,52 +203,34 @@ namespace Collections
             // Return the name of this type - map.
             //
 
-            static const char *GetTypeName()
-            {
-                return "map";
-            }
+            static const char *GetTypeName();
 
             //
             // Return true if a key is in the collection.
             //
 
-            bool Contains(const std::string &key) const
-            {
-                return m_coll.find(key) != m_coll.end();
-            }
+            bool Contains(const std::string &key) const;
 
             //
             // Add a new element to the map.  If he key already exists, the
             // value is overwritten.
             //
 
-            void Add(const std::string &key, const std::string &item)
-            {
-                m_coll[key] = item;
-            }
+            void Add(const std::string &key, const std::string &item);
 
             //
             // Remove an element from the map.  Return false if the item was not
             // in the map.
             //
 
-            bool Remove(const std::string &item)
-            {
-                if (!Contains(item))
-                {
-                    return false;
-                }
-
-                m_coll.erase(item);
-                return true;
-            }
+            bool Remove(const std::string &item);
 
             //
             // Return an iterator to a requested key or to the end of the map.
             //
 
-            std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> Find(
-                                const std::string & refKey) const;
+            KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> * Find(
+                                const std::string & refKey);
 
             //
             // When a member function is called on the type, this method is called.
@@ -323,10 +259,7 @@ namespace Collections
             //
 
             std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>> GetNewIterator(
-                                const std::map<std::string, std::string> & refCollection) const
-            {
-                return std::make_unique<MapIterator>(refCollection);
-            }
+                    const std::map<std::string, std::string> & refCollection) const;
 
         private:
 
@@ -336,6 +269,12 @@ namespace Collections
             //
 
             bool AddKeyAndValue(Map * pThis, PCHAR Arguments);
+
+            //
+            // Iterator returned by Find operations.
+            //
+
+            std::unique_ptr<MapIterator> m_findIter;
 
             //
             // Map from member ids onto names.

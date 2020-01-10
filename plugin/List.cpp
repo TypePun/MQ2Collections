@@ -24,6 +24,7 @@ const MQTypeMember ListIterator::ListIteratorMembers[] =
     { (DWORD) ListIteratorMembers::Advance, "Advance" },
     { (DWORD) ListIteratorMembers::IsEnd, "IsEnd" },
     { (DWORD) ListIteratorMembers::Value, "Value" },
+    { (DWORD) ListIteratorMembers::Clone, "Clone" },
     { 0, 0 }
 };
 
@@ -93,6 +94,17 @@ ListIterator::ListIterator(
 }
 
 //
+// Copy constructor for a list iterator.
+//
+
+ListIterator::ListIterator(const ListIterator & original)
+    : ValueIterator<std::list<std::string>>(original),
+      ReferenceType(ListIteratorMembers)
+{
+    DebugSpew("ListIterator copy ctor - %x", this);
+}
+
+//
 // Destructor.
 //
 
@@ -108,6 +120,24 @@ ListIterator::~ListIterator()
 const char *ListIterator::GetTypeName()
 {
     return "listiterator";
+}
+
+//
+// Cloned iterators can be deleted.
+//
+
+const bool ListIterator::CanDelete() const
+{
+    return Cloned();
+}
+
+//
+// Clone this iterator, creating a new one.
+//
+
+std::unique_ptr<ListIterator> ListIterator::Clone() const
+{
+    return std::make_unique<ListIterator>(*this);
 }
 
 //
@@ -137,6 +167,7 @@ bool ListIterator::Value(const std::string ** const item) const
 bool ListIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
+    MQ2TYPEVAR typeVar;
     const std::string * pItem;
 
     DebugSpew("ListIterator::GetMember %s", Member);
@@ -215,6 +246,21 @@ bool ListIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeV
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
                 Dest.Type = pStringType;
             }
+            break;
+
+        case ListIteratorMembers::Clone:
+            //
+            // Clone the iterator.
+            //
+
+            Dest.Ptr = (PVOID) pThis->Clone().release();
+
+            //
+            // Get the ListIterator type and return it.
+            //
+
+            ListIterator::TypeDescriptor(0, typeVar);
+            Dest.Type = typeVar.Type;
             break;
 
         default:
@@ -530,12 +576,16 @@ size_t List::Replace(const std::string & item, const std::string & newItem)
 }
 
 //
-// Return an iterator to a requested key or to the end of the set.
+// Return a new iterator positioned at the first instance of refKey or at the
+// end.
 //
 
-std::unique_ptr<ValueIterator<std::list<std::string>>> List::Find(const std::string & refKey) const
+ValueIterator<std::list<std::string>> * List::Find(
+        const std::string & refKey)
 {
-    return std::make_unique<ListIterator>(m_coll, refKey);
+    m_findIter = std::make_unique<ListIterator>(m_coll, refKey);
+
+    return m_findIter.get();
 }
 
 //
@@ -915,7 +965,7 @@ bool List::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest
             // Return an iterator on the first element.
             //
 
-            Dest.Ptr = (PVOID) pThis->First().release();
+            Dest.Ptr = (PVOID) pThis->First();
 
             //
             // Get the ListIterator type and return it.
@@ -936,7 +986,7 @@ bool List::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest
 
             if (NOT_EMPTY(Index))
             {
-                Dest.Ptr = (PVOID) pThis->Find(std::string(Index)).release();
+                Dest.Ptr = (PVOID) pThis->Find(std::string(Index));
 
                 //
                 // Get the ListIterator type and return it.
@@ -1427,4 +1477,17 @@ bool List::IndexValueFromString(const std::string & stringIndex, size_t * longIn
     }
 
     return true;
+}
+
+//
+// Set the delimiter for a list, returning the old value.
+//
+
+const std::string & List::Delimiter(const std::string & new_delimiter)
+{
+    std::string & old_delimiter(m_delimiter);
+
+    m_delimiter = new_delimiter;
+
+    return old_delimiter;
 }

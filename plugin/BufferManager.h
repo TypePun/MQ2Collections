@@ -4,7 +4,9 @@
 
 #pragma once
 
-#include <memory>
+#include "DebugMemory.h"
+
+#include <vector>
 
 namespace Utilities
 {
@@ -42,14 +44,6 @@ namespace Utilities
 
             virtual ~BufferManager()
             {
-                //
-                // If there is a buffer, release it.
-                //
-
-                if (m_Buffer.second)
-                {
-                    std::return_temporary_buffer(m_Buffer.first);
-                }
             }
 
             //
@@ -68,7 +62,7 @@ namespace Utilities
 
             const T *GetBufferPointer() const
             {
-                return m_Buffer.first;
+                return m_Buffer.data();
             }
 
         private:
@@ -79,23 +73,20 @@ namespace Utilities
 
             void CopyToBuffer(const T *array, size_t elements)
             {
-                //
-                // If there is a buffer, release it before allocating a new
-                // one.
-                //
-
-                if (m_Buffer.second)
+                if (elements > 0)
                 {
-                    std::return_temporary_buffer(m_Buffer.first);
+                    //
+                    // Allocate vector elements.
+                    //
+
+                    m_Buffer.resize(elements);
+
+                    //
+                    // Copy the array to the buffer.
+                    //
+
+                    std::uninitialized_copy(array, array + elements, m_Buffer.data());
                 }
-
-                m_Buffer = std::get_temporary_buffer<T>(elements);
-
-                //
-                // Copy the array to the buffer.
-                //
-
-                std::uninitialized_copy(array, array + m_Buffer.second, m_Buffer.first);
             }
 
             //
@@ -103,7 +94,7 @@ namespace Utilities
             // std::get_temporary_buffer.
             //
 
-            std::pair<T *, std::ptrdiff_t> m_Buffer;
+            std::vector<T> m_Buffer;
         };
     }  // namespace Buffers
 }  // namespace Utilities

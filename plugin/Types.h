@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "DebugMemory.h"
 
 #include <string>
 #include <map>
@@ -90,6 +91,15 @@ namespace Types
         }
 
         //
+        // By default, this type can be deleted.
+        //
+
+        virtual const bool CanDelete() const
+        {
+            return true;
+        }
+
+        //
         // This method is executed when the /vardata statement is executed on
         // the type.  Delete the destination instance and set the source
         // instance to it.
@@ -113,7 +123,10 @@ namespace Types
 
             if (pDest != Source.Ptr)
             {
-                delete pDest;
+                if (CanDelete())
+                {
+                    delete pDest;
+                }
             }
 
             VarPtr.Ptr = Source.Ptr;
@@ -138,7 +151,11 @@ namespace Types
         {
             DebugSpew("BaseType::FreeVariable:  %x", VarPtr.Ptr);
 
-            delete reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
+            if (CanDelete())
+            {
+                delete reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
+            }
+
             VarPtr.Ptr = 0;
         }
 
@@ -241,6 +258,15 @@ namespace Types
 
         ~ReferenceType()
         {
+        }
+        
+        //
+        // This type cannot be deleted.
+        //
+
+        const bool CanDelete() const
+        {
+            return false;
         }
 
         //

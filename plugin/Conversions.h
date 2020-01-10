@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "DebugMemory.h"
+
 #include <cstdlib>
 #include <cstdint>
 #include <cerrno>

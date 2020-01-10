@@ -66,6 +66,9 @@
     <ClInclude Include="MQ2CollectionsImpl.h">
       <Filter>Includes</Filter>
     </ClInclude>
+    <ClInclude Include="DebugMemory.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Includes">
