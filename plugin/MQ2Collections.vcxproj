@@ -77,13 +77,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
-    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(MQ2BuildDirectory)obj\$(MQ2BinaryDirName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
-    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(MQ2BuildDirectory)obj\$(MQ2BinaryDirName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,15 +132,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(SolutionName)'=='MQ2Collections'">
-    <CustomBuildStep>
-      <Command>copy $(MQ2SolutionDir)build\bin\$(Configuration)\MQ2Main\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying $(MQ2SolutionDir)build\bin\$(Configuration)\MQ2Main\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
-    </CustomBuildStep>
+    <ClCompile>
+      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</BufferSecurityCheck>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
