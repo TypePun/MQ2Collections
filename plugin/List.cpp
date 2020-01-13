@@ -167,7 +167,7 @@ bool ListIterator::Value(const std::string ** const item) const
 bool ListIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     const std::string * pItem;
 
     DebugSpew("ListIterator::GetMember %s", Member);

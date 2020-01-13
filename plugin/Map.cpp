@@ -173,7 +173,7 @@ bool MapIterator::Key(const std::string ** const key) const
 bool MapIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
 {
     MapIterator *pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     const std::string *pItem;
 
     DebugSpew("MapIterator::GetMember %s", Member);

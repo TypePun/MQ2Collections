@@ -153,7 +153,7 @@ bool SetIterator::Value(const std::string ** const item) const
 bool SetIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     SetIterator *pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     const std::string *pItem;
 
     DebugSpew("SetIterator::GetMember %s", Member);
