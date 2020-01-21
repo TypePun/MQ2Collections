@@ -41,7 +41,7 @@ bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Des
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
@@ -76,7 +76,7 @@ bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Des
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case StackMembers::Push:
@@ -109,7 +109,7 @@ bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Des
             if (pThis->Pop(&pValue))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -131,7 +131,7 @@ bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Des
             if (pThis->Peek(&pValue))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 

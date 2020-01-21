@@ -163,7 +163,7 @@ bool SetIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVa
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
@@ -230,7 +230,7 @@ bool SetIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVa
             if (pThis->Value(&pItem))
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -430,7 +430,7 @@ bool Set::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
@@ -465,7 +465,7 @@ bool Set::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case SetMembers::Clear:
