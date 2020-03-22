@@ -26,6 +26,7 @@
 #include "MQ2CollectionsImpl.h"
 
 PreSetup("MQ2Collections");
+PLUGIN_VERSION(1.2);
 
 //
 // Called once, when the plugin is to loaded. Register the types.
