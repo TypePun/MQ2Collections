@@ -50,8 +50,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2019,0914
- PRODUCTVERSION 2019,0914
+ FILEVERSION 1,2
+ PRODUCTVERSION 1,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TypePun Software"
             VALUE "FileDescription", "Collection types for MacroQuest2."
-            VALUE "FileVersion", "2019.0914"
+            VALUE "FileVersion", "1.2"
             VALUE "InternalName", "Collection Types."
             VALUE "LegalCopyright", "Copyright (C) 2019"
             VALUE "OriginalFilename", "MQ2Collections.dll"
             VALUE "ProductName", "MQ2Collections"
-            VALUE "ProductVersion", "2019.0914"
+            VALUE "ProductVersion", "1.2"
         END
     END
     BLOCK "VarFileInfo"
