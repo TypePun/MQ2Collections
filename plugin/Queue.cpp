@@ -28,13 +28,11 @@ const MQTypeMember Queue::QueueMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Queue::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
+bool Queue::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar &Dest)
 {
     Queue *pThis;
     std::string value;
     std::unique_ptr<std::string> pValue;
-
-    DebugSpew("Queue::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -64,7 +62,6 @@ bool Queue::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Des
     pThis = reinterpret_cast<Queue *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Queue instance is NULL!");
         return false;
     }
 
@@ -173,7 +170,7 @@ bool Queue::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // this as a queue Push call.
 //
 
-bool Queue::FromString(MQVarPtr &VarPtr, PCHAR Source)
+bool Queue::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     Queue *pDest;
 

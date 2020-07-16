@@ -47,7 +47,6 @@ namespace Collections
             Stack()
                 : ObjectType(StackMembers)
             {
-                DebugSpew("Stack - %x", this);
             }
 
             //
@@ -56,7 +55,6 @@ namespace Collections
 
             ~Stack()
             {
-                DebugSpew("~Stack - %x", this);
             }
 
             //
@@ -142,7 +140,7 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
+            virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override;
 
             //
             // Convert the stack to a string -- output the count of items.
@@ -155,7 +153,7 @@ namespace Collections
             // this as a stack push call.
             //
 
-            bool FromString(MQVarPtr& VarPtr, PCHAR Source);
+            virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override;
 
         private:
 

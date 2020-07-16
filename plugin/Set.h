@@ -105,7 +105,7 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
+            virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override;
 
             //
             // Convert the set to a string -- output the current item.
@@ -117,7 +117,7 @@ namespace Collections
             // This method is executed when the /varset statement is executed.  
             //
 
-            bool FromString(MQVarPtr& VarPtr, PCHAR Source);
+            virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override;
 
         protected:
 
@@ -234,7 +234,7 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest);
+            virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override;
 
             //
             // Convert the set to a string -- output the count of items.
@@ -247,7 +247,7 @@ namespace Collections
             // this as a set Add call.
             //
 
-            bool FromString(MQVarPtr& VarPtr, PCHAR Source);
+            virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override;
 
         protected:
 

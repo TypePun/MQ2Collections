@@ -138,7 +138,7 @@ namespace Types
         // Default implementation of from string does nothing.
         //
 
-        virtual bool FromString(MQVarPtr& VarPtr, PCHAR Source)
+        virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override
         {
             return true;
         }
@@ -149,8 +149,6 @@ namespace Types
 
         virtual void FreeVariable(MQVarPtr& VarPtr)
         {
-            DebugSpew("BaseType::FreeVariable:  %x", VarPtr.Ptr);
-
             if (CanDelete())
             {
                 delete reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
@@ -164,7 +162,7 @@ namespace Types
         // aren't any members on the type.
         //
 
-        virtual bool GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
+        virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override
         {
             return false;
         }
@@ -176,8 +174,6 @@ namespace Types
 
         static void RegisterType(ObjectClass * instance)
         {
-            DebugSpew("BaseType::RegisterType: %s", ObjectClass::GetTypeName());
-
             //
             // If we were already registered, do nothing.
             //
@@ -200,8 +196,6 @@ namespace Types
 
         static void UnregisterType()
         {
-            DebugSpew("BaseType::UnregisterType: %s", ObjectClass::GetTypeName());
-
             //
             // If we were never registered, do nothing.
             //
@@ -314,8 +308,6 @@ namespace Types
 
         virtual void InitVariable(MQVarPtr& VarPtr)
         {
-            DebugSpew("ObjectType::InitVariable");
-
             VarPtr.Ptr = new ObjectClass();
         }
 

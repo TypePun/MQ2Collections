@@ -56,7 +56,6 @@ MapIterator::MapIterator(const std::map<std::string, std::string> & refCollectio
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
       ReferenceType(MapIteratorMembers)
 {
-    DebugSpew("MapIterator - %x", this);
 }
 
 //
@@ -70,8 +69,6 @@ MapIterator::MapIterator(
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
       ReferenceType(MapIteratorMembers)
 {
-    DebugSpew("MapIterator - %x", this);
-
     //
     // Position the iterator to the item or to the end of the
     // set.
@@ -88,7 +85,6 @@ MapIterator::MapIterator(const MapIterator & original)
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(original),
       ReferenceType(MapIteratorMembers)
 {
-    DebugSpew("MapIterator copy ctor - %x", this);
 }
 
 //
@@ -97,7 +93,6 @@ MapIterator::MapIterator(const MapIterator & original)
 
 MapIterator::~MapIterator()
 {
-    DebugSpew("~MapIterator - %x", this);
 }
 
 //
@@ -170,13 +165,11 @@ bool MapIterator::Key(const std::string ** const key) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool MapIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
+bool MapIterator::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar &Dest)
 {
     MapIterator *pThis;
     MQTypeVar typeVar;
     const std::string *pItem;
-
-    DebugSpew("MapIterator::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -206,7 +199,6 @@ bool MapIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVa
     pThis = reinterpret_cast<MapIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("MapIterator instance is NULL!");
         return false;
     }
 
@@ -363,7 +355,7 @@ bool MapIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool MapIterator::FromString(MQVarPtr &VarPtr, PCHAR Source)
+bool MapIterator::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     return false;
 }
@@ -390,7 +382,6 @@ bool MapIterator::Find(const std::string & refKey)
 Map::Map()
     : ObjectType(MapMembers)
 {
-    DebugSpew("Map - %x", this);
 }
 
 //
@@ -399,7 +390,6 @@ Map::Map()
 
 Map::~Map()
 {
-    DebugSpew("~Map - %x", this);
 }
 
 //
@@ -463,13 +453,11 @@ KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> *
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Map::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
+bool Map::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar &Dest)
 {
     Map *pThis;
     MQTypeVar iteratorTypeVar;
     std::string value;
-
-    DebugSpew("Map::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -499,7 +487,6 @@ bool Map::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar &Dest)
     pThis = reinterpret_cast<Map *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Map instance is NULL!");
         return false;
     }
 
@@ -653,7 +640,7 @@ std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string
 // this call.
 //
 
-bool Map::FromString(MQVarPtr &VarPtr, PCHAR Source)
+bool Map::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     return false;
 }

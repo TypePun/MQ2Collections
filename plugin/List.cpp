@@ -69,7 +69,6 @@ ListIterator::ListIterator(const std::list<std::string> & refCollection)
     : ValueIterator<std::list<std::string>>(refCollection),
       ReferenceType(ListIteratorMembers)
 {
-    DebugSpew("ListIterator - %x", this);
 }
 
 //
@@ -83,8 +82,6 @@ ListIterator::ListIterator(
     : ValueIterator<std::list<std::string>>(refCollection),
       ReferenceType(ListIteratorMembers)
 {
-    DebugSpew("ListIterator - %x", this);
-
     //
     // Position the iterator to the item or to the end of the
     // list.
@@ -101,7 +98,6 @@ ListIterator::ListIterator(const ListIterator & original)
     : ValueIterator<std::list<std::string>>(original),
       ReferenceType(ListIteratorMembers)
 {
-    DebugSpew("ListIterator copy ctor - %x", this);
 }
 
 //
@@ -110,7 +106,6 @@ ListIterator::ListIterator(const ListIterator & original)
 
 ListIterator::~ListIterator()
 {
-    DebugSpew("~ListIterator - %x", this);
 }
 
 //
@@ -164,13 +159,11 @@ bool ListIterator::Value(const std::string ** const item) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool ListIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
+bool ListIterator::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
     MQTypeVar typeVar;
     const std::string * pItem;
-
-    DebugSpew("ListIterator::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -200,7 +193,6 @@ bool ListIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeV
     pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("ListIterator instance is NULL!");
         return false;
     }
 
@@ -284,12 +276,9 @@ bool ListIterator::GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, 
 {
     ListIterator * pThis;
 
-    DebugSpew("ListIterator::GetMemberInvoker %s", Member);
-
     pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("ListIterator instance is NULL!");
         return false;
     }
 
@@ -330,7 +319,7 @@ bool ListIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool ListIterator::FromString(MQVarPtr& VarPtr, PCHAR Source)
+bool ListIterator::FromString(MQVarPtr& VarPtr, const char* Source)
 {
     return false;
 }
@@ -359,7 +348,6 @@ List::List()
     : ObjectType(ListMembers),
       m_delimiter(",")
 {
-    DebugSpew("List - %x", this);
 }
 
 //
@@ -370,8 +358,6 @@ List::List(const std::list<std::string> & source)
     : ObjectType(ListMembers),
       m_delimiter(",")
 {
-    DebugSpew("List - %x", this);
-
     m_coll = source;
 }
 
@@ -381,7 +367,6 @@ List::List(const std::list<std::string> & source)
 
 List::~List()
 {
-    DebugSpew("~List - %x", this);
 }
 
 //
@@ -718,14 +703,12 @@ std::unique_ptr<List> List::Splice(size_t startIndex, size_t length) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool List::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
+bool List::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     List * pThis;
     MQTypeVar typeVar;
     std::unique_ptr<const std::string> pItem;
     size_t replacedItems;
-
-    DebugSpew("List::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -755,7 +738,6 @@ bool List::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest
     pThis = reinterpret_cast<List *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("List instance is NULL!");
         return false;
     }
 
@@ -1073,12 +1055,9 @@ bool List::GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVa
 {
     List * pThis;
 
-    DebugSpew("List::GetMemberInvoker %s", Member);
-
     pThis = reinterpret_cast<List *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("List instance is NULL!");
         return false;
     }
 
@@ -1109,7 +1088,7 @@ bool List::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // this as a list Append call.
 //
 
-bool List::FromString(MQVarPtr& VarPtr, PCHAR Source)
+bool List::FromString(MQVarPtr& VarPtr, const char* Source)
 {
     List * pDest;
 

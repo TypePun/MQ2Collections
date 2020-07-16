@@ -28,13 +28,11 @@ const MQTypeMember Stack::StackMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
+bool Stack::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     Stack *pThis;
     std::string value;
     std::unique_ptr<std::string> pValue;
-
-    DebugSpewAlways("Stack::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -64,7 +62,6 @@ bool Stack::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Des
     pThis = reinterpret_cast<Stack *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Stack instance is NULL!");
         return false;
     }
 
@@ -169,7 +166,7 @@ bool Stack::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // this as a stack Push call.
 //
 
-bool Stack::FromString(MQVarPtr& VarPtr, PCHAR Source)
+bool Stack::FromString(MQVarPtr& VarPtr, const char* Source)
 {
     Stack *pDest;
 

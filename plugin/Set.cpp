@@ -55,7 +55,6 @@ SetIterator::SetIterator(const std::set<std::string> & refCollection)
         : ValueIterator<std::set<std::string>>(refCollection),
           ReferenceType(SetIteratorMembers)
 {
-    DebugSpew("SetIterator - %x", this);
 }
 
 //
@@ -69,8 +68,6 @@ SetIterator::SetIterator(
         : ValueIterator<std::set<std::string>>(refCollection),
           ReferenceType(SetIteratorMembers)
 {
-    DebugSpew("SetIterator - %x", this);
-
     //
     // Position the iterator to the item or to the end of the
     // set.
@@ -87,7 +84,6 @@ SetIterator::SetIterator(const SetIterator & original)
         : ValueIterator<std::set<std::string>>(original),
           ReferenceType(SetIteratorMembers)
 {
-    DebugSpew("SetIterator copy ctor - %x", this);
 }
 
 //
@@ -96,7 +92,6 @@ SetIterator::SetIterator(const SetIterator & original)
 
 SetIterator::~SetIterator()
 {
-    DebugSpew("~SetIterator - %x", this);
 }
 
 //
@@ -150,13 +145,11 @@ bool SetIterator::Value(const std::string ** const item) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool SetIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
+bool SetIterator::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     SetIterator *pThis;
     MQTypeVar typeVar;
     const std::string *pItem;
-
-    DebugSpew("SetIterator::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -186,7 +179,6 @@ bool SetIterator::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVa
     pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("SetIterator instance is NULL!");
         return false;
     }
 
@@ -295,7 +287,7 @@ bool SetIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool SetIterator::FromString(MQVarPtr&VarPtr, PCHAR Source)
+bool SetIterator::FromString(MQVarPtr&VarPtr, const char* Source)
 {
     return false;
 }
@@ -323,7 +315,6 @@ bool SetIterator::Find(const std::string & refKey)
 Set::Set()
     :ObjectType(SetMembers)
 {
-    DebugSpew("Set - %x", this);
 }
 
 //
@@ -332,7 +323,6 @@ Set::Set()
 
 Set::~Set()
 {
-    DebugSpew("~Set - %x", this);
 }
 
 //
@@ -417,13 +407,11 @@ ValueIterator<std::set<std::string>> * Set::Find(const std::string & refKey)
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Set::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
+bool Set::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     Set *pThis;
     MQTypeVar iteratorTypeVar;
     std::string value;
-
-    DebugSpew("Set::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
@@ -453,7 +441,6 @@ bool Set::GetMember(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
     pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Set instance is NULL!");
         return false;
     }
 
@@ -605,7 +592,7 @@ bool Set::ToString(MQVarPtr VarPtr, PCHAR Destination)
 // this as a set Add call.
 //
 
-bool Set::FromString(MQVarPtr &VarPtr, PCHAR Source)
+bool Set::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     Set *pDest;
 
