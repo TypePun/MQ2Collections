@@ -105,7 +105,7 @@ namespace Types
         // instance to it.
         //
 
-        virtual bool FromData(MQVarPtr& VarPtr, MQTypeVar& Source)
+        bool FromData(MQVarPtr& VarPtr, const MQTypeVar& Source) override
         {
             ObjectClass * pDest;
 
@@ -131,15 +131,6 @@ namespace Types
 
             VarPtr.Ptr = Source.Ptr;
 
-            return true;
-        }
-
-        //
-        // Default implementation of from string does nothing.
-        //
-
-        virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override
-        {
             return true;
         }
 
@@ -253,7 +244,7 @@ namespace Types
         ~ReferenceType()
         {
         }
-        
+
         //
         // This type cannot be deleted.
         //
