@@ -16,7 +16,7 @@ using namespace Extensions::Strings;
 // contain a null string pointer.
 //
 
-const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
+const MQTypeMember MapIterator::MapIteratorMembers[] =
 {
     { (DWORD) MapIteratorMembers::Reset, "Reset" },
     { (DWORD) MapIteratorMembers::Advance, "Advance" },
@@ -32,7 +32,7 @@ const MQ2TYPEMEMBER MapIterator::MapIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TYPEMEMBER Map::MapMembers[] =
+const MQTypeMember Map::MapMembers[] =
 {
     { (DWORD) MapMembers::Count, "Count" },
     { (DWORD) MapMembers::Clear, "Clear" },
@@ -56,7 +56,6 @@ MapIterator::MapIterator(const std::map<std::string, std::string> & refCollectio
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
       ReferenceType(MapIteratorMembers)
 {
-    DebugSpew("MapIterator - %x", this);
 }
 
 //
@@ -70,8 +69,6 @@ MapIterator::MapIterator(
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(refCollection),
       ReferenceType(MapIteratorMembers)
 {
-    DebugSpew("MapIterator - %x", this);
-
     //
     // Position the iterator to the item or to the end of the
     // set.
@@ -88,7 +85,6 @@ MapIterator::MapIterator(const MapIterator & original)
     : KeyValueIterator<std::map<std::string, std::string>, std::string, std::string>(original),
       ReferenceType(MapIteratorMembers)
 {
-    DebugSpew("MapIterator copy ctor - %x", this);
 }
 
 //
@@ -97,7 +93,6 @@ MapIterator::MapIterator(const MapIterator & original)
 
 MapIterator::~MapIterator()
 {
-    DebugSpew("~MapIterator - %x", this);
 }
 
 //
@@ -170,26 +165,24 @@ bool MapIterator::Key(const std::string ** const key) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool MapIterator::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar &Dest)
 {
     MapIterator *pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     const std::string *pItem;
-
-    DebugSpew("MapIterator::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = MapIterator::FindMember(Member);
+    auto pMember = MapIterator::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -206,7 +199,6 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     pThis = reinterpret_cast<MapIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("MapIterator instance is NULL!");
         return false;
     }
 
@@ -250,7 +242,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             if (pThis->Value(&pItem))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -263,7 +255,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             if (pThis->Key(&pItem))
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -299,7 +291,7 @@ bool MapIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 // FALSE if there isn't one.
 //
 
-bool MapIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool MapIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     MapIterator *pThis;
     const std::string *item;
@@ -363,7 +355,7 @@ bool MapIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool MapIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool MapIterator::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     return false;
 }
@@ -390,7 +382,6 @@ bool MapIterator::Find(const std::string & refKey)
 Map::Map()
     : ObjectType(MapMembers)
 {
-    DebugSpew("Map - %x", this);
 }
 
 //
@@ -399,7 +390,6 @@ Map::Map()
 
 Map::~Map()
 {
-    DebugSpew("~Map - %x", this);
 }
 
 //
@@ -463,26 +453,24 @@ KeyValueIterator<std::map<std::string, std::string>, std::string, std::string> *
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Map::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar &Dest)
 {
     Map *pThis;
-    MQ2TYPEVAR iteratorTypeVar;
+    MQTypeVar iteratorTypeVar;
     std::string value;
-
-    DebugSpew("Map::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Map::FindMember(Member);
+    auto pMember = Map::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -499,7 +487,6 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     pThis = reinterpret_cast<Map *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Map instance is NULL!");
         return false;
     }
 
@@ -511,7 +498,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case MapMembers::Clear:
@@ -623,7 +610,7 @@ bool Map::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 // Convert the map to a string -- output the count of items.
 //
 
-bool Map::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Map::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Map *pThis;
 
@@ -653,7 +640,7 @@ std::unique_ptr<KeyValueIterator<std::map<std::string, std::string>, std::string
 // this call.
 //
 
-bool Map::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Map::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     return false;
 }

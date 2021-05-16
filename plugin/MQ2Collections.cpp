@@ -20,13 +20,13 @@
 // defines a common set of methods that the collection must implement.
 //
 
-
-#include <MQ2Plugin.h>
+#include <mq/Plugin.h>
 
 #include "DebugMemory.h"
 #include "MQ2CollectionsImpl.h"
 
 PreSetup("MQ2Collections");
+PLUGIN_VERSION(1.2);
 
 //
 // Called once, when the plugin is to loaded. Register the types.

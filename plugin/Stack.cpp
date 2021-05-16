@@ -13,7 +13,7 @@ using namespace Collections::Containers;
 // pointer.
 //
 
-const MQ2TYPEMEMBER Stack::StackMembers[] =
+const MQTypeMember Stack::StackMembers[] =
 {
     { (DWORD) StackMembers::Count, "Count" },
     { (DWORD) StackMembers::Push, "Push" },
@@ -28,26 +28,24 @@ const MQ2TYPEMEMBER Stack::StackMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Stack::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     Stack *pThis;
     std::string value;
     std::unique_ptr<std::string> pValue;
-
-    DebugSpewAlways("Stack::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Stack::FindMember(Member);
+	auto pMember = Stack::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -64,7 +62,6 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     pThis = reinterpret_cast<Stack *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Stack instance is NULL!");
         return false;
     }
 
@@ -76,7 +73,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case StackMembers::Push:
@@ -109,7 +106,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             if (pThis->Pop(&pValue))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -131,7 +128,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             if (pThis->Peek(&pValue))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -151,7 +148,7 @@ bool Stack::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 // Convert the stack to a string -- output the count of items.
 //
 
-bool Stack::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Stack::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Stack *pThis;
 
@@ -169,7 +166,7 @@ bool Stack::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a stack Push call.
 //
 
-bool Stack::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Stack::FromString(MQVarPtr& VarPtr, const char* Source)
 {
     Stack *pDest;
 

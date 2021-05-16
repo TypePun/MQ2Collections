@@ -18,7 +18,7 @@ using namespace Conversions;
 // contain a null string pointer.
 //
 
-const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
+const MQTypeMember ListIterator::ListIteratorMembers[] =
 {
     { (DWORD) ListIteratorMembers::Reset, "Reset" },
     { (DWORD) ListIteratorMembers::Advance, "Advance" },
@@ -33,7 +33,7 @@ const MQ2TYPEMEMBER ListIterator::ListIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TYPEMEMBER List::ListMembers[] =
+const MQTypeMember List::ListMembers[] =
 {
     { (DWORD) ListMembers::Count, "Count" },
     { (DWORD) ListMembers::Clear, "Clear" },
@@ -69,7 +69,6 @@ ListIterator::ListIterator(const std::list<std::string> & refCollection)
     : ValueIterator<std::list<std::string>>(refCollection),
       ReferenceType(ListIteratorMembers)
 {
-    DebugSpew("ListIterator - %x", this);
 }
 
 //
@@ -83,8 +82,6 @@ ListIterator::ListIterator(
     : ValueIterator<std::list<std::string>>(refCollection),
       ReferenceType(ListIteratorMembers)
 {
-    DebugSpew("ListIterator - %x", this);
-
     //
     // Position the iterator to the item or to the end of the
     // list.
@@ -101,7 +98,6 @@ ListIterator::ListIterator(const ListIterator & original)
     : ValueIterator<std::list<std::string>>(original),
       ReferenceType(ListIteratorMembers)
 {
-    DebugSpew("ListIterator copy ctor - %x", this);
 }
 
 //
@@ -110,7 +106,6 @@ ListIterator::ListIterator(const ListIterator & original)
 
 ListIterator::~ListIterator()
 {
-    DebugSpew("~ListIterator - %x", this);
 }
 
 //
@@ -164,26 +159,24 @@ bool ListIterator::Value(const std::string ** const item) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool ListIterator::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     const std::string * pItem;
-
-    DebugSpew("ListIterator::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = ListIterator::FindMember(Member);
+	auto pMember = ListIterator::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -200,7 +193,6 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
     pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("ListIterator instance is NULL!");
         return false;
     }
 
@@ -244,7 +236,7 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
             if (pThis->Value(&pItem))
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -280,16 +272,13 @@ bool ListIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYP
 // source variable.
 //
 
-bool ListIterator::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool ListIterator::GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     ListIterator * pThis;
-
-    DebugSpew("ListIterator::GetMemberInvoker %s", Member);
 
     pThis = reinterpret_cast<ListIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("ListIterator instance is NULL!");
         return false;
     }
 
@@ -301,7 +290,7 @@ bool ListIterator::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index,
 // isn't one.
 //
 
-bool ListIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool ListIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     ListIterator * pThis;
     const std::string * item;
@@ -330,7 +319,7 @@ bool ListIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool ListIterator::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
+bool ListIterator::FromString(MQVarPtr& VarPtr, const char* Source)
 {
     return false;
 }
@@ -359,7 +348,6 @@ List::List()
     : ObjectType(ListMembers),
       m_delimiter(",")
 {
-    DebugSpew("List - %x", this);
 }
 
 //
@@ -370,8 +358,6 @@ List::List(const std::list<std::string> & source)
     : ObjectType(ListMembers),
       m_delimiter(",")
 {
-    DebugSpew("List - %x", this);
-
     m_coll = source;
 }
 
@@ -381,7 +367,6 @@ List::List(const std::list<std::string> & source)
 
 List::~List()
 {
-    DebugSpew("~List - %x", this);
 }
 
 //
@@ -718,27 +703,25 @@ std::unique_ptr<List> List::Splice(size_t startIndex, size_t length) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool List::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     List * pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     std::unique_ptr<const std::string> pItem;
     size_t replacedItems;
-
-    DebugSpew("List::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = List::FindMember(Member);
+    auto pMember = List::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -755,7 +738,6 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
     pThis = reinterpret_cast<List *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("List instance is NULL!");
         return false;
     }
 
@@ -767,7 +749,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case ListMembers::Clear:
@@ -823,7 +805,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 //
 
                 Dest.Int = (int) pThis->Index(std::string(Index));
-                Dest.Type = pIntType;
+                Dest.Type = mq::datatypes::pIntType;
             }
             break;
 
@@ -846,7 +828,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 if (pThis->Item(std::string(Index), &pItem))
                 {
                     Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                    Dest.Type = pStringType;
+                    Dest.Type = mq::datatypes::pStringType;
                 }
             }
             break;
@@ -920,7 +902,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->Remove(std::string(Index));
-                Dest.Type = pIntType;
+                Dest.Type = mq::datatypes::pIntType;
             }
             break;
 
@@ -955,7 +937,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
                 if (pThis->Replace(std::string(Index), &replacedItems))
                 {
                     Dest.Int = (int) replacedItems;
-                    Dest.Type = pIntType;
+                    Dest.Type = mq::datatypes::pIntType;
                 }
             }
             break;
@@ -1006,7 +988,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             if (pThis->Head(&pItem))
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -1019,7 +1001,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             if (pThis->Tail(&pItem))
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -1035,7 +1017,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             if (NOT_EMPTY(Index))
             {
                 Dest.Int = (int) pThis->CountOf(std::string(Index));
-                Dest.Type = pIntType;
+                Dest.Type = mq::datatypes::pIntType;
             }
             break;
 
@@ -1048,7 +1030,7 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
             {
                 auto old_delimiter = pThis->Delimiter(std::string(Index));
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(old_delimiter.c_str(), old_delimiter.size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -1069,16 +1051,13 @@ bool List::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & D
 // source variable.
 //
 
-bool List::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+bool List::GetMemberInvoker(MQVarPtr VarPtr, PCHAR Member, PCHAR Index, MQTypeVar& Dest)
 {
     List * pThis;
-
-    DebugSpew("List::GetMemberInvoker %s", Member);
 
     pThis = reinterpret_cast<List *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("List instance is NULL!");
         return false;
     }
 
@@ -1089,7 +1068,7 @@ bool List::GetMemberInvoker(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 // Convert the list to a string -- output the count of items.
 //
 
-bool List::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool List::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     List * pThis;
 
@@ -1109,7 +1088,7 @@ bool List::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a list Append call.
 //
 
-bool List::FromString(MQ2VARPTR & VarPtr, PCHAR Source)
+bool List::FromString(MQVarPtr& VarPtr, const char* Source)
 {
     List * pDest;
 
