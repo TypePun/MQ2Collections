@@ -1,4 +1,4 @@
-# Build Notes
+# MQ2 Build Notes
 
 MQ2Collections is provided as a Visual Studio 2019 Solution. Project configurations are
 provided for both Debug and Release mode builds.
