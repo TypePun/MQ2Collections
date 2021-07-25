@@ -13,9 +13,7 @@ be installed on your computer.
 
 ## Environments
 
-There are four sets of project configurations: Debug_Live, Debug, Release and Release_Live. The Debug and Release configurations are build with TEST defined. The Debug_Live and Release_Live configurations do no define TEST.
-
-Make sure you build the corresponding version of MQ2Main if you redefine the target for MQ2Collections or the two will be out of synch and results will be unpredicatable.
+There are two sets of project configurations: Debug and Release. Make sure you build the corresponding version of MQ2Main if you redefine the target for MQ2Collections or the two will be out of synch and results will be unpredicatable.
 
 ## Building
 
