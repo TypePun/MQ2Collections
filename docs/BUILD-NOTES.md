@@ -1,6 +1,6 @@
 # Build Notes
 
-MQ2Collections is provided as a Visual Studio 2017 Solution. Project configurations are
+MQ2Collections is provided as a Visual Studio 2019 Solution. Project configurations are
 provided for both Debug and Release mode builds.
 
 ## Requirements
@@ -13,7 +13,7 @@ be installed on your computer.
 
 ## Environments
 
-The 'TEST' macro is currently set on the MQ2Collections project properties page under 'Configuration Properties|C/C++|Preprocessor' for both Debug and Release configurations. You will need to unset this value if you want to change the target build environment.
+There are four sets of project configurations: Debug_Live, Debug, Release and Release_Live. The Debug and Release configurations are build with TEST defined. The Debug_Live and Release_Live configurations do no define TEST.
 
 Make sure you build the corresponding version of MQ2Main if you redefine the target for MQ2Collections or the two will be out of synch and results will be unpredicatable.
 
