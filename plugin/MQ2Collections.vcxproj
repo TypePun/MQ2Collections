@@ -50,13 +50,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir);$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(OutDir);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
@@ -81,7 +81,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir);$(MQ2);$(IncludePath)</IncludePath>
-    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\$(Configuration);$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(MQ2)\Detours\lib;$(MQ2)\Release;$(OutDir);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
@@ -109,13 +109,13 @@
       <AdditionalDependencies>mq2main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(MQ2)\$(Configuration)\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
+      <Command>copy $(MQ2)\Release\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying $(MQ2)\$(Configuration)\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
+      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
+      <Outputs>$(SolutionDir)bin\Release\MQ2Main.dll</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,13 +143,13 @@
       <AdditionalDependencies>mq2main.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(MQ2)\$(Configuration)\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
+      <Command>copy $(MQ2)\Release\MQ2Main.dll $(SolutionDir)bin\$(Configuration)\</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying $(MQ2)\$(Configuration)\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
+      <Message>Copying $(MQ2)\Release\MQ2Main.dll to $(SolutionDir)bin\$(Configuration)</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(SolutionDir)bin\$(Configuration)\MQ2Main.dll</Outputs>
+      <Outputs>$(SolutionDir)bin\Release\MQ2Main.dll</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
