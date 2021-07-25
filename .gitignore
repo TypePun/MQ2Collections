@@ -33,6 +33,11 @@ bin/*
 *.tlog
 *.lastbuildstate
 */.vs/*
+*.recipe
+*.FileListAbsolute.txt
+*.ilk
+*.iobj
+*.ipdb
 
 #
 # Emacs temporary files
