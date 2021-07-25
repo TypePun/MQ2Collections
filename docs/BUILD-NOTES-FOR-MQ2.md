@@ -24,7 +24,9 @@ be used to build from the command line. To do that you will have to:
 2. Run vcvars32.bat (see: [Seting environment variables for Visual Studio command line builds](https://docs.microsoft.com/en-us/cpp/build/setting-the-path-and-environment-variables-for-command-line-builds?view=vs-2017));
 3. Change to the MQ2Collections directory;
 4. Build the solution in Release mode:
-  * MSBuild MQ2Collections.sln /t:Build /p:Configuration=Release;Platform=Win32
+```
+    MSBuild MQ2Collections.sln /t:Build /p:Configuration=Release;Platform=Win32
+```
 
 Following the build, copy the .\Release\MQ2Collections.dll file to your MQ2 executable directory.
  
