@@ -30,7 +30,7 @@ namespace Conversions
     template<size_t size>
     inline errno_t ValueToString(unsigned int value, char(&buffer)[size], uint16_t radix)
     {
-        return ValueToString((unsigned long) value, buffer, radix);
+        return ValueToString((size_t) value, buffer, radix);
     }
 
     //
@@ -38,10 +38,10 @@ namespace Conversions
     //
 
     template<size_t size>
-    inline errno_t ValueToString(unsigned long value, char(&buffer)[size], uint16_t radix)
+    inline errno_t ValueToString(size_t value, char(&buffer)[size], uint16_t radix)
     {
         // Radix must be 2 <= radix <= 36 or an error is returned.
-        return _ultoa_s(value, buffer, (int) radix);
+        return _ultoa_s((unsigned long)value, buffer, (int) radix);
     }
 
     //
