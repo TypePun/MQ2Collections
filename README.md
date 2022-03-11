@@ -1,6 +1,8 @@
 Collection types for Macroquest 2 (MQ2)
 =======================================
 
+The mq2-base-32bit branch records commits that 'work' for legacy 32-bit MQ2 builds.
+
 ## Directory
 
 * [How to build the project for MQ2](https://github.com/TypePun/MQ2Collections/blob/master/docs/BUILD-NOTES-FOR-MQ2.md)
