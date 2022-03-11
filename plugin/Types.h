@@ -70,7 +70,7 @@ namespace Types
 
         // Buffer pointed to by naked PCHAR is at least this long.
 
-        const size_t BUFFER_SIZE = MAX_STRING;
+        const int BUFFER_SIZE = MAX_STRING;
 
         //
         // Initialize our methods and properties in MQ2.
