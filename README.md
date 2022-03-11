@@ -1,11 +1,11 @@
-Collection types for Macroquest 2 (MQ2)
+Collection types for Macroquest Next (MQNext)
 =======================================
 
 ## Directory
 
-* [How to build the project for MQ2](https://github.com/TypePun/MQ2Collections/blob/master/docs/BUILD-NOTES-FOR-MQ2.md)
+* [How to build the project for MQNext](https://github.com/TypePun/MQ2Collections/blob/mqnext/docs/BUILD-NOTES-MQNEXT.md)
 * [API Documentation](https://github.com/TypePun/MQ2Collections/wiki)
-* [Sample MQ2 scripts](https://github.com/TypePun/MQ2Collections/tree/master/macros)
+* [Sample MQ scripts](https://github.com/TypePun/MQ2Collections/tree/master/macros)
 * [Release Notes](https://github.com/TypePun/MQ2Collections/blob/master/docs/RELEASE-NOTES.md)
 
 

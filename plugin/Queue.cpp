@@ -13,7 +13,7 @@ using namespace Collections::Containers;
 // pointer.
 //
 
-const MQ2TYPEMEMBER Queue::QueueMembers[] =
+const MQTypeMember Queue::QueueMembers[] =
 {
     { (DWORD) QueueMembers::Count, "Count" },
     { (DWORD) QueueMembers::Push, "Push" },
@@ -28,26 +28,24 @@ const MQ2TYPEMEMBER Queue::QueueMembers[] =
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Queue::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar &Dest)
 {
     Queue *pThis;
     std::string value;
     std::unique_ptr<std::string> pValue;
-
-    DebugSpew("Queue::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Queue::FindMember(Member);
+    auto pMember = Queue::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -64,7 +62,6 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
     pThis = reinterpret_cast<Queue *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Queue instance is NULL!");
         return false;
     }
 
@@ -76,7 +73,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case QueueMembers::Push:
@@ -113,7 +110,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             if (pThis->Pop(&pValue))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -135,7 +132,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
             if (pThis->Peek(&pValue))
             {
                 Dest.Ptr = (PVOID)pThis->m_Buffer.SetBuffer(pValue->c_str(), pValue->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -155,7 +152,7 @@ bool Queue::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &D
 // Convert the queue to a string -- output the count of items.
 //
 
-bool Queue::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Queue::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Queue *pThis;
 
@@ -173,7 +170,7 @@ bool Queue::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a queue Push call.
 //
 
-bool Queue::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Queue::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     Queue *pDest;
 

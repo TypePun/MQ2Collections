@@ -105,19 +105,19 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest);
+            virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override;
 
             //
             // Convert the set to a string -- output the current item.
             //
 
-            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQVarPtr VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  
             //
 
-            bool FromString(MQ2VARPTR &VarPtr, PCHAR Source);
+            virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override;
 
         protected:
 
@@ -140,7 +140,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TYPEMEMBER SetIteratorMembers[];
+            static const MQTypeMember SetIteratorMembers[];
         };
 
         //
@@ -234,20 +234,20 @@ namespace Collections
             // It returns true if the method succeeded and false otherwise.
             //
 
-            bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest);
+            virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override;
 
             //
             // Convert the set to a string -- output the count of items.
             //
 
-            bool ToString(MQ2VARPTR VarPtr, PCHAR Destination);
+            bool ToString(MQVarPtr VarPtr, PCHAR Destination);
 
             //
             // This method is executed when the /varset statement is executed.  Treat
             // this as a set Add call.
             //
 
-            bool FromString(MQ2VARPTR &VarPtr, PCHAR Source);
+            virtual bool FromString(MQVarPtr& VarPtr, const char* Source) override;
 
         protected:
 
@@ -270,7 +270,7 @@ namespace Collections
             // Map from member ids onto names.
             //
 
-            static const MQ2TYPEMEMBER SetMembers[];
+            static const MQTypeMember SetMembers[];
         };
     }  // namespace Containers
 }  // namespace Collections

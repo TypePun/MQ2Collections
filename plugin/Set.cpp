@@ -17,7 +17,7 @@ using namespace Collections::Containers;
 // contain a null string pointer.
 //
 
-const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
+const MQTypeMember SetIterator::SetIteratorMembers[] =
 {
     { (DWORD) SetIteratorMembers::Reset, "Reset" },
     { (DWORD) SetIteratorMembers::Advance, "Advance" },
@@ -32,7 +32,7 @@ const MQ2TYPEMEMBER SetIterator::SetIteratorMembers[] =
 // string pointer.
 //
 
-const MQ2TYPEMEMBER Set::SetMembers[] =
+const MQTypeMember Set::SetMembers[] =
 {
     { (DWORD) SetMembers::Count, "Count" },
     { (DWORD) SetMembers::Clear, "Clear" },
@@ -55,7 +55,6 @@ SetIterator::SetIterator(const std::set<std::string> & refCollection)
         : ValueIterator<std::set<std::string>>(refCollection),
           ReferenceType(SetIteratorMembers)
 {
-    DebugSpew("SetIterator - %x", this);
 }
 
 //
@@ -69,8 +68,6 @@ SetIterator::SetIterator(
         : ValueIterator<std::set<std::string>>(refCollection),
           ReferenceType(SetIteratorMembers)
 {
-    DebugSpew("SetIterator - %x", this);
-
     //
     // Position the iterator to the item or to the end of the
     // set.
@@ -87,7 +84,6 @@ SetIterator::SetIterator(const SetIterator & original)
         : ValueIterator<std::set<std::string>>(original),
           ReferenceType(SetIteratorMembers)
 {
-    DebugSpew("SetIterator copy ctor - %x", this);
 }
 
 //
@@ -96,7 +92,6 @@ SetIterator::SetIterator(const SetIterator & original)
 
 SetIterator::~SetIterator()
 {
-    DebugSpew("~SetIterator - %x", this);
 }
 
 //
@@ -150,26 +145,24 @@ bool SetIterator::Value(const std::string ** const item) const
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool SetIterator::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     SetIterator *pThis;
-    MQ2TYPEVAR typeVar;
+    MQTypeVar typeVar;
     const std::string *pItem;
-
-    DebugSpew("SetIterator::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = SetIterator::FindMember(Member);
+    auto pMember = SetIterator::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -186,7 +179,6 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
     pThis = reinterpret_cast<SetIterator *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("SetIterator instance is NULL!");
         return false;
     }
 
@@ -230,7 +222,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
             if (pThis->Value(&pItem))
             {
                 Dest.Ptr = (PVOID) pThis->m_Buffer.SetBuffer(pItem->c_str(), pItem->size() + 1);
-                Dest.Type = pStringType;
+                Dest.Type = mq::datatypes::pStringType;
             }
             break;
 
@@ -266,7 +258,7 @@ bool SetIterator::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPE
 // isn't one.
 //
 
-bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool SetIterator::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     SetIterator *pThis;
     const std::string *item;
@@ -295,7 +287,7 @@ bool SetIterator::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // Return false because this operation is not supported.
 //
 
-bool SetIterator::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool SetIterator::FromString(MQVarPtr&VarPtr, const char* Source)
 {
     return false;
 }
@@ -323,7 +315,6 @@ bool SetIterator::Find(const std::string & refKey)
 Set::Set()
     :ObjectType(SetMembers)
 {
-    DebugSpew("Set - %x", this);
 }
 
 //
@@ -332,7 +323,6 @@ Set::Set()
 
 Set::~Set()
 {
-    DebugSpew("~Set - %x", this);
 }
 
 //
@@ -417,26 +407,24 @@ ValueIterator<std::set<std::string>> * Set::Find(const std::string & refKey)
 // It returns true if the method succeeded and false otherwise.
 //
 
-bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Dest)
+bool Set::GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest)
 {
     Set *pThis;
-    MQ2TYPEVAR iteratorTypeVar;
+    MQTypeVar iteratorTypeVar;
     std::string value;
-
-    DebugSpew("Set::GetMember %s", Member);
 
     //
     // Default return value is FALSE.
     //
 
     Dest.Int = 0;
-    Dest.Type = pBoolType;
+    Dest.Type = mq::datatypes::pBoolType;
 
     //
     // Map the member name to the id.
     //
 
-    PMQ2TYPEMEMBER pMember = Set::FindMember(Member);
+    auto pMember = Set::FindMember(Member);
     if (pMember == nullptr)
     {
         //
@@ -453,7 +441,6 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
     pThis = reinterpret_cast<Set *>(VarPtr.Ptr);
     if (pThis == nullptr)
     {
-        DebugSpewAlways("Set instance is NULL!");
         return false;
     }
 
@@ -465,7 +452,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
             //
 
             Dest.Int = (int) pThis->Count();
-            Dest.Type = pIntType;
+            Dest.Type = mq::datatypes::pIntType;
             break;
 
         case SetMembers::Clear:
@@ -587,7 +574,7 @@ bool Set::GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR &Des
 // Convert the set to a string -- output the count of items.
 //
 
-bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
+bool Set::ToString(MQVarPtr VarPtr, PCHAR Destination)
 {
     Set *pThis;
 
@@ -605,7 +592,7 @@ bool Set::ToString(MQ2VARPTR VarPtr, PCHAR Destination)
 // this as a set Add call.
 //
 
-bool Set::FromString(MQ2VARPTR &VarPtr, PCHAR Source)
+bool Set::FromString(MQVarPtr &VarPtr, const char* Source)
 {
     Set *pDest;
 

@@ -9,7 +9,7 @@
 #include <map>
 #include <typeinfo>
 
-#include <MQ2Main/MQ2Main.h>
+#include <mq/Plugin.h>
 
 #include "Macros.h"
 
@@ -70,16 +70,16 @@ namespace Types
 
         // Buffer pointed to by naked PCHAR is at least this long.
 
-        const size_t BUFFER_SIZE = MAX_STRING;
+        const int BUFFER_SIZE = MAX_STRING;
 
         //
         // Initialize our methods and properties in MQ2.
         //
 
-        BaseType(const MQ2TYPEMEMBER aMembers[])
+        BaseType(const MQTypeMember aMembers[])
             : MQ2Type(const_cast<char *>(ObjectClass::GetTypeName()))
         {
-            InitializeMembers(const_cast<PMQ2TYPEMEMBER>(aMembers));
+            InitializeMembers(const_cast<MQTypeMember*>(aMembers));
         }
 
         //
@@ -105,7 +105,7 @@ namespace Types
         // instance to it.
         //
 
-        virtual bool FromData(MQ2VARPTR & VarPtr, MQ2TYPEVAR & Source)
+        bool FromData(MQVarPtr& VarPtr, const MQTypeVar& Source) override
         {
             ObjectClass * pDest;
 
@@ -135,22 +135,11 @@ namespace Types
         }
 
         //
-        // Default implementation of from string does nothing.
-        //
-
-        virtual bool FromString(MQ2VARPTR & VarPtr, PCHAR Source)
-        {
-            return true;
-        }
-
-        //
         // Delete an instance of ObjectClass.
         //
 
-        virtual void FreeVariable(MQ2VARPTR & VarPtr)
+        virtual void FreeVariable(MQVarPtr& VarPtr)
         {
-            DebugSpew("BaseType::FreeVariable:  %x", VarPtr.Ptr);
-
             if (CanDelete())
             {
                 delete reinterpret_cast<ObjectClass *>(VarPtr.Ptr);
@@ -164,7 +153,7 @@ namespace Types
         // aren't any members on the type.
         //
 
-        virtual bool GetMember(MQ2VARPTR VarPtr, PCHAR Member, PCHAR Index, MQ2TYPEVAR & Dest)
+        virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override
         {
             return false;
         }
@@ -176,8 +165,6 @@ namespace Types
 
         static void RegisterType(ObjectClass * instance)
         {
-            DebugSpew("BaseType::RegisterType: %s", ObjectClass::GetTypeName());
-
             //
             // If we were already registered, do nothing.
             //
@@ -200,8 +187,6 @@ namespace Types
 
         static void UnregisterType()
         {
-            DebugSpew("BaseType::UnregisterType: %s", ObjectClass::GetTypeName());
-
             //
             // If we were never registered, do nothing.
             //
@@ -222,7 +207,7 @@ namespace Types
         // Return the MQ2 Type.
         //
 
-        static BOOL TypeDescriptor(PCHAR szName, MQ2TYPEVAR &Dest)
+        static bool TypeDescriptor(const char* szName, MQTypeVar& Dest)
         {
             Dest.DWord = 1;
             Dest.Type = TypeMap::GetTypeInstanceForTypeName(ObjectClass::GetTypeName());
@@ -247,7 +232,7 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        ReferenceType(const MQ2TYPEMEMBER aMembers[])
+        ReferenceType(const MQTypeMember aMembers[])
             : BaseType<ObjectClass>(aMembers)
         {
         }
@@ -259,7 +244,7 @@ namespace Types
         ~ReferenceType()
         {
         }
-        
+
         //
         // This type cannot be deleted.
         //
@@ -295,7 +280,7 @@ namespace Types
         // Initialize our methods and properties in MQ2.
         //
 
-        ObjectType(const MQ2TYPEMEMBER aMembers[])
+        ObjectType(const MQTypeMember aMembers[])
             : BaseType<ObjectClass>(aMembers)
         {
         }
@@ -312,10 +297,8 @@ namespace Types
         // Allocate a new instance of this ObjectType.
         //
 
-        virtual void InitVariable(MQ2VARPTR & VarPtr)
+        virtual void InitVariable(MQVarPtr& VarPtr)
         {
-            DebugSpew("ObjectType::InitVariable");
-
             VarPtr.Ptr = new ObjectClass();
         }
 
